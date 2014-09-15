@@ -147,18 +147,35 @@
 
 ;; auto-complete
 (require 'auto-complete)
-;;(require 'go-autocomplete) ; Go Codeの自動補完を追加
+(require 'go-autocomplete) ; Go Codeの自動補完を追加
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (setq ac-auto-start t)
 
 ;; go-mode
-;;(add-to-list 'load-path "go-mode-load.el" t)
-;;(require 'go-mode-load)
+
+
+;; yasnippet
+(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
 
 ;; js2-mode
 (autoload 'js2-mode "js2" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+
+;;; auto complete mod
+;;; should be loaded after yasnippet so that they can work together
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(ac-config-default)
+;;; set the trigger key so that it can work together with yasnippet on tab key,
+;;; if the word exists in yasnippet, pressing tab will cause yasnippet to
+;;; activate, otherwise, auto-complete will
+(ac-set-trigger-key "TAB")
+(ac-set-trigger-key "<tab>")
+
 
 ;; php-mode
 (require 'php-mode)
@@ -178,10 +195,11 @@
                                ac-source-filename
                                ))))
 
-;; まず、install-elisp のコマンドを使える様にします。
+;; install-elisp のコマンドを使える様にします。
 (require 'install-elisp)
-;; 次に、Elisp ファイルをインストールする場所を指定します。
+;; 次にElisp ファイルをインストールする場所を指定します。
 (setq install-elisp-repository-directory "~/.emacs.d/elisp/")
+
 
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
@@ -193,5 +211,14 @@
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
 
-(require 'migemo)
 
+;; migemo
+;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(ローマ字).
+(require 'migemo)
+(setq migemo-command "cmigemo")
+(setq migemo-options '("-q" "--emacs"))
+
+;; Pacakge Installer
+(require 'package)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
