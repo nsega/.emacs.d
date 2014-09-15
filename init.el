@@ -128,7 +128,7 @@
 
 (setq default-frame-alist
   (append
-  '((font . "fontset-14") ;; デフォルトフォントセット
+  '((font . "fontset-12") ;; デフォルトフォントセット
   (width . 100) (height . 40) ;; ウィンドウサイズ
   )
   default-frame-alist))
