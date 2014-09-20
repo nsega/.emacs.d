@@ -99,21 +99,6 @@
 ;; The local variables list in .emacs と言われるのを抑止
 (add-to-list 'ignored-local-variables 'syntax) 
 
-;;;; ruby-mode (要 ruby-mode.el)
-;; (autoload 'ruby-mode "ruby-mode"
-;;   "Mode for editing ruby source files" t)
-;; (setq auto-mode-alist
-;;       (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
-;; (setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
-;;                                      interpreter-mode-alist))
-;; (autoload 'run-ruby "inf-ruby"
-;;   "Run an inferior Ruby process")
-;; (autoload 'inf-ruby-keys "inf-ruby"
-;;   "Set local key defs for inf-ruby in ruby-mode")
-;; (add-hook 'ruby-mode-hook
-;;           '(lambda ()
-;;             (inf-ruby-keys)))
-
 ;; リセットされた場合に UTF-8 に戻す
 ;; http://0xcc.net/blog/archives/000041.html
 (set-default-coding-systems 'utf-8)
@@ -133,17 +118,41 @@
   )
   default-frame-alist))
 
-
-
 ;; auto-install
 (require 'auto-install)
 (setq auto-install-directory "~/.emacs.d/elisp/") ;Emacs Lispをインストールするディレクトリの指定
 ;;(auto-install-update-emacswiki-package-name t)
 ;;(auto-install-compatibility-setup) ;install-elisp.elとコマンド名を同期
 
+;; Pacakge Installer
+(require 'package)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+;; install-elisp のコマンドを使える様にします。
+(require 'install-elisp)
+;; 次にElisp ファイルをインストールする場所を指定します。
+(setq install-elisp-repository-directory "~/.emacs.d/elisp/")
+
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
+
 ;; anything
 (require 'anything-startup)
 (global-set-key (kbd "C-x b") 'anything)
+
+;; migemo
+;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(ローマ字).
+(require 'migemo)
+(setq migemo-command "cmigemo")
+(setq migemo-options '("-q" "--emacs"))
 
 ;; auto-complete
 (require 'auto-complete)
@@ -151,19 +160,6 @@
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (setq ac-auto-start t)
-
-;; go-mode
-
-
-;; yasnippet
-(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
-
-;; js2-mode
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 
 ;;; auto complete mod
 ;;; should be loaded after yasnippet so that they can work together
@@ -177,11 +173,36 @@
 (ac-set-trigger-key "<tab>")
 
 
+;; yasnippet
+(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+;; go-mode
+
+
+
+;; For Javascript configure
+;; js2-mode
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+;; lintnode
+(add-to-list 'load-path "~/.emacs.d/lintnode")
+(require 'flymake-jslint)
+;; Make sure we can find the lintnode executable
+(setq lintnode-location "~/.emacs.d/lintnode")
+(setq lintnode-node-program "~/.nodebrew/current/bin/node")
+;; JSLint can be... opinionated
+(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
+;; Start the server when we first open a js file and start checking
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (lintnode-hook)))
+
 ;; php-mode
 (require 'php-mode)
 (setq php-mode-force-pear t) ;PEAR規約のインデント設定にする
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode)) ;*.phpのファイルのときにphp-modeを自動起動する
-
 ;; php-mode-hook
 (add-hook 'php-mode-hook
           (lambda ()
@@ -195,30 +216,18 @@
                                ac-source-filename
                                ))))
 
-;; install-elisp のコマンドを使える様にします。
-(require 'install-elisp)
-;; 次にElisp ファイルをインストールする場所を指定します。
-(setq install-elisp-repository-directory "~/.emacs.d/elisp/")
+;;;; ruby-mode (要 ruby-mode.el)
+;; (autoload 'ruby-mode "ruby-mode"
+;;   "Mode for editing ruby source files" t)
+;; (setq auto-mode-alist
+;;       (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
+;; (setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
+;;                                      interpreter-mode-alist))
+;; (autoload 'run-ruby "inf-ruby"
+;;   "Run an inferior Ruby process")
+;; (autoload 'inf-ruby-keys "inf-ruby"
+;;   "Set local key defs for inf-ruby in ruby-mode")
+;; (add-hook 'ruby-mode-hook
+;;           '(lambda ()
+;;             (inf-ruby-keys)))
 
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
-
-
-;; migemo
-;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(ローマ字).
-(require 'migemo)
-(setq migemo-command "cmigemo")
-(setq migemo-options '("-q" "--emacs"))
-
-;; Pacakge Installer
-(require 'package)
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
