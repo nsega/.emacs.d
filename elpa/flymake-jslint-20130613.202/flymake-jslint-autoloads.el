@@ -5,7 +5,7 @@
 
 ;;;### (autoloads (flymake-jslint-load flymake-jslint-args flymake-jslint-command
 ;;;;;;  flymake-jslint-detect-trailing-comma) "flymake-jslint" "flymake-jslint.el"
-;;;;;;  (21526 32806 0 0))
+;;;;;;  (21537 44372 0 0))
 ;;; Generated autoloads from flymake-jslint.el
 
 (defvar flymake-jslint-detect-trailing-comma t "\
@@ -30,8 +30,8 @@ Configure flymake mode to check the current buffer's javascript syntax.
 
 ;;;***
 
-;;;### (autoloads nil nil ("flymake-jslint-pkg.el") (21526 32806
-;;;;;;  638934 0))
+;;;### (autoloads nil nil ("flymake-jslint-pkg.el") (21537 44372
+;;;;;;  220359 0))
 
 ;;;***
 
