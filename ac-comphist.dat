@@ -59,4 +59,20 @@
   ("private" .
    [0 0 0 0 0 0 3])
   ("alert" .
-   [0 0 0 0 1])))
+   [0 0 0 0 1])
+  ("addEventListener" .
+   [0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("eval" .
+   [0 0 1 0])
+  ("search" .
+   [0 0 0 1 0 0])
+  ("position" .
+   [0 0 0 0 0 0 0 2])
+  ("parseFloat" .
+   [0 0 0 1 0 0 0 0 0 0])
+  ("readAsDataURL" .
+   [0 0 0 1 0 0 0 0 0 0 0 0 0])
+  ("lintnode-jslint-includes" .
+   [0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
+  ("lintnode-jslint-excludes" .
+   [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0])))

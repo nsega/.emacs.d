@@ -191,13 +191,12 @@
 (require 'flymake-jslint)
 ;; Make sure we can find the lintnode executable
 (setq lintnode-location "~/.emacs.d/lintnode")
-(setq lintnode-node-program "~/.nodebrew/current/bin/node")
+;;(setq lintnode-node-program "~/.nodebrew/current/bin/node")
 ;; JSLint can be... opinionated
-(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
+;;(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
 ;; Start the server when we first open a js file and start checking
 (add-hook 'js2-mode-hook
-          (lambda ()
-            (lintnode-hook)))
+	  (lambda () (flymake-mode t)))
 
 ;; php-mode
 (require 'php-mode)
