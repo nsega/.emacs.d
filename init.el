@@ -108,13 +108,13 @@
    (set-background-color "Black")
    (set-foreground-color "LightGray")
    (set-cursor-color "Gray")
-   (set-frame-parameter nil 'alpha 100)
+   (set-frame-parameter nil 'alpha 80)
    ))
 
 (setq default-frame-alist
   (append
   '((font . "fontset-12") ;; デフォルトフォントセット
-  (width . 100) (height . 40) ;; ウィンドウサイズ
+  (width . 120) (height . 50) ;; ウィンドウサイズ
   )
   default-frame-alist))
 
@@ -207,7 +207,7 @@
 	  (lambda () (flymake-mode t)))
 
 ;; flymake-cursor
-;;(require 'flymake-cursor)
+(require 'flymake-cursor)
 
 ;; php-mode
 (require 'php-mode)
