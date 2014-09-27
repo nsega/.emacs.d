@@ -7,6 +7,18 @@
 	)
        load-path))
 
+;;　起動ディレクトリをホームディレクトリに変更する(for Mervelicks)
+;;(setq default-directory "~/") 
+;;(setq command-line-default-directory "~/")
+
+;; Mavericks用デフォルトディレクトリを"~/"にする
+;;(setq inhibit-splash-screen t)
+(defun cd-to-homedir-all-buffers ()
+  "Change every current directory of all buffers to the home directory."
+  (mapc
+   (lambda (buf) (set-buffer buf) (cd (expand-file-name "~"))) (buffer-list)))
+(add-hook 'after-init-hook 'cd-to-homedir-all-buffers)
+
 ;; 日本語設定 (UTF-8)
 (set-language-environment "Japanese")
 (set-terminal-coding-system 'utf-8)
@@ -16,13 +28,12 @@
 (setq slime-net-coding-system 'utf-8-unix)
 
 ;; 日本語
-(set-fontset-font
- nil 'japanese-jisx0208
-  (font-spec :family "Hiragino Kaku Gothic ProN")) ;; font
-
+;;(set-fontset-font
+;; nil 'japanese-jisx0208
+;;  (font-spec :family "Hiragino Kaku Gothic ProN")) ;; font
 ;; 半角と全角の比を1:2にしたければ
-(setq face-font-rescale-alist
-      '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.2)));; Mac用フォント設定
+;;(setq face-font-rescale-alist
+;;      '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.2)));; Mac用フォント設定
 
 ;; フォントロックモード (強調表示等) を有効にする
 (global-font-lock-mode t)
@@ -205,7 +216,6 @@
 ;; flymake-cursor
 (require 'flymake-cursor)
 
-;;(add-to-list 'load-path "~/path/to/js-comint")
 ;; js-comint (Javascript console)
 ;;(require 'js-comint)
 ;; Use node as our repl
@@ -218,7 +228,7 @@
 ;;        (add-to-list 'comint-preoutput-filter-functions
 ;;                     (lambda (output)
 ;;                       (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
-;;                     (replace-regexp-in-string ".*1G.*3G" "&gt;" output))))
+;;                       (replace-regexp-in-string ".*1G.*3G" "&gt;" output))))
 
 ;; php-mode
 (require 'php-mode)
@@ -237,7 +247,7 @@
                                ac-source-filename
                                ))))
 
-;;;; ruby-mode (要 ruby-mode.el)
+;;;; ruby-mode (require ruby-mode.el)
 ;; (autoload 'ruby-mode "ruby-mode"
 ;;   "Mode for editing ruby source files" t)
 ;; (setq auto-mode-alist
