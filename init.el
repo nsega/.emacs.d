@@ -186,28 +186,39 @@
 ;; js2-mode
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
-
 ;; lintnode
 (add-to-list 'load-path "~/.emacs.d/lintnode")
 (require 'flymake-jslint)
-;;(setq lintnode-node-program "~/node")
 ;; Make sure we can find the lintnode executable
 (setq lintnode-location "~/.emacs.d/lintnode")
 ;; JSLint can be... opinionated
 (setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
-;;(setq lintnode-node-program "~/.nodebrew/current/bin/node")
 ;; Start the server when we first open a js file and start checking
 (add-hook 'js-mode-hook
 	  (lambda () 
 	    (lintnode-hook)))
-
+;; flymake-jslint
 (require 'flymake-jslint)
 (add-hook 'js-mode-hook 'flymake-jslint-load)
 (add-hook 'js-mode-hook
 	  (lambda () (flymake-mode t)))
-
 ;; flymake-cursor
 (require 'flymake-cursor)
+
+;;(add-to-list 'load-path "~/path/to/js-comint")
+;; js-comint (Javascript console)
+;;(require 'js-comint)
+;; Use node as our repl
+;;(setq inferior-js-program-command "node") 
+;;(setq inferior-js-mode-hook
+;;      (lambda ()
+;;        ;; We like nice colors
+;;        (ansi-color-for-comint-mode-on)
+;;        ;; Deal with some prompt nonsense
+;;        (add-to-list 'comint-preoutput-filter-functions
+;;                     (lambda (output)
+;;                       (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
+;;                     (replace-regexp-in-string ".*1G.*3G" "&gt;" output))))
 
 ;; php-mode
 (require 'php-mode)
@@ -240,4 +251,3 @@
 ;; (add-hook 'ruby-mode-hook
 ;;           '(lambda ()
 ;;             (inf-ruby-keys)))
-
