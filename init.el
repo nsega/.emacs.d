@@ -137,32 +137,22 @@
 
 ;; Pacakge Installer
 (require 'package)
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(setq package-subdirectory-regexp nil)
+(package-initialize)
 
 ;; install-elisp のコマンドを使える様にします。
 (require 'install-elisp)
 ;; 次にElisp ファイルをインストールする場所を指定します。
 (setq install-elisp-repository-directory "~/.emacs.d/elisp/")
 
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
-
 ;; anything
 (require 'anything-startup)
 (global-set-key (kbd "C-x b") 'anything)
 
-;; migemo
 ;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(ローマ字).
 (require 'migemo)
-(setq migemo-command "cmigemo")
 (setq migemo-options '("-q" "--emacs"))
 
 ;; auto-complete
@@ -182,7 +172,6 @@
 ;;; activate, otherwise, auto-complete will
 (ac-set-trigger-key "TAB")
 (ac-set-trigger-key "<tab>")
-
 
 ;; yasnippet
 (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
@@ -213,7 +202,9 @@
 (add-hook 'js-mode-hook 'flymake-jslint-load)
 (add-hook 'js-mode-hook
 	  (lambda () (flymake-mode t)))
+
 ;; flymake-cursor
+(add-to-list 'load-path "~/.emacs.d/elpa/flymake-cursor")
 (require 'flymake-cursor)
 
 ;; js-comint (Javascript console)
