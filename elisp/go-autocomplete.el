@@ -38,6 +38,16 @@
   (require 'cl)
   (require 'auto-complete))
 
+(defgroup go-autocomplete nil
+  "auto-complete for go language."
+  :prefix "ac-go-"
+  :group 'auto-complete)
+
+(defcustom ac-go-expand-arguments-into-snippets t
+  "Expand function arguments into snippets. This feature requires `yasnippet'."
+  :type 'boolean
+  :group 'go-autocomplete)
+
 ;; Close gocode daemon at exit unless it was already running
 (eval-after-load "go-mode"
   '(progn
@@ -45,7 +55,8 @@
             (sock (format (concat temporary-file-directory "gocode-daemon.%s") user)))
        (unless (file-exists-p sock)
          (add-hook 'kill-emacs-hook #'(lambda ()
-                                        (call-process "gocode" nil nil nil "close")))))))
+                                        (ignore-errors
+                                          (call-process "gocode" nil nil nil "close"))))))))
 
 ;(defvar go-reserved-keywords
 ;  '("break" "case" "chan" "const" "continue" "default" "defer" "else"
@@ -77,18 +88,19 @@
 
 (defun ac-go-invoke-autocomplete ()
   (let ((temp-buffer (generate-new-buffer "*gocode*")))
-    (prog2
-	(call-process-region (point-min)
-			     (point-max)
-			     "gocode"
-			     nil
-			     temp-buffer
-			     nil
-			     "-f=emacs"
-			     "autocomplete"
-			     (or (buffer-file-name) "")
-			     (concat "c" (int-to-string (- (point) 1))))
-	(with-current-buffer temp-buffer (buffer-string))
+    (unwind-protect
+        (progn
+          (call-process-region (point-min)
+                               (point-max)
+                               "gocode"
+                               nil
+                               temp-buffer
+                               nil
+                               "-f=emacs"
+                               "autocomplete"
+                               (or (buffer-file-name) "")
+                               (concat "c" (int-to-string (- (point) 1))))
+          (with-current-buffer temp-buffer (buffer-string)))
       (kill-buffer temp-buffer))))
 
 (defun ac-go-format-autocomplete (buffer-contents)
@@ -111,14 +123,54 @@
 
 (defun ac-go-action ()
   (let ((item (cdr ac-last-completion)))
-    (if (stringp item)
-        (message "%s" (get-text-property 0 'summary item)))))
+    (when (stringp item)
+      (setq symbol (get-text-property 0 'summary item))
+      (message "%s" symbol)
+      (when (and (featurep 'yasnippet) ac-go-expand-arguments-into-snippets)
+        (ac-go-insert-yas-snippet-string symbol)))))
+
+(defun ac-go-insert-yas-snippet-string (s)
+  (let ((ret "") (pos (point)) match-res match args)
+    (save-match-data
+      (setq match-res (string-match "func(." s))
+      (when (and match-res (= 0 match-res))
+        (setq match (match-string 0 s))
+        (unless (string= match "func()")
+          (setq args (ac-go-split-args s))
+          (dolist (arg args)
+            (setq ret (concat ret "${" arg "}, ")))
+          (when (> (length ret) 2)
+            (setq ret (substring ret 0 (- (length ret) 2)))))
+        (setq ret (concat "(" ret ")"))
+        (yas-expand-snippet ret pos pos)))))
+
+(defun ac-go-split-args (args-str)
+  (let ((cur 5)
+        (pre 5)
+        (unmatch-l-paren-count 1)
+        (args (list))
+        c)
+    (while (> unmatch-l-paren-count 0)
+      (setq c (aref args-str cur))
+      (cond ((= ?\( c)
+             (setq unmatch-l-paren-count (1+ unmatch-l-paren-count)))
+            ((= ?\) c)
+             (setq unmatch-l-paren-count (1- unmatch-l-paren-count))
+             (when (= 0 unmatch-l-paren-count)
+               (push (substring args-str pre cur) args)))
+            ((= ?\, c)
+             (when (= 1 unmatch-l-paren-count)
+               (push (substring args-str pre cur) args)
+               (setq cur (+ cur 2))
+               (setq pre cur))))
+      (setq cur (1+ cur)))
+    (nreverse args)))
 
 (defun ac-go-document (item)
   (if (stringp item)
       (let ((s (get-text-property 0 'summary item)))
         (message "%s" s)
-        "")))
+        nil)))
 
 (defun ac-go-candidates ()
   (ac-go-get-candidates (ac-go-format-autocomplete (ac-go-invoke-autocomplete))))
