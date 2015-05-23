@@ -8,8 +8,8 @@
        load-path))
 
 ;;　起動ディレクトリをホームディレクトリに変更する(for Mervelicks)
-;;(setq default-directory "~/") 
-;;(setq command-line-default-directory "~/")
+(setq default-directory "~/") 
+(setq command-line-default-directory "~/")
 
 ;; Mavericks用デフォルトディレクトリを"~/"にする
 ;;(setq inhibit-splash-screen t)
@@ -139,21 +139,15 @@
 (require 'package)
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
 
 ;; install-elisp のコマンドを使える様にします。
 (require 'install-elisp)
 ;; 次にElisp ファイルをインストールする場所を指定します。
 (setq install-elisp-repository-directory "~/.emacs.d/elisp/")
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
 
 ;; anything
 (require 'anything-startup)
