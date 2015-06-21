@@ -119,13 +119,13 @@
    (set-background-color "Black")
    (set-foreground-color "LightGray")
    (set-cursor-color "Gray")
-   (set-frame-parameter nil 'alpha 80)
+   (set-frame-parameter nil 'alpha 100)
    ))
 
 (setq default-frame-alist
   (append
-  '((font . "fontset-12") ;; デフォルトフォントセット
-  (width . 120) (height . 50) ;; ウィンドウサイズ
+  '((font . "fontset-13") ;; デフォルトフォントセット
+  (width . 140) (height . 50) ;; ウィンドウサイズ
   )
   default-frame-alist))
 
