@@ -15,6 +15,10 @@
 (setq default-directory "~/") 
 (setq command-line-default-directory "~/")
 
+;; Emacs package system
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
+
 ;; Mavericks用デフォルトディレクトリを"~/"にする
 ;;(setq inhibit-splash-screen t)
 (defun cd-to-homedir-all-buffers ()
@@ -128,7 +132,7 @@
 
 (setq default-frame-alist
   (append
-  '((font . "fontset-13") ;; デフォルトフォントセット
+  '((font . "fontset-12") ;; デフォルトフォントセット
   (width . 140) (height . 50) ;; ウィンドウサイズ
   )
   default-frame-alist))
@@ -202,23 +206,23 @@
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 ;; lintnode
-(add-to-list 'load-path "~/.emacs.d/lintnode")
-(require 'flymake-jslint)
+;;(add-to-list 'load-path "~/.emacs.d/lintnode")
+;;(require 'flymake-jslint)
 ;; Make sure we can find the lintnode executable
-(setq lintnode-location "~/.emacs.d/lintnode")
+;;(setq lintnode-location "~/.emacs.d/lintnode")
 ;; JSLint can be... opinionated
-(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
+;;(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
 ;; Start the server when we first open a js file and start checking
-(add-hook 'js-mode-hook
-	  (lambda () 
-	    (lintnode-hook)))
+;;(add-hook 'js-mode-hook
+;;	  (lambda () 
+;;	    (lintnode-hook)))
 ;; flymake-jslint
-(require 'flymake-jslint)
-(add-hook 'js-mode-hook 'flymake-jslint-load)
-(add-hook 'js-mode-hook
-	  (lambda () (flymake-mode t)))
+;;(require 'flymake-jslint)
+;;(add-hook 'js-mode-hook 'flymake-jslint-load)
+;;(add-hook 'js-mode-hook
+;;	  (lambda () (flymake-mode t)))
 ;; flymake-cursor
-(require 'flymake-cursor)
+;;(require 'flymake-cursor)
 
 ;; js-comint (Javascript console)
 ;;(require 'js-comint)
