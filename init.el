@@ -198,7 +198,8 @@
 (yas-global-mode 1)
 
 ;; go-mode
-
+(require 'go-mode)
+(add-hook 'before-save-hook 'gofmt-before-save)
 
 
 ;; For Javascript configure
