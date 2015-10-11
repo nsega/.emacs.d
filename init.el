@@ -35,14 +35,6 @@
 (setq default-buffer-file-coding-system 'utf-8)
 (setq slime-net-coding-system 'utf-8-unix)
 
-;; 日本語
-;;(set-fontset-font
-;; nil 'japanese-jisx0208
-;;  (font-spec :family "Hiragino Kaku Gothic ProN")) ;; font
-;; 半角と全角の比を1:2にしたければ
-;;(setq face-font-rescale-alist
-;;      '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.2)));; Mac用フォント設定
-
 ;; フォントロックモード (強調表示等) を有効にする
 (global-font-lock-mode t)
 
@@ -140,8 +132,6 @@
 ;; auto-install
 (require 'auto-install)
 (setq auto-install-directory "~/.emacs.d/elisp/") ;Emacs Lispをインストールするディレクトリの指定
-;;(auto-install-update-emacswiki-package-name t)
-;;(auto-install-compatibility-setup) ;install-elisp.elとコマンド名を同期
 
 ;; Pacakge Installer
 (require 'package)
@@ -175,7 +165,6 @@
 
 ;; auto-complete
 (require 'auto-complete)
-(require 'go-autocomplete) ; Go Codeの自動補完を追加
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
 (setq ac-auto-start t)
@@ -197,12 +186,32 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 
+;; For go configuration
 ;; go-mode
 (require 'go-mode)
 (add-hook 'before-save-hook 'gofmt-before-save)
 
 
-;; For Javascript configure
+;; For php configuration
+;; php-mode
+(require 'php-mode)
+(setq php-mode-force-pear t) ;PEAR規約のインデント設定にする
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode)) ;*.phpのファイルのときにphp-modeを自動起動する
+;; php-mode-hook
+(add-hook 'php-mode-hook
+          (lambda ()
+            (require 'php-completion)
+            (php-completion-mode t)
+            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) ;php-completionの補完実行キーバインドの設定
+            (make-local-variable 'ac-sources)
+            (setq ac-sources '(
+                               ac-source-words-in-same-mode-buffers
+                               ac-source-php-completion
+                               ac-source-filename
+                               ))))
+
+
+;;;; For Javascript configuration
 ;; js2-mode
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
@@ -239,24 +248,9 @@
 ;;                       (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
 ;;                       (replace-regexp-in-string ".*1G.*3G" "&gt;" output))))
 
-;; php-mode
-(require 'php-mode)
-(setq php-mode-force-pear t) ;PEAR規約のインデント設定にする
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode)) ;*.phpのファイルのときにphp-modeを自動起動する
-;; php-mode-hook
-(add-hook 'php-mode-hook
-          (lambda ()
-            (require 'php-completion)
-            (php-completion-mode t)
-            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) ;php-completionの補完実行キーバインドの設定
-            (make-local-variable 'ac-sources)
-            (setq ac-sources '(
-                               ac-source-words-in-same-mode-buffers
-                               ac-source-php-completion
-                               ac-source-filename
-                               ))))
 
-;;;; ruby-mode (require ruby-mode.el)
+;;;; For ruby configuration
+;; ruby-mode (require ruby-mode.el)
 ;; (autoload 'ruby-mode "ruby-mode"
 ;;   "Mode for editing ruby source files" t)
 ;; (setq auto-mode-alist
