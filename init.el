@@ -35,6 +35,7 @@
 (setq default-buffer-file-coding-system 'utf-8)
 (setq slime-net-coding-system 'utf-8-unix)
 
+
 ;; フォントロックモード (強調表示等) を有効にする
 (global-font-lock-mode t)
 
@@ -52,6 +53,8 @@
 
 ;; C-x l で goto-line を実行
 (define-key ctl-x-map "l" 'goto-line) 
+;; ¥の代わりにバックスラッシュを入力する
+(define-key global-map [?¥] [?\\])  
 
 ;; 時間を表示
 (display-time) 
@@ -164,6 +167,7 @@
 (migemo-init)
 
 ;; auto-complete
+(require 'go-autocomplete)
 (require 'auto-complete)
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
