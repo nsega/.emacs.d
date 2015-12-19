@@ -16,8 +16,8 @@
 (setq command-line-default-directory "~/")
 
 ;; Emacs package system
-(require 'cask "~/.cask/cask.el")
-(cask-initialize)
+;;(require 'cask "~/.cask/cask.el")
+;;(cask-initialize)
 
 ;; Mavericks用デフォルトディレクトリを"~/"にする
 ;;(setq inhibit-splash-screen t)
@@ -34,6 +34,13 @@
 (set-buffer-file-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
 (setq slime-net-coding-system 'utf-8-unix)
+
+;; key bindings
+(when (eq system-type 'darwin) ;; mac specific settings
+  (setq mac-option-modifier 'alt)
+  (setq mac-command-modifier 'meta)
+  (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
+  )
 
 
 ;; フォントロックモード (強調表示等) を有効にする
@@ -167,7 +174,6 @@
 (migemo-init)
 
 ;; auto-complete
-(require 'go-autocomplete)
 (require 'auto-complete)
 (require 'auto-complete-config)
 (global-auto-complete-mode t)
@@ -189,11 +195,6 @@
 (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
 (require 'yasnippet)
 (yas-global-mode 1)
-
-;; For go configuration
-;; go-mode
-(require 'go-mode)
-(add-hook 'before-save-hook 'gofmt-before-save)
 
 
 ;; For php configuration
