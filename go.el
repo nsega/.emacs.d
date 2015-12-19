@@ -1,7 +1,10 @@
+;; For go configuration
 ;; go-mode
+(require 'go-mode)
+(add-hook 'before-save-hook 'gofmt-before-save)
 
 ;; Go Codeの自動補完を追加
-;;(require 'go-autocomplete) 
+(require 'go-autocomplete) 
 
 ;; go-remove-unused-imports
 (add-hook 'go-mode-hook '(lambda ()
