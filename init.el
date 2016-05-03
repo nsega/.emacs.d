@@ -1,5 +1,5 @@
 ;;;; -*- mode: lisp-interaction; syntax: elisp; coding: utf-8-unix -*-
-;; ~/elisp をライブラリパスに追加
+;; add the libray path of '~/elisp'
 (setq load-path
       (append
        (list
@@ -11,7 +11,7 @@
 (setenv "PATH"
     (concat '"/usr/local/bin:" (getenv "PATH")))
 
-;;　起動ディレクトリをホームディレクトリに変更する(for Mervelicks)
+;;　Changing the home directory as the initial dir(for Mervelicks)
 (setq default-directory "~/") 
 (setq command-line-default-directory "~/")
 
@@ -19,7 +19,7 @@
 ;;(require 'cask "~/.cask/cask.el")
 ;;(cask-initialize)
 
-;; Mavericks用デフォルトディレクトリを"~/"にする
+;; Changing the default directory as of '〜/' for Mavericks
 ;;(setq inhibit-splash-screen t)
 (defun cd-to-homedir-all-buffers ()
   "Change every current directory of all buffers to the home directory."
@@ -27,7 +27,7 @@
    (lambda (buf) (set-buffer buf) (cd (expand-file-name "~"))) (buffer-list)))
 (add-hook 'after-init-hook 'cd-to-homedir-all-buffers)
 
-;; 日本語設定 (UTF-8)
+;; Japanese Configuration (UTF-8)
 (set-language-environment "Japanese")
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
@@ -43,55 +43,48 @@
   )
 
 
-;; フォントロックモード (強調表示等) を有効にする
+;; Enabling Font Lock mode (e.g. bold display)
 (global-font-lock-mode t)
 
-;; 一時マークモードの自動有効化
+;; Enabling automcatically the temporarily mode
 (setq-default transient-mark-mode t)
 
-;; C-x C-u が何もしないように変更する (undo の typo 時誤動作防止)
+;; Changing C-x C-u to be worked nothing (undo / typo countermeasure)
 (global-unset-key "\C-x\C-u")
 
-;; 括弧の対応をハイライト.
+;; High lighting the pared parenethesis
 (show-paren-mode 1) 
 
-;; バッファ末尾に余計な改行コードを防ぐための設定
 (setq next-line-add-newlines nil) 
 
-;; C-x l で goto-line を実行
+;; C-x l/ run goto-line
 (define-key ctl-x-map "l" 'goto-line) 
-;; ¥の代わりにバックスラッシュを入力する
+;; alternate of '¥', entering '/'
 (define-key global-map [?¥] [?\\])  
 
-;; 時間を表示
 (display-time) 
 
-;; 列数表示
+;; display the column number
 (column-number-mode 1) 
 
-;; メニューバーを消す
+;; disable menu bar
 (menu-bar-mode -1)
 
-;; C-h でカーソルの左にある文字を消す
 (define-key global-map "\C-h" 'delete-backward-char)
-
-;; C-h に割り当てられている関数 help-command を C-x C-h に割り当てる
 (define-key global-map "\C-x\C-h" 'help-command)
-
-;; C-o に動的略語展開機能を割り当てる
 (define-key global-map "\C-o" 'dabbrev-expand)
-(setq dabbrev-case-fold-search nil) ; 大文字小文字を区別
+(setq dabbrev-case-fold-search nil)
 
 ;; clojure
 (setq mac-option-modifier 'meta)
 
-;;; バックアップファイルを作らない                                        
+;;; Don't create the backup file
 (setq backup-inhibited t)
 
-;;; 終了時にオートセーブファイルを消す                                    
+;;; Deleting the save files when it was exited.                     
 (setq delete-auto-save-files t)
 
-;; 日本語・英語混じり文での区切判定
+;; Configuration for Japanese and English
 ;; http://www.alles.or.jp/~torutk/oojava/meadow/Meadow210Install.html
 (defadvice dabbrev-expand
   (around modify-regexp-for-japanese activate compile)
@@ -114,13 +107,12 @@
               (t dabbrev-abbrev-char-regexp)))))
       ad-do-it)))
 
-;; BS で選択範囲を消す
+;; Configuration Backspace
 (delete-selection-mode 1)
 
 ;; The local variables list in .emacs と言われるのを抑止
 (add-to-list 'ignored-local-variables 'syntax) 
 
-;; リセットされた場合に UTF-8 に戻す
 ;; http://0xcc.net/blog/archives/000041.html
 (set-default-coding-systems 'utf-8)
 
@@ -134,14 +126,14 @@
 
 (setq default-frame-alist
   (append
-  '((font . "fontset-12") ;; デフォルトフォントセット
-  (width . 140) (height . 50) ;; ウィンドウサイズ
+  '((font . "fontset-12") ;; Default Fontset
+  (width . 140) (height . 50) ;; Window Size
   )
   default-frame-alist))
 
 ;; auto-install
 (require 'auto-install)
-(setq auto-install-directory "~/.emacs.d/elisp/") ;Emacs Lispをインストールするディレクトリの指定
+(setq auto-install-directory "~/.emacs.d/elisp/") 
 
 ;; Pacakge Installer
 (require 'package)
@@ -152,9 +144,8 @@
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
 
-;; install-elisp のコマンドを使える様にします。
+;; Configuration for install-elisp 
 (require 'install-elisp)
-;; 次にElisp ファイルをインストールする場所を指定します。
 (setq install-elisp-repository-directory "~/.emacs.d/elisp/")
 
 ;; anything
@@ -162,7 +153,7 @@
 (global-set-key (kbd "C-x b") 'anything)
 
 ;; migemo
-;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(ローマ字).
+;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
 (require 'migemo)
 (setq migemo-command "cmigemo")
 (setq migemo-options '("-q" "--emacs"))
@@ -200,14 +191,14 @@
 ;; For php configuration
 ;; php-mode
 (require 'php-mode)
-(setq php-mode-force-pear t) ;PEAR規約のインデント設定にする
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode)) ;*.phpのファイルのときにphp-modeを自動起動する
+(setq php-mode-force-pear t) 
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode)) 
 ;; php-mode-hook
 (add-hook 'php-mode-hook
           (lambda ()
             (require 'php-completion)
             (php-completion-mode t)
-            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) ;php-completionの補完実行キーバインドの設定
+            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) 
             (make-local-variable 'ac-sources)
             (setq ac-sources '(
                                ac-source-words-in-same-mode-buffers
