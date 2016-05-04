@@ -1,11 +1,7 @@
-;;;; -*- mode: lisp-interaction; syntax: elisp; coding: utf-8-unix -*-
-;; add the libray path of '~/elisp'
-(setq load-path
-      (append
-       (list
-	(expand-file-name "~/.emacs.d/elisp/")
-	)
-       load-path))
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
 
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
@@ -123,26 +119,18 @@
   )
   default-frame-alist))
 
-;; auto-install
-(require 'auto-install)
-(setq auto-install-directory "~/.emacs.d/elisp/") 
-
 ;; Pacakge Installer
-(require 'package)
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-(package-initialize))
-
-;; Configuration for install-elisp 
-(require 'install-elisp)
-(setq install-elisp-repository-directory "~/.emacs.d/elisp/")
+;;(require 'package)
+;;(add-to-list 'package-archives
+;;	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;;(when
+;;    (load
+;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;(package-initialize))
 
 ;; anything
-(require 'anything-startup)
-(global-set-key (kbd "C-x b") 'anything)
+;;(require 'anything-startup)
+;;(global-set-key (kbd "C-x b") 'anything)
 
 ;; migemo
 ;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
