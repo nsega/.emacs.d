@@ -3,3 +3,5 @@ ac-comphist.dat
 auto-save-list/*
 tramp
 elpa/archives/*
+ede-projects.el
+projectile-bookmarks.eld
