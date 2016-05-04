@@ -165,7 +165,7 @@
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
 ;;　Changing the home directory as the initial dir(for Mervelicks)
-(setq default-directory "~/") 
+(setq default-directory "~/")
 (setq command-line-default-directory "~/")
 
 ;; Changing the default directory as of '〜/' for Mavericks
@@ -198,19 +198,19 @@
 (global-unset-key "\C-x\C-u")
 
 ;; High lighting the pared parenethesis
-(show-paren-mode 1) 
+(show-paren-mode 1)
 
-(setq next-line-add-newlines nil) 
+(setq next-line-add-newlines nil)
 
 ;; C-x l/ run goto-line
-(define-key ctl-x-map "l" 'goto-line) 
+(define-key ctl-x-map "l" 'goto-line)
 ;; alternate of '¥', entering '/'
-(define-key global-map [?¥] [?\\])  
+(define-key global-map [?¥] [?\\])
 
-(display-time) 
+(display-time)
 
 ;; display the column number
-(column-number-mode 1) 
+(column-number-mode 1)
 
 ;; disable menu bar
 (menu-bar-mode -1)
@@ -223,7 +223,7 @@
 ;;; Don't create the backup file
 (setq backup-inhibited t)
 
-;;; Deleting the save files when it was exited.                     
+;;; Deleting the save files when it was exited.
 (setq delete-auto-save-files t)
 
 ;; Configuration for Japanese and English
@@ -235,7 +235,7 @@
       ad-do-it
     (let ((dabbrev-abbrev-char-regexp
            (let ((c (char-category-set (char-before))))
-             (cond 
+             (cond
               ((aref c ?a) "[-_A-Za-z0-9]") ; ASCII
               ((aref c ?j) ; Japanese
                (cond
@@ -253,7 +253,7 @@
 (delete-selection-mode 1)
 
 ;; The local variables list in .emacs と言われるのを抑止
-(add-to-list 'ignored-local-variables 'syntax) 
+(add-to-list 'ignored-local-variables 'syntax)
 
 ;; http://0xcc.net/blog/archives/000041.html
 (set-default-coding-systems 'utf-8)
@@ -272,19 +272,6 @@
   (width . 140) (height . 50) ;; Window Size
   )
   default-frame-alist))
-
-;; Pacakge Installer
-;;(require 'package)
-;;(add-to-list 'package-archives
-;;	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;;(when
-;;    (load
-;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
-;;(package-initialize))
-
-;; anything
-;;(require 'anything-startup)
-;;(global-set-key (kbd "C-x b") 'anything)
 
 ;; migemo
 ;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
@@ -315,24 +302,22 @@
 (ac-set-trigger-key "TAB")
 (ac-set-trigger-key "<tab>")
 
-
 ;; yasnippet
 (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
 (require 'yasnippet)
 (yas-global-mode 1)
 
-
 ;; For php configuration
 ;; php-mode
 (require 'php-mode)
-(setq php-mode-force-pear t) 
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode)) 
+(setq php-mode-force-pear t)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 ;; php-mode-hook
 (add-hook 'php-mode-hook
           (lambda ()
             (require 'php-completion)
             (php-completion-mode t)
-            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) 
+            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete)
             (make-local-variable 'ac-sources)
             (setq ac-sources '(
                                ac-source-words-in-same-mode-buffers
@@ -354,7 +339,7 @@
 ;;(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
 ;; Start the server when we first open a js file and start checking
 ;;(add-hook 'js-mode-hook
-;;	  (lambda () 
+;;	  (lambda ()
 ;;	    (lintnode-hook)))
 ;; flymake-jslint
 ;;(require 'flymake-jslint)
@@ -367,7 +352,7 @@
 ;; js-comint (Javascript console)
 ;;(require 'js-comint)
 ;; Use node as our repl
-;;(setq inferior-js-program-command "node") 
+;;(setq inferior-js-program-command "node")
 ;;(setq inferior-js-mode-hook
 ;;      (lambda ()
 ;;        ;; We like nice colors
