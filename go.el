@@ -3,7 +3,7 @@
 (require 'go-mode)
 (add-hook 'before-save-hook 'gofmt-before-save)
 
-;; Go Codeの自動補完を追加
+;; Go Code auto completion
 (require 'go-autocomplete) 
 
 ;; go-remove-unused-imports
