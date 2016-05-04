@@ -1,6 +1,0 @@
-;; -*- emacs-lisp -*- <13/07/15 13:05:52 /Users/Naoki/.emacs.d/tramp>
-;; Tramp connection history.  Don't change this file.
-;; You can delete it, forcing Tramp to reapply the checks.
-
-((["su" "root" "sega-naoki-no-MacBook-Pro.local" nil nil]
-  nil))
