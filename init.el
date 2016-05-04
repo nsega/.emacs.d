@@ -7,6 +7,9 @@
 	)
        load-path))
 
+(setq gc-cons-threshold 100000000)
+(setq inhibit-startup-message t)
+
 (setq exec-path (cons "/usr/local/bin" exec-path))
 (setenv "PATH"
     (concat '"/usr/local/bin:" (getenv "PATH")))
@@ -15,12 +18,7 @@
 (setq default-directory "~/") 
 (setq command-line-default-directory "~/")
 
-;; Emacs package system
-;;(require 'cask "~/.cask/cask.el")
-;;(cask-initialize)
-
 ;; Changing the default directory as of '〜/' for Mavericks
-;;(setq inhibit-splash-screen t)
 (defun cd-to-homedir-all-buffers ()
   "Change every current directory of all buffers to the home directory."
   (mapc
@@ -36,12 +34,9 @@
 (setq slime-net-coding-system 'utf-8-unix)
 
 ;; key bindings
-(when (eq system-type 'darwin) ;; mac specific settings
-  (setq mac-option-modifier 'alt)
-  (setq mac-command-modifier 'meta)
-  (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
-  )
-
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier 'meta)
+(global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
 
 ;; Enabling Font Lock mode (e.g. bold display)
 (global-font-lock-mode t)
@@ -74,9 +69,6 @@
 (define-key global-map "\C-x\C-h" 'help-command)
 (define-key global-map "\C-o" 'dabbrev-expand)
 (setq dabbrev-case-fold-search nil)
-
-;; clojure
-(setq mac-option-modifier 'meta)
 
 ;;; Don't create the backup file
 (setq backup-inhibited t)
@@ -126,7 +118,7 @@
 
 (setq default-frame-alist
   (append
-  '((font . "fontset-12") ;; Default Fontset
+  '((font . "fontset-13") ;; Default Fontset
   (width . 140) (height . 50) ;; Window Size
   )
   default-frame-alist))
@@ -138,11 +130,11 @@
 ;; Pacakge Installer
 (require 'package)
 (add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (when
     (load
      (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
+(package-initialize))
 
 ;; Configuration for install-elisp 
 (require 'install-elisp)
@@ -209,8 +201,8 @@
 
 ;;;; For Javascript configuration
 ;; js2-mode
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+;;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;;(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 ;; lintnode
 ;;(add-to-list 'load-path "~/.emacs.d/lintnode")
 ;;(require 'flymake-jslint)
