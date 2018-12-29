@@ -5,3 +5,5 @@ tramp
 elpa/archives/*
 ede-projects.el
 projectile-bookmarks.eld
+.cask/
+semanticdb/

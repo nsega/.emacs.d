@@ -58,8 +58,6 @@
 (require 'setup-cedet)
 (require 'setup-editing)
 
-(windmove-default-keybindings)
-
 ;; function-args
 ;; (require 'function-args)
 ;; (fa-config-default)
@@ -193,7 +191,6 @@
 ;; Package: speedbar
 (setq speedbar-show-unknown-files t)
 
-
 ;;　Changing the home directory as the initial dir(for Mervelicks)
 (setq default-directory "~/")
 (setq command-line-default-directory "~/")
@@ -214,6 +211,7 @@
 (setq slime-net-coding-system 'utf-8-unix)
 
 ;; key bindings
+(windmove-default-keybindings 'meta)
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'meta)
 (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
@@ -290,6 +288,7 @@
 
 ;;Color
 (if window-system (progn
+   (set-default-font "Monaco-12")
    (set-background-color "Black")
    (set-foreground-color "LightGray")
    (set-cursor-color "Gray")
@@ -298,7 +297,7 @@
 
 (setq default-frame-alist
   (append
-  '((font . "fontset-13") ;; Default Fontset
+   '((font . "Monaco-12") ;; Default Fontset
   (width . 140) (height . 50) ;; Window Size
   )
   default-frame-alist))
@@ -339,22 +338,21 @@
 
 ;; For php configuration
 ;; php-mode
-(require 'php-mode)
-(setq php-mode-force-pear t)
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+;;(require 'php-mode)
+;;(setq php-mode-force-pear t)
+;;(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 ;; php-mode-hook
-(add-hook 'php-mode-hook
-          (lambda ()
-            (require 'php-completion)
-            (php-completion-mode t)
-            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete)
-            (make-local-variable 'ac-sources)
-            (setq ac-sources '(
-                               ac-source-words-in-same-mode-buffers
-                               ac-source-php-completion
-                               ac-source-filename
-                               ))))
-
+;;(add-hook 'php-mode-hook
+;;          (lambda ()
+;;            (require 'php-completion)
+;;            (php-completion-mode t)
+;;            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete)
+;;            (make-local-variable 'ac-sources)
+;;            (setq ac-sources '(
+;;                               ac-source-words-in-same-mode-buffers
+;;                               ac-source-php-completion
+;;                               ac-source-filename
+;;                               ))))
 
 ;;;; For Javascript configuration
 ;; js2-mode
@@ -409,3 +407,17 @@
 ;; (add-hook 'ruby-mode-hook
 ;;           '(lambda ()
 ;;             (inf-ruby-keys)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (avy-migemo zygospore yasnippet ws-butler volatile-highlights undo-tree tern-auto-complete sr-speedbar smartparens slime s php-mode php+-mode multiple-cursors migemo json-mode js3-mode js2-closure js-comint iedit helm-swoop helm-projectile helm-gtags go-mode go-autocomplete ggtags flymake-php flymake-json flymake-jslint flymake-cursor flymake duplicate-thing dtrt-indent company comment-dwim-2 clojure-mode clean-aindent-mode anzu))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
