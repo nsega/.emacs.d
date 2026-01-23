@@ -132,8 +132,8 @@
 (global-set-key (kbd "C-;") 'iedit-mode)
 
 ;; PACKAGE: duplicate-thing
-(require 'duplicate-thing)
-(global-set-key (kbd "M-c") 'duplicate-thing)
+;; (require 'duplicate-thing)  ; no longer available on MELPA
+;; (global-set-key (kbd "M-c") 'duplicate-thing)
 
 ;; Customized functions
 (defun prelude-move-beginning-of-line (arg)

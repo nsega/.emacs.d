@@ -1,26 +1,33 @@
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
 
+;; Suppress byte-compile warnings from packages
+(setq byte-compile-warnings '(not obsolete))
+(setq warning-suppress-log-types '((comp) (bytecomp)))
+(setq native-comp-async-report-warnings-errors 'silent)
+
+;; PATH setup is handled by exec-path-from-shell (see below)
+;; This ensures Emacs inherits PATH from your shell
+(setq exec-path (cons "/opt/homebrew/bin" exec-path))
 (setq exec-path (cons "/usr/local/bin" exec-path))
-(setenv "PATH"
-    (concat '"/usr/local/bin:" (getenv "PATH")))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (defconst demo-packages
   '(anzu
+    auto-complete
     company
-    duplicate-thing
+    ;; duplicate-thing  ; removed - no longer available on MELPA
     ggtags
     helm
     helm-gtags
     helm-projectile
-    helm-swoop
+    ;; helm-swoop  ; removed - no longer available on MELPA
     migemo
     ;; function-args
     clean-aindent-mode
@@ -33,7 +40,13 @@
     projectile
     volatile-highlights
     undo-tree
-    zygospore))
+    zygospore
+    ;; Modern language modes
+    exec-path-from-shell  ; Better PATH handling on macOS
+    go-mode               ; Go language support
+    yaml-mode             ; YAML support
+    markdown-mode         ; Markdown support
+    ))
 
 (defun install-packages ()
   "Install all required packages."
@@ -151,7 +164,7 @@
 
 ;; Package: projejctile
 (require 'projectile)
-(projectile-global-mode)
+(projectile-mode +1)
 (setq projectile-enable-caching t)
 
 (require 'helm-projectile)
@@ -207,7 +220,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-buffer-file-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
 (setq slime-net-coding-system 'utf-8-unix)
 
 ;; key bindings
@@ -256,11 +269,10 @@
 
 ;; Configuration for Japanese and English
 ;; http://www.alles.or.jp/~torutk/oojava/meadow/Meadow210Install.html
-(defadvice dabbrev-expand
-  (around modify-regexp-for-japanese activate compile)
+(defun my/dabbrev-expand-japanese-advice (orig-fun &rest args)
   "Modify `dabbrev-abbrev-char-regexp' dynamically for Japanese words."
   (if (bobp)
-      ad-do-it
+      (apply orig-fun args)
     (let ((dabbrev-abbrev-char-regexp
            (let ((c (char-category-set (char-before))))
              (cond
@@ -275,7 +287,9 @@
               ((aref c ?k) "\\ck") ; hankaku-kana
               ((aref c ?r) "\\cr") ; Japanese roman ?
               (t dabbrev-abbrev-char-regexp)))))
-      ad-do-it)))
+      (apply orig-fun args))))
+
+(advice-add 'dabbrev-expand :around #'my/dabbrev-expand-japanese-advice)
 
 ;; Configuration Backspace
 (delete-selection-mode 1)
@@ -288,7 +302,7 @@
 
 ;;Color
 (if window-system (progn
-   (set-default-font "Monaco-12")
+   (set-frame-font "Monaco-12" nil t)
    (set-background-color "Black")
    (set-foreground-color "LightGray")
    (set-cursor-color "Gray")
@@ -304,15 +318,17 @@
 
 ;; migemo
 ;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
-(require 'migemo)
-(setq migemo-command "cmigemo")
-(setq migemo-options '("-q" "--emacs"))
-;; Set your installed path
-(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
-(setq migemo-user-dictionary nil)
-(setq migemo-regex-dictionary nil)
-(setq migemo-coding-system 'utf-8-unix)
-(migemo-init)
+;; Requires: brew install cmigemo
+(when (executable-find "cmigemo")
+  (require 'migemo)
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+  ;; Set your installed path (Homebrew on Apple Silicon)
+  (setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (migemo-init))
 
 ;; auto-complete
 (require 'auto-complete)
@@ -336,85 +352,138 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 
-;; For php configuration
-;; php-mode
-;;(require 'php-mode)
-;;(setq php-mode-force-pear t)
-;;(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-;; php-mode-hook
-;;(add-hook 'php-mode-hook
-;;          (lambda ()
-;;            (require 'php-completion)
-;;            (php-completion-mode t)
-;;            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete)
-;;            (make-local-variable 'ac-sources)
-;;            (setq ac-sources '(
-;;                               ac-source-words-in-same-mode-buffers
-;;                               ac-source-php-completion
-;;                               ac-source-filename
-;;                               ))))
+;; ============================================================
+;; exec-path-from-shell - Better PATH handling on macOS
+;; ============================================================
+;; This ensures Emacs inherits PATH from your shell (pyenv, volta, ~/bin, etc.)
+(when (memq window-system '(mac ns x))
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize)
+  ;; Copy additional environment variables for development tools
+  (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME")))
 
-;;;; For Javascript configuration
-;; js2-mode
-;;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-;;(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
-;; lintnode
-;;(add-to-list 'load-path "~/.emacs.d/lintnode")
-;;(require 'flymake-jslint)
-;; Make sure we can find the lintnode executable
-;;(setq lintnode-location "~/.emacs.d/lintnode")
-;; JSLint can be... opinionated
-;;(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
-;; Start the server when we first open a js file and start checking
-;;(add-hook 'js-mode-hook
-;;	  (lambda ()
-;;	    (lintnode-hook)))
-;; flymake-jslint
-;;(require 'flymake-jslint)
-;;(add-hook 'js-mode-hook 'flymake-jslint-load)
-;;(add-hook 'js-mode-hook
-;;	  (lambda () (flymake-mode t)))
-;; flymake-cursor
-;;(require 'flymake-cursor)
+;; ============================================================
+;; Eglot - Built-in LSP client (Emacs 29+)
+;; ============================================================
+(require 'eglot)
 
-;; js-comint (Javascript console)
-;;(require 'js-comint)
-;; Use node as our repl
-;;(setq inferior-js-program-command "node")
-;;(setq inferior-js-mode-hook
-;;      (lambda ()
-;;        ;; We like nice colors
-;;        (ansi-color-for-comint-mode-on)
-;;        ;; Deal with some prompt nonsense
-;;        (add-to-list 'comint-preoutput-filter-functions
-;;                     (lambda (output)
-;;                       (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
-;;                       (replace-regexp-in-string ".*1G.*3G" "&gt;" output))))
+;; Don't log every event (improves performance)
+(setq eglot-events-buffer-size 0)
 
+;; Shutdown server when last managed buffer is killed
+(setq eglot-autoshutdown t)
 
-;;;; For ruby configuration
-;; ruby-mode (require ruby-mode.el)
-;; (autoload 'ruby-mode "ruby-mode"
-;;   "Mode for editing ruby source files" t)
-;; (setq auto-mode-alist
-;;       (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
-;; (setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
-;;                                      interpreter-mode-alist))
-;; (autoload 'run-ruby "inf-ruby"
-;;   "Run an inferior Ruby process")
-;; (autoload 'inf-ruby-keys "inf-ruby"
-;;   "Set local key defs for inf-ruby in ruby-mode")
-;; (add-hook 'ruby-mode-hook
-;;           '(lambda ()
-;;             (inf-ruby-keys)))
+;; ============================================================
+;; Python Configuration
+;; ============================================================
+;; Uses built-in python-mode with Eglot
+;; LSP servers (install one): pip install python-lsp-server
+;;                        or: pip install basedpyright
+;;                        or: pip install ruff
+
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'python-ts-mode-hook 'eglot-ensure)
+
+;; Python indentation
+(setq python-indent-offset 4)
+
+;; Format on save for Python (optional - uncomment if desired)
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+
+;; ============================================================
+;; Go Configuration
+;; ============================================================
+;; Requires: go install golang.org/x/tools/gopls@latest
+
+(when (require 'go-mode nil t)
+  (add-hook 'go-mode-hook 'eglot-ensure)
+  (add-hook 'go-ts-mode-hook 'eglot-ensure)
+
+  ;; Go uses tabs for indentation
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode t)
+              (setq tab-width 4)))
+
+  ;; Format and organize imports on save
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook
+                        (lambda ()
+                          (when (derived-mode-p 'go-mode 'go-ts-mode)
+                            (eglot-format-buffer)))
+                        nil t)))
+
+  ;; Gopls configuration
+  (setq-default eglot-workspace-configuration
+                '(:gopls (:staticcheck t
+                          :usePlaceholders t))))
+
+;; ============================================================
+;; TypeScript Configuration
+;; ============================================================
+;; Uses built-in typescript-ts-mode (Emacs 29+)
+;; Requires: npm install -g typescript-language-server typescript
+
+;; File associations for TypeScript
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
+(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
+
+;; TypeScript indentation
+(setq typescript-ts-mode-indent-offset 2)
+
+;; ============================================================
+;; YAML Configuration
+;; ============================================================
+;; Optional LSP: npm install -g yaml-language-server
+
+(when (require 'yaml-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-mode))
+
+  ;; Enable Eglot for YAML if yaml-language-server is installed
+  (add-hook 'yaml-mode-hook
+            (lambda ()
+              (when (executable-find "yaml-language-server")
+                (eglot-ensure))))
+
+  ;; YAML indentation
+  (add-hook 'yaml-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode nil)
+              (setq tab-width 2))))
+
+;; ============================================================
+;; Markdown Configuration
+;; ============================================================
+;; Optional: brew install pandoc (for preview/export)
+
+(when (require 'markdown-mode nil t)
+  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+
+  ;; Use pandoc for markdown processing if available
+  (when (executable-find "pandoc")
+    (setq markdown-command "pandoc"))
+
+  ;; Enable math support (e.g., for LaTeX equations)
+  (setq markdown-enable-math t)
+
+  ;; Fontify code blocks
+  (setq markdown-fontify-code-blocks-natively t))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (avy-migemo zygospore yasnippet ws-butler volatile-highlights undo-tree tern-auto-complete sr-speedbar smartparens slime s php-mode php+-mode multiple-cursors migemo json-mode js3-mode js2-closure js-comint iedit helm-swoop helm-projectile helm-gtags go-mode go-autocomplete ggtags flymake-php flymake-json flymake-jslint flymake-cursor flymake duplicate-thing dtrt-indent company comment-dwim-2 clojure-mode clean-aindent-mode anzu))))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
