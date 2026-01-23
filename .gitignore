@@ -2,7 +2,7 @@ recentf
 ac-comphist.dat
 auto-save-list/*
 tramp
-elpa/archives/*
+elpa/
 ede-projects.el
 projectile-bookmarks.eld
 .cask/

@@ -1,10 +1,15 @@
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
+
+;; Suppress byte-compile warnings from packages
+(setq byte-compile-warnings '(not obsolete))
+(setq warning-suppress-log-types '((comp) (bytecomp)))
+(setq native-comp-async-report-warnings-errors 'silent)
 
 (setq exec-path (cons "/usr/local/bin" exec-path))
 (setenv "PATH"
@@ -14,13 +19,14 @@
 
 (defconst demo-packages
   '(anzu
+    auto-complete
     company
-    duplicate-thing
+    ;; duplicate-thing  ; removed - no longer available on MELPA
     ggtags
     helm
     helm-gtags
     helm-projectile
-    helm-swoop
+    ;; helm-swoop  ; removed - no longer available on MELPA
     migemo
     ;; function-args
     clean-aindent-mode
@@ -151,7 +157,7 @@
 
 ;; Package: projejctile
 (require 'projectile)
-(projectile-global-mode)
+(projectile-mode +1)
 (setq projectile-enable-caching t)
 
 (require 'helm-projectile)
@@ -207,7 +213,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-buffer-file-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
 (setq slime-net-coding-system 'utf-8-unix)
 
 ;; key bindings
@@ -256,11 +262,10 @@
 
 ;; Configuration for Japanese and English
 ;; http://www.alles.or.jp/~torutk/oojava/meadow/Meadow210Install.html
-(defadvice dabbrev-expand
-  (around modify-regexp-for-japanese activate compile)
+(defun my/dabbrev-expand-japanese-advice (orig-fun &rest args)
   "Modify `dabbrev-abbrev-char-regexp' dynamically for Japanese words."
   (if (bobp)
-      ad-do-it
+      (apply orig-fun args)
     (let ((dabbrev-abbrev-char-regexp
            (let ((c (char-category-set (char-before))))
              (cond
@@ -275,7 +280,9 @@
               ((aref c ?k) "\\ck") ; hankaku-kana
               ((aref c ?r) "\\cr") ; Japanese roman ?
               (t dabbrev-abbrev-char-regexp)))))
-      ad-do-it)))
+      (apply orig-fun args))))
+
+(advice-add 'dabbrev-expand :around #'my/dabbrev-expand-japanese-advice)
 
 ;; Configuration Backspace
 (delete-selection-mode 1)
@@ -288,7 +295,7 @@
 
 ;;Color
 (if window-system (progn
-   (set-default-font "Monaco-12")
+   (set-frame-font "Monaco-12" nil t)
    (set-background-color "Black")
    (set-foreground-color "LightGray")
    (set-cursor-color "Gray")
@@ -304,15 +311,17 @@
 
 ;; migemo
 ;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
-(require 'migemo)
-(setq migemo-command "cmigemo")
-(setq migemo-options '("-q" "--emacs"))
-;; Set your installed path
-(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
-(setq migemo-user-dictionary nil)
-(setq migemo-regex-dictionary nil)
-(setq migemo-coding-system 'utf-8-unix)
-(migemo-init)
+;; Requires: brew install cmigemo
+(when (executable-find "cmigemo")
+  (require 'migemo)
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+  ;; Set your installed path (Homebrew on Apple Silicon)
+  (setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (migemo-init))
 
 ;; auto-complete
 (require 'auto-complete)
@@ -412,9 +421,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (avy-migemo zygospore yasnippet ws-butler volatile-highlights undo-tree tern-auto-complete sr-speedbar smartparens slime s php-mode php+-mode multiple-cursors migemo json-mode js3-mode js2-closure js-comint iedit helm-swoop helm-projectile helm-gtags go-mode go-autocomplete ggtags flymake-php flymake-json flymake-jslint flymake-cursor flymake duplicate-thing dtrt-indent company comment-dwim-2 clojure-mode clean-aindent-mode anzu))))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
