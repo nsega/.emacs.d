@@ -46,6 +46,8 @@
     go-mode               ; Go language support
     yaml-mode             ; YAML support
     markdown-mode         ; Markdown support
+    ;; Theme
+    vscode-dark-plus-theme ; VS Code Dark+ theme
     ))
 
 (defun install-packages ()
@@ -300,14 +302,15 @@
 ;; http://0xcc.net/blog/archives/000041.html
 (set-default-coding-systems 'utf-8)
 
-;;Color
-(if window-system (progn
-   (set-frame-font "Monaco-12" nil t)
-   (set-background-color "Black")
-   (set-foreground-color "LightGray")
-   (set-cursor-color "Gray")
-   (set-frame-parameter nil 'alpha 100)
-   ))
+;; Theme and Colors
+;; VS Code Dark+ theme - similar to Visual Studio Code's default dark theme
+(when (require 'vscode-dark-plus-theme nil t)
+  (load-theme 'vscode-dark-plus t))
+
+;; Font configuration
+(when window-system
+  (set-frame-font "Monaco-12" nil t)
+  (set-frame-parameter nil 'alpha 100))
 
 (setq default-frame-alist
   (append
