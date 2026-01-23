@@ -11,9 +11,10 @@
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)
 
+;; PATH setup is handled by exec-path-from-shell (see below)
+;; This ensures Emacs inherits PATH from your shell
+(setq exec-path (cons "/opt/homebrew/bin" exec-path))
 (setq exec-path (cons "/usr/local/bin" exec-path))
-(setenv "PATH"
-    (concat '"/usr/local/bin:" (getenv "PATH")))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -39,7 +40,13 @@
     projectile
     volatile-highlights
     undo-tree
-    zygospore))
+    zygospore
+    ;; Modern language modes
+    exec-path-from-shell  ; Better PATH handling on macOS
+    go-mode               ; Go language support
+    yaml-mode             ; YAML support
+    markdown-mode         ; Markdown support
+    ))
 
 (defun install-packages ()
   "Install all required packages."
@@ -344,6 +351,132 @@
 (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
 (require 'yasnippet)
 (yas-global-mode 1)
+
+;; ============================================================
+;; exec-path-from-shell - Better PATH handling on macOS
+;; ============================================================
+;; This ensures Emacs inherits PATH from your shell (pyenv, volta, ~/bin, etc.)
+(when (memq window-system '(mac ns x))
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize)
+  ;; Copy additional environment variables for development tools
+  (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME")))
+
+;; ============================================================
+;; Eglot - Built-in LSP client (Emacs 29+)
+;; ============================================================
+(require 'eglot)
+
+;; Don't log every event (improves performance)
+(setq eglot-events-buffer-size 0)
+
+;; Shutdown server when last managed buffer is killed
+(setq eglot-autoshutdown t)
+
+;; ============================================================
+;; Python Configuration
+;; ============================================================
+;; Uses built-in python-mode with Eglot
+;; LSP servers (install one): pip install python-lsp-server
+;;                        or: pip install basedpyright
+;;                        or: pip install ruff
+
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'python-ts-mode-hook 'eglot-ensure)
+
+;; Python indentation
+(setq python-indent-offset 4)
+
+;; Format on save for Python (optional - uncomment if desired)
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+
+;; ============================================================
+;; Go Configuration
+;; ============================================================
+;; Requires: go install golang.org/x/tools/gopls@latest
+
+(when (require 'go-mode nil t)
+  (add-hook 'go-mode-hook 'eglot-ensure)
+  (add-hook 'go-ts-mode-hook 'eglot-ensure)
+
+  ;; Go uses tabs for indentation
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode t)
+              (setq tab-width 4)))
+
+  ;; Format and organize imports on save
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook
+                        (lambda ()
+                          (when (derived-mode-p 'go-mode 'go-ts-mode)
+                            (eglot-format-buffer)))
+                        nil t)))
+
+  ;; Gopls configuration
+  (setq-default eglot-workspace-configuration
+                '(:gopls (:staticcheck t
+                          :usePlaceholders t))))
+
+;; ============================================================
+;; TypeScript Configuration
+;; ============================================================
+;; Uses built-in typescript-ts-mode (Emacs 29+)
+;; Requires: npm install -g typescript-language-server typescript
+
+;; File associations for TypeScript
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
+(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
+
+;; TypeScript indentation
+(setq typescript-ts-mode-indent-offset 2)
+
+;; ============================================================
+;; YAML Configuration
+;; ============================================================
+;; Optional LSP: npm install -g yaml-language-server
+
+(when (require 'yaml-mode nil t)
+  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-mode))
+
+  ;; Enable Eglot for YAML if yaml-language-server is installed
+  (add-hook 'yaml-mode-hook
+            (lambda ()
+              (when (executable-find "yaml-language-server")
+                (eglot-ensure))))
+
+  ;; YAML indentation
+  (add-hook 'yaml-mode-hook
+            (lambda ()
+              (setq indent-tabs-mode nil)
+              (setq tab-width 2))))
+
+;; ============================================================
+;; Markdown Configuration
+;; ============================================================
+;; Optional: brew install pandoc (for preview/export)
+
+(when (require 'markdown-mode nil t)
+  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+
+  ;; Use pandoc for markdown processing if available
+  (when (executable-find "pandoc")
+    (setq markdown-command "pandoc"))
+
+  ;; Enable math support (e.g., for LaTeX equations)
+  (setq markdown-enable-math t)
+
+  ;; Fontify code blocks
+  (setq markdown-fontify-code-blocks-natively t))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
