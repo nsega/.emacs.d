@@ -258,8 +258,13 @@
 ;; disable menu bar
 (menu-bar-mode -1)
 
+;; Make C-h act as backspace
 (define-key global-map "\C-h" 'delete-backward-char)
 (define-key global-map "\C-x\C-h" 'help-command)
+;; Also bind in key-translation-map to override help-map
+(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+;; Override in isearch-mode
+(define-key isearch-mode-map "\C-h" 'isearch-delete-char)
 (define-key global-map "\C-o" 'dabbrev-expand)
 (setq dabbrev-case-fold-search nil)
 
