@@ -1,40 +1,18 @@
-;; For go configuration
-;; go-mode
+;; For Go configuration
+;; Uses Eglot (configured in init.el) for LSP support via gopls
+;; Requires: go install golang.org/x/tools/gopls@latest
+
 (require 'go-mode)
-(add-hook 'before-save-hook 'gofmt-before-save)
 
-;; Go Code auto completion
-(require 'go-autocomplete) 
+;; Go-specific keybindings (these work alongside Eglot)
+(add-hook 'go-mode-hook
+          (lambda ()
+            ;; Useful Go commands
+            (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
+            (local-set-key (kbd "C-c C-g") 'go-goto-imports)
+            (local-set-key (kbd "C-c C-k") 'godoc)))
 
-;; go-remove-unused-imports
-(add-hook 'go-mode-hook '(lambda ()
-  (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
-
-;; goto-imports
-(add-hook 'go-mode-hook '(lambda ()
-  (local-set-key (kbd "C-c C-g") 'go-goto-imports)))
-
-;; gofmt
-(add-hook 'go-mode-hook '(lambda ()
-  (local-set-key (kbd "C-c C-f") 'gofmt)))
-(add-hook 'before-save-hook 'gofmt-before-save)
-
-;; go-doc
-(add-hook 'go-mode-hook '(lambda ()
-  (local-set-key (kbd "C-c C-k") 'godoc)))
-
-;; go-oracle-mode
-(load "~/src/golang.org/x/tools/cmd/oracle/oracle.el")
-(add-hook 'go-mode-hook 'go-oracle-mode)
-
-;; go-flymake
-(add-to-list 'load-path "~/src/github.com/dougm/goflymake")
-(require 'go-flymake)
-
-;; company-go
-(add-hook 'go-mode-hook 'company-mode)
-(add-hook 'go-mode-hook (lambda ()
-  (set (make-local-variable 'company-backends) '(company-go))
-  (company-mode)))
+;; NOTE: Formatting and completion are handled by Eglot in init.el
+;; NOTE: go-oracle, goflymake, company-go are deprecated in favor of gopls
 
 

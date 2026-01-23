@@ -46,6 +46,8 @@
     go-mode               ; Go language support
     yaml-mode             ; YAML support
     markdown-mode         ; Markdown support
+    ;; Navigation fallback
+    dumb-jump             ; Jump to definition without tags/LSP
     ;; Theme
     vscode-dark-plus-theme ; VS Code Dark+ theme
     ))
@@ -72,6 +74,23 @@
 (require 'setup-ggtags)
 (require 'setup-cedet)
 (require 'setup-editing)
+
+;; ============================================================
+;; Navigation Enhancements
+;; ============================================================
+
+;; Global xref keybinding for find-references
+(global-set-key (kbd "M-?") 'xref-find-references)
+
+;; Helm-imenu for quick in-buffer navigation
+(global-set-key (kbd "M-g i") 'helm-imenu)
+
+;; dumb-jump as fallback when no tags/LSP available
+(when (require 'dumb-jump nil t)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  ;; Prefer project root detection
+  (setq dumb-jump-prefer-searcher 'rg)  ; Use ripgrep if available
+  (setq dumb-jump-force-searcher nil))
 
 ;; function-args
 ;; (require 'function-args)
@@ -405,6 +424,19 @@
 ;; ============================================================
 ;; Requires: go install golang.org/x/tools/gopls@latest
 
+;; Help project.el find Go project roots (look for go.mod)
+(defun project-find-go-module (dir)
+  "Find Go module root for DIR by locating go.mod."
+  (when-let ((root (locate-dominating-file dir "go.mod")))
+    (cons 'go-module root)))
+
+(cl-defmethod project-root ((project (head go-module)))
+  "Return root directory of Go PROJECT."
+  (cdr project))
+
+;; Add Go module detection to project-find-functions
+(add-hook 'project-find-functions #'project-find-go-module)
+
 (when (require 'go-mode nil t)
   (add-hook 'go-mode-hook 'eglot-ensure)
   (add-hook 'go-ts-mode-hook 'eglot-ensure)
@@ -491,7 +523,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(anzu auto-complete clean-aindent-mode comment-dwim-2 company
+          dtrt-indent dumb-jump exec-path-from-shell ggtags go-mode
+          helm-gtags helm-projectile iedit markdown-mode migemo
+          smartparens undo-tree volatile-highlights
+          vscode-dark-plus-theme ws-butler yaml-mode yasnippet
+          zygospore)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
