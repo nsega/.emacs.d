@@ -38,10 +38,13 @@
     company
     ;; duplicate-thing  ; removed - no longer available on MELPA
     ggtags
-    helm
-    helm-gtags
-    helm-projectile
-    ;; helm-swoop  ; removed - no longer available on MELPA
+    ;; Completion framework - Vertico ecosystem (replaces Helm)
+    vertico
+    orderless
+    marginalia
+    consult
+    embark
+    embark-consult
     migemo
     ;; function-args
     clean-aindent-mode
@@ -80,14 +83,8 @@
 
 (install-packages)
 
-;; this variables must be set before load helm-gtags
-;; you can change to any prefix key of your choice
-(setq helm-gtags-prefix-key "\C-cg")
-
 (add-to-list 'load-path "~/.emacs.d/custom")
 
-(require 'setup-helm)
-(require 'setup-helm-gtags)
 (require 'setup-ggtags)
 (require 'setup-cedet)
 (require 'setup-editing)
@@ -98,9 +95,6 @@
 
 ;; Global xref keybinding for find-references
 (global-set-key (kbd "M-?") 'xref-find-references)
-
-;; Helm-imenu for quick in-buffer navigation
-(global-set-key (kbd "M-g i") 'helm-imenu)
 
 ;; ============================================================
 ;; dumb-jump - Fallback navigation when no tags/LSP available
@@ -178,6 +172,52 @@
  )
 
 ;; ============================================================
+;; Completion Framework - Vertico Ecosystem
+;; ============================================================
+
+;; vertico - Vertical completion UI
+(use-package vertico
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-cycle t)
+  :bind (:map vertico-map
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous)))
+
+;; orderless - Flexible completion matching
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;; marginalia - Rich annotations in minibuffer
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+;; consult - Consulting completing-read
+(use-package consult
+  :bind (("C-x b" . consult-buffer)
+         ("M-g i" . consult-imenu)
+         ("M-s l" . consult-line)
+         ("M-s g" . consult-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-y" . consult-yank-pop)
+         :map minibuffer-local-map
+         ("M-p" . consult-history)))
+
+;; embark - Contextual actions
+(use-package embark
+  :bind (("C-." . embark-act)
+         ("C-h B" . embark-bindings)))
+
+;; embark-consult - Integration between embark and consult
+(use-package embark-consult
+  :after (embark consult))
+
+;; ============================================================
 ;; Editing Enhancements (use-package)
 ;; ============================================================
 
@@ -219,15 +259,17 @@
   (show-smartparens-global-mode +1)
   (smartparens-global-mode 1))
 
-;; Package: projejctile
-(require 'projectile)
-(projectile-mode +1)
-(setq projectile-enable-caching t)
-
-(require 'helm-projectile)
-(helm-projectile-on)
-(setq projectile-completion-system 'helm)
-(setq projectile-indexing-method 'alien)
+;; ============================================================
+;; Project Management - Projectile
+;; ============================================================
+(use-package projectile
+  :config
+  (projectile-mode +1)
+  (setq projectile-completion-system 'default)  ; Use vertico/completing-read
+  (setq projectile-enable-caching t)
+  (setq projectile-indexing-method 'alien)
+  :bind-keymap
+  ("C-c p" . projectile-command-map))
 
 ;; Package: zygospore - Reversible C-x 1 (delete-other-windows)
 (use-package zygospore
@@ -260,33 +302,8 @@
   (iedit-toggle-key-default nil)
   :bind (("C-;" . iedit-mode)))
 
-;; Package helm-gtags
-(setq
- helm-gtags-ignore-case t
- helm-gtags-auto-update t
- helm-gtags-use-input-at-cursor t
- helm-gtags-pulse-at-cursor t
- helm-gtags-prefix-key "\C-cg"
- helm-gtags-suggested-key-mapping t
- )
-
-(require 'helm-gtags)
-;; Enable helm-gtags-mode
-(add-hook 'dired-mode-hook 'helm-gtags-mode)
-(add-hook 'eshell-mode-hook 'helm-gtags-mode)
-(add-hook 'c-mode-hook 'helm-gtags-mode)
-(add-hook 'c++-mode-hook 'helm-gtags-mode)
-(add-hook 'asm-mode-hook 'helm-gtags-mode)
-
-(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
-(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
-(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
-(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
-
-
-;; Package: speedbar
+;; ============================================================
+;; Speedbar
 (setq speedbar-show-unknown-files t)
 
 ;;　Changing the home directory as the initial dir(for Mervelicks)
@@ -612,10 +629,10 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    '(anzu auto-complete claude-code clean-aindent-mode comment-dwim-2
-          company dtrt-indent dumb-jump eat exec-path-from-shell
-          ggtags go-mode helm-gtags helm-projectile iedit
-          markdown-mode migemo smartparens undo-tree
-          volatile-highlights vscode-dark-plus-theme vterm ws-butler
+          company consult dtrt-indent dumb-jump eat embark embark-consult
+          exec-path-from-shell ggtags go-mode iedit marginalia
+          markdown-mode migemo orderless projectile smartparens undo-tree
+          vertico volatile-highlights vscode-dark-plus-theme vterm ws-butler
           yaml-mode yasnippet zygospore))
  '(package-vc-selected-packages
    '((claude-code :vc-backend Git :url
