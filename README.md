@@ -222,7 +222,7 @@ Step-by-step interactive tutorial:
 - Practice challenges
 - Real-world tasks
 
-### 3. **[MODERNIZATION_PLAN.md](MODERNIZATION_PLAN.md)** - What Changed
+### 3. **[Modernization Plan](.claude/plans/modernization-for-emacs30.md)** - What Changed
 Documentation of the modernization process:
 - All 8 phases with detailed steps
 - Before/after comparisons
@@ -243,10 +243,12 @@ Documentation of the modernization process:
 ├── README.md                    # This file
 ├── USER_GUIDE.md               # Complete user guide (reference + workflows + terminal tips)
 ├── TUTORIAL.md                 # Hands-on exercises and tutorials
-├── MODERNIZATION_PLAN.md       # Modernization documentation
 ├── CLAUDE.md                   # Guidelines for Claude Code
 ├── LICENSE                     # MIT License
-├── .claude/plans/              # Implementation plans for Claude Code
+├── .claude/
+│   ├── plans/
+│   │   └── modernization-for-emacs30.md  # Modernization plan
+│   └── settings.local.json     # Local Claude settings
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
 └── custom.backup.*/            # Backups from modernization

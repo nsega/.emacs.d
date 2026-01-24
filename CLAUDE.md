@@ -44,10 +44,12 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 ├── README.md                    # Main documentation
 ├── USER_GUIDE.md               # Complete user guide (reference + workflows + terminal tips)
 ├── TUTORIAL.md                 # Hands-on exercises and tutorials
-├── MODERNIZATION_PLAN.md       # Documentation of modernization process
 ├── LICENSE                     # MIT License
 ├── CLAUDE.md                   # This file
-├── .claude/plans/              # Implementation plans
+├── .claude/
+│   ├── plans/
+│   │   └── modernization-for-emacs30.md  # Modernization plan
+│   └── settings.local.json     # Local Claude settings
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
 └── custom.backup.*/            # Backups from modernization
@@ -107,9 +109,8 @@ This configuration was modernized in January 2024 through 8 phases:
 7. Modernize Claude Code integration
 8. Final cleanup and organization
 
-**Implementation plan locations:**
-- `.claude/plans/modernization-for-emacs30.md` - Detailed plan for Claude Code reference
-- `MODERNIZATION_PLAN.md` - Documentation for users (same content)
+**Implementation plan location:**
+- `.claude/plans/modernization-for-emacs30.md` - Complete modernization plan
 
 ## Target Audience
 

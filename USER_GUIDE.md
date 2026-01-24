@@ -452,7 +452,7 @@ M-x use-package-report
 
 - **Tutorial:** See `TUTORIAL.md` for hands-on exercises
 - **Configuration:** `init.el` - Main configuration file
-- **Modernization:** `MODERNIZATION_PLAN.md` - What changed
+- **Modernization:** `.claude/plans/modernization-for-emacs30.md` - What changed
 - **Vertico Documentation:** https://github.com/minad/vertico
 - **Eglot Manual:** https://joaotavora.github.io/eglot/
 - **Projectile Docs:** https://docs.projectile.mx/
