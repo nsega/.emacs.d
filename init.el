@@ -48,6 +48,9 @@
     markdown-mode         ; Markdown support
     ;; Navigation fallback
     dumb-jump             ; Jump to definition without tags/LSP
+    ;; Terminal
+    vterm                 ; Terminal emulator for Claude Code
+    eat                   ; Emulate A Terminal (another terminal emulator)
     ;; Theme
     vscode-dark-plus-theme ; VS Code Dark+ theme
     ))
@@ -518,18 +521,48 @@
   ;; Fontify code blocks
   (setq markdown-fontify-code-blocks-natively t))
 
+;; ============================================================
+;; Claude Code Integration
+;; ============================================================
+;; Requires: brew install --cask claude-code (already installed)
+;;           brew install libvterm (already installed)
+
+;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
+;; This installs to ~/.emacs.d/elpa/ (should be in .gitignore)
+(unless (package-installed-p 'claude-code)
+  (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
+
+;; Load and configure claude-code
+(with-eval-after-load 'claude-code
+  ;; Use vterm for the best TUI experience
+  (setq claude-code-terminal-type 'vterm)
+
+  ;; Set the correct command name (homebrew installs as 'claude')
+  (setq claude-code-command "claude")
+
+  ;; Auto-save buffers before sending to Claude
+  (setq claude-code-save-before-send t)
+
+  ;; Keybindings
+  (global-set-key (kbd "C-c c c") 'claude-code)        ; Start/switch to Claude
+  (global-set-key (kbd "C-c c s") 'claude-code-send)   ; Send region/buffer
+  (global-set-key (kbd "C-c c v") 'claude-code-vterm)) ; Open raw vterm buffer
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(anzu auto-complete clean-aindent-mode comment-dwim-2 company
-          dtrt-indent dumb-jump exec-path-from-shell ggtags go-mode
-          helm-gtags helm-projectile iedit markdown-mode migemo
-          smartparens undo-tree volatile-highlights
-          vscode-dark-plus-theme ws-butler yaml-mode yasnippet
-          zygospore)))
+   '(anzu auto-complete claude-code clean-aindent-mode comment-dwim-2
+          company dtrt-indent dumb-jump eat exec-path-from-shell
+          ggtags go-mode helm-gtags helm-projectile iedit
+          markdown-mode migemo smartparens undo-tree
+          volatile-highlights vscode-dark-plus-theme vterm ws-butler
+          yaml-mode yasnippet zygospore))
+ '(package-vc-selected-packages
+   '((claude-code :vc-backend Git :url
+                  "https://github.com/stevemolitor/claude-code.el"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
