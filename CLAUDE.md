@@ -1,0 +1,144 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code when working with this Emacs configuration repository.
+
+## Overview
+
+This is a modernized Emacs configuration optimized for Emacs 30+ using contemporary tools:
+- **use-package** for declarative package management
+- **Vertico ecosystem** (vertico, consult, marginalia, embark, orderless) for completion
+- **Eglot** for LSP-powered code intelligence
+- **Projectile** for project management
+- **Single init.el** (consolidated from 6 files)
+
+## Important Rules
+
+### Implementation Plans
+- **Always look for and update implementation plans in `.claude/plans/` before starting work**
+- Check if there's an existing plan related to the current task
+- Update the plan status as work progresses
+- Document completed phases and any deviations
+
+### Code Style
+- **Never use emojis** in any documentation files (README.md, guides, etc.)
+- Use clear, professional language
+- Maintain consistent markdown formatting
+
+### Configuration Changes
+- All package configuration must use `use-package` syntax
+- Never add deprecated Emacs Lisp (e.g., `defadvice` - use `advice-add` instead)
+- Test changes by restarting Emacs to ensure no errors
+- Keep init.el organized by sections (Package Management, Completion, LSP, etc.)
+
+### Git Workflow
+- Commit changes frequently with descriptive messages
+- Always include "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>" in commits
+- Work on feature branches, not main
+- Push changes after each logical unit of work
+
+## File Structure
+
+```
+~/.emacs.d/
+├── init.el                      # Main configuration (single file!)
+├── README.md                    # Main documentation
+├── CHEATSHEET.md               # Quick reference for key bindings
+├── NAVIGATION_GUIDE.md         # Complete navigation guide
+├── HANDS_ON_TUTORIAL.md        # Interactive tutorial
+├── TERMINAL_TIPS.md            # Terminal Emacs compatibility guide
+├── MODERNIZATION_PLAN.md       # Documentation of modernization process
+├── LICENSE                     # MIT License
+├── CLAUDE.md                   # This file
+├── elpa/                       # Installed packages (auto-generated)
+├── snippets/                   # Yasnippet templates
+└── custom.backup.*/            # Backups from modernization
+```
+
+## Key Bindings Philosophy
+
+- Preserve existing key bindings (muscle memory is important)
+- Provide terminal-friendly alternatives for Meta key conflicts
+- Document all custom bindings in guides
+- Use standard Emacs conventions where possible
+
+## Testing Protocol
+
+When making changes to init.el:
+
+1. **Syntax check**: Ensure valid Emacs Lisp
+2. **Test startup**: Restart Emacs and check for errors
+3. **Test functionality**: Verify the changed feature works
+4. **Check performance**: Use `M-x use-package-report` if adding packages
+5. **Update documentation**: Reflect changes in README.md or guides if needed
+
+## Common Tasks
+
+### Adding a New Package
+```elisp
+(use-package package-name
+  :ensure t
+  :config
+  ;; Configuration here
+  :bind (("C-c x" . package-command)))
+```
+
+### Adding LSP Support for New Language
+```elisp
+(use-package language-mode
+  :hook (language-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '(language-mode . ("lsp-server" "--args"))))
+```
+
+### Updating Documentation
+- README.md - Main entry point, keep high-level
+- CHEATSHEET.md - Quick reference, essential commands only
+- NAVIGATION_GUIDE.md - Comprehensive guide with workflows
+- HANDS_ON_TUTORIAL.md - Step-by-step exercises
+- TERMINAL_TIPS.md - Terminal-specific issues and solutions
+
+## Modernization History
+
+This configuration was modernized in January 2024 through 8 phases:
+1. Bootstrap use-package
+2. Convert simple packages
+3. Replace Helm → Vertico ecosystem
+4. Remove gtags/CEDET (use Eglot only)
+5. Modernize defadvice → advice-add
+6. Remove auto-complete (keep Company only)
+7. Modernize Claude Code integration
+8. Final cleanup and organization
+
+See MODERNIZATION_PLAN.md for complete details.
+
+## Target Audience
+
+- Primary user: Software engineer with macOS
+- Uses: Python, Go, TypeScript, C/C++
+- Workflow: Project-based development with LSP support
+- Preference: Fast, minimal configuration with modern tools
+
+## Troubleshooting Common Issues
+
+### LSP not working
+- Check Eglot is active: Look for "Eglot" in mode line
+- Manually start: `M-x eglot-ensure`
+- Restart server: `M-x eglot-reconnect`
+
+### Terminal key bindings
+- Meta key conflicts: Use ESC as alternative
+- M-s prefix issues: Use C-c s alternatives
+- See TERMINAL_TIPS.md for full guide
+
+### Performance issues
+- Check package load times: `M-x use-package-report`
+- Consider lazy loading more packages
+- Ensure ripgrep is installed for fast search
+
+## References
+
+- [Vertico GitHub](https://github.com/minad/vertico)
+- [Eglot Manual](https://joaotavora.github.io/eglot/)
+- [use-package Documentation](https://github.com/jwiegley/use-package)
+- [Projectile Docs](https://docs.projectile.mx/)

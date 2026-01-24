@@ -7,3 +7,17 @@ ede-projects.el
 projectile-bookmarks.eld
 .cask/
 semanticdb/
+
+# Undo-tree backup files
+*.~undo-tree~
+.*.~undo-tree~
+
+# Backup files from modernization (keep in repo for reference)
+# custom.backup.*/
+# init.el.backup.*
+
+# Projects cache
+projects
+
+# Go-mode generated files
+go.el
