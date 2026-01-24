@@ -1,4 +1,4 @@
-# 🎯 Hands-On Tutorial: Exploring Your Codebase
+#  Hands-On Tutorial: Exploring Your Codebase
 
 ## Part 1: Exploring the Go Demo Projects
 
@@ -465,11 +465,11 @@ M-?        → Find all references
 
 ---
 
-## 🎮 Practice Challenges
+##  Practice Challenges
 
 Try these to master your new tools:
 
-### Challenge 1: The Detective 🔍
+### Challenge 1: The Detective 
 **Goal**: Find which test uses the BuggyCounter
 
 1. Open any file in demo/concurrency
@@ -489,7 +489,7 @@ M-s r  → "BuggyCounter"
 ```
 </details>
 
-### Challenge 2: The Architect 🏗️
+### Challenge 2: The Architect 
 **Goal**: Understand the structure of all counters
 
 1. Open counter.go
@@ -510,7 +510,7 @@ M-s r    → "race" to find race tests
 ```
 </details>
 
-### Challenge 3: The Refactorer 🔧
+### Challenge 3: The Refactorer 
 **Goal**: Find all Add methods across counters
 
 1. Search for "Add(" in counter.go
@@ -530,7 +530,7 @@ M-?    → On each "Add" to find callers
 
 ---
 
-## 📊 Cheat Sheet for Your Vault
+##  Cheat Sheet for Your Vault
 
 ### Quick Jumps
 ```
@@ -551,7 +551,7 @@ Find by YAML tag:      M-s r  → "tags: learning"
 
 ---
 
-## 🎯 Next Steps
+##  Next Steps
 
 1. **Today**: Practice Exercises 1-3 (Go demo projects)
 2. **This Week**: Try all workflows in Part 3
@@ -560,7 +560,7 @@ Find by YAML tag:      M-s r  → "tags: learning"
 
 ---
 
-## 💡 Pro Tips from Your Setup
+##  Pro Tips from Your Setup
 
 1. **Your most powerful combo**: `C-c p f` (find file) + `M-g i` (jump to section)
    - Works in code: jumps to functions
@@ -577,7 +577,7 @@ Find by YAML tag:      M-s r  → "tags: learning"
 
 ---
 
-## 🆘 Common Questions
+##  Common Questions
 
 **Q: How do I know if LSP is active?**
 A: Look for "Eglot" in the mode line at the bottom
@@ -597,7 +597,7 @@ A: `C-x b` → Type nothing → See recent buffers at top
 
 ---
 
-**Happy exploring! 🚀**
+**Happy exploring! **
 
 Start with Exercise 1 and work your way through. Each exercise builds on the previous one.
 

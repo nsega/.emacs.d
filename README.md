@@ -200,44 +200,40 @@ On first launch, all packages install automatically from MELPA. This may take 1-
 | `C-.` | embark-act | Show actions for thing at point |
 | `C-h B` | embark-bindings | Show all key bindings |
 
-For complete reference, see **[CHEATSHEET.md](CHEATSHEET.md)**
+For complete reference, see **[USER_GUIDE.md](USER_GUIDE.md)**
 
 ## Learning Resources
 
-This repository includes comprehensive guides:
+This repository includes comprehensive documentation:
 
-### 1. **[CHEATSHEET.md](CHEATSHEET.md)** - Quick Reference
-Printable cheat sheet with essential commands. Keep it on your desk!
+### 1. **[USER_GUIDE.md](USER_GUIDE.md)** - Complete Reference
+The comprehensive guide covering everything you need:
+- Quick reference: Essential key bindings organized by category
+- Workflows: 6 common patterns for reading code
+- Terminal tips: Terminal-specific compatibility and configuration
+- Advanced features: Power user techniques
+- Troubleshooting: Solutions to common problems
 
-### 2. **[NAVIGATION_GUIDE.md](NAVIGATION_GUIDE.md)** - Complete Guide
-- All key bindings explained
-- 6 common workflows for reading code
-- Advanced techniques
-- Pro tips and troubleshooting
+### 2. **[TUTORIAL.md](TUTORIAL.md)** - Hands-On Exercises
+Step-by-step interactive tutorial:
+- 6 exercises using real demo code (Go projects)
+- Obsidian vault navigation examples
+- Power user workflows
+- Practice challenges
+- Real-world tasks
 
-### 3. **[HANDS_ON_TUTORIAL.md](HANDS_ON_TUTORIAL.md)** - Interactive Tutorial
-- Step-by-step exercises
-- Practice with real codebases
-- Progressive challenges
-- Real-world examples
-
-### 4. **[TERMINAL_TIPS.md](TERMINAL_TIPS.md)** - Terminal Emacs Guide (NEW)
-- Terminal-friendly key binding alternatives
-- Meta key configuration for terminal emulators
-- ESC as Meta usage
-- GUI vs Terminal comparison
-- Troubleshooting terminal issues
-
-### 5. **[MODERNIZATION_PLAN.md](MODERNIZATION_PLAN.md)** - What Changed
-- Complete modernization roadmap
-- All 8 phases documented
+### 3. **[MODERNIZATION_PLAN.md](MODERNIZATION_PLAN.md)** - What Changed
+Documentation of the modernization process:
+- All 8 phases with detailed steps
 - Before/after comparisons
+- Performance improvements
+- Rollback instructions
 
 **Recommended learning path:**
-1. Read CHEATSHEET.md
-2. Try exercises 1-3 in HANDS_ON_TUTORIAL.md
-3. Reference NAVIGATION_GUIDE.md as needed
-4. **Terminal users:** Read TERMINAL_TIPS.md for key binding alternatives
+1. Read USER_GUIDE.md Quick Reference section
+2. Try exercises 1-3 in TUTORIAL.md
+3. Reference USER_GUIDE.md workflows as needed
+4. **Terminal users:** See USER_GUIDE.md Terminal Emacs section
 
 ## Directory Structure
 
@@ -245,11 +241,12 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 ~/.emacs.d/
 ├── init.el                      # Main configuration (single file!)
 ├── README.md                    # This file
-├── CHEATSHEET.md               # Quick reference
-├── NAVIGATION_GUIDE.md         # Complete navigation guide
-├── HANDS_ON_TUTORIAL.md        # Interactive tutorial
-├── TERMINAL_TIPS.md            # Terminal Emacs guide
+├── USER_GUIDE.md               # Complete user guide (reference + workflows + terminal tips)
+├── TUTORIAL.md                 # Hands-on exercises and tutorials
 ├── MODERNIZATION_PLAN.md       # Modernization documentation
+├── CLAUDE.md                   # Guidelines for Claude Code
+├── LICENSE                     # MIT License
+├── .claude/plans/              # Implementation plans for Claude Code
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
 └── custom.backup.*/            # Backups from modernization
