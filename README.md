@@ -221,7 +221,14 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 - Progressive challenges
 - Real-world examples
 
-### 4. **[MODERNIZATION_PLAN.md](MODERNIZATION_PLAN.md)** - What Changed
+### 4. **[TERMINAL_TIPS.md](TERMINAL_TIPS.md)** - Terminal Emacs Guide ⭐ NEW
+- Terminal-friendly key binding alternatives
+- Meta key configuration for terminal emulators
+- ESC as Meta usage
+- GUI vs Terminal comparison
+- Troubleshooting terminal issues
+
+### 5. **[MODERNIZATION_PLAN.md](MODERNIZATION_PLAN.md)** - What Changed
 - Complete modernization roadmap
 - All 8 phases documented
 - Before/after comparisons
@@ -230,6 +237,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 1. Read CHEATSHEET.md
 2. Try exercises 1-3 in HANDS_ON_TUTORIAL.md
 3. Reference NAVIGATION_GUIDE.md as needed
+4. **Terminal users:** Read TERMINAL_TIPS.md for key binding alternatives
 
 ## 📁 Directory Structure
 
@@ -240,6 +248,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 ├── CHEATSHEET.md               # Quick reference
 ├── NAVIGATION_GUIDE.md         # Complete navigation guide
 ├── HANDS_ON_TUTORIAL.md        # Interactive tutorial
+├── TERMINAL_TIPS.md            # Terminal Emacs guide
 ├── MODERNIZATION_PLAN.md       # Modernization documentation
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
