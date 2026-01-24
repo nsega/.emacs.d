@@ -14,6 +14,9 @@
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
 
+;; ============================================================
+;; Basic Settings
+;; ============================================================
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
 
@@ -99,12 +102,15 @@
 ;; Helm-imenu for quick in-buffer navigation
 (global-set-key (kbd "M-g i") 'helm-imenu)
 
-;; dumb-jump as fallback when no tags/LSP available
-(when (require 'dumb-jump nil t)
+;; ============================================================
+;; dumb-jump - Fallback navigation when no tags/LSP available
+;; ============================================================
+(use-package dumb-jump
+  :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-  ;; Prefer project root detection
-  (setq dumb-jump-prefer-searcher 'rg)  ; Use ripgrep if available
-  (setq dumb-jump-force-searcher nil))
+  :custom
+  (dumb-jump-prefer-searcher 'rg)  ; Use ripgrep if available
+  (dumb-jump-force-searcher nil))
 
 ;; function-args
 ;; (require 'function-args)
@@ -171,31 +177,47 @@
  gdb-show-main t
  )
 
-;; Package: clean-aindent-mode
-(require 'clean-aindent-mode)
-(add-hook 'prog-mode-hook 'clean-aindent-mode)
+;; ============================================================
+;; Editing Enhancements (use-package)
+;; ============================================================
 
-;; Package: dtrt-indent
-(require 'dtrt-indent)
-(dtrt-indent-mode 1)
+;; Package: clean-aindent-mode - Clean auto-indent and backspace behavior
+(use-package clean-aindent-mode
+  :hook (prog-mode . clean-aindent-mode))
 
-;; Package: ws-butler
-(require 'ws-butler)
-(add-hook 'prog-mode-hook 'ws-butler-mode)
+;; Package: dtrt-indent - Detect indent style automatically
+(use-package dtrt-indent
+  :config
+  (dtrt-indent-mode 1)
+  (setq dtrt-indent-verbosity 0))
 
-;; Package: yasnippet
-(require 'yasnippet)
-(yas-global-mode 1)
+;; Package: ws-butler - Trim whitespace only on edited lines
+(use-package ws-butler
+  :hook ((prog-mode . ws-butler-mode)
+         (text-mode . ws-butler-mode)
+         (fundamental-mode . ws-butler-mode)))
 
-;; Package: smartparens
-(require 'smartparens-config)
-(setq sp-base-key-bindings 'paredit)
-(setq sp-autoskip-closing-pair 'always)
-(setq sp-hybrid-kill-entire-symbol nil)
-(sp-use-paredit-bindings)
+;; Package: yasnippet - Template system
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+  ;; Don't activate in terminal mode
+  (add-hook 'term-mode-hook (lambda() (setq yas-dont-activate t)))
+  :custom
+  (yas-verbosity 1)
+  (yas-wrap-around-region t)
+  (yas-prompt-functions '(yas/ido-prompt yas/completing-prompt)))
 
-(show-smartparens-global-mode +1)
-(smartparens-global-mode 1)
+;; Package: smartparens - Parenthesis management
+(use-package smartparens
+  :config
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-hybrid-kill-entire-symbol nil)
+  (sp-use-paredit-bindings)
+  (show-smartparens-global-mode +1)
+  (smartparens-global-mode 1))
 
 ;; Package: projejctile
 (require 'projectile)
@@ -207,8 +229,36 @@
 (setq projectile-completion-system 'helm)
 (setq projectile-indexing-method 'alien)
 
-;; Package zygospore
-(global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+;; Package: zygospore - Reversible C-x 1 (delete-other-windows)
+(use-package zygospore
+  :bind (("C-x 1" . zygospore-toggle-delete-other-windows)))
+
+;; Package: anzu - Show match count in mode-line while searching
+(use-package anzu
+  :config
+  (global-anzu-mode)
+  :bind (("M-%" . anzu-query-replace)
+         ("C-M-%" . anzu-query-replace-regexp)))
+
+;; Package: volatile-highlights - Highlight changes from yanking, undo, etc.
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t))
+
+;; Package: undo-tree - Visualize undo history as a tree
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+
+;; Package: comment-dwim-2 - Smarter comment/uncomment
+(use-package comment-dwim-2
+  :bind (("M-;" . comment-dwim-2)))
+
+;; Package: iedit - Edit multiple occurrences simultaneously
+(use-package iedit
+  :custom
+  (iedit-toggle-key-default nil)
+  :bind (("C-;" . iedit-mode)))
 
 ;; Package helm-gtags
 (setq
@@ -340,9 +390,11 @@
 ;; http://0xcc.net/blog/archives/000041.html
 (set-default-coding-systems 'utf-8)
 
+;; ============================================================
 ;; Theme and Colors
-;; VS Code Dark+ theme - similar to Visual Studio Code's default dark theme
-(when (require 'vscode-dark-plus-theme nil t)
+;; ============================================================
+(use-package vscode-dark-plus-theme
+  :config
   (load-theme 'vscode-dark-plus t))
 
 ;; Font configuration
@@ -357,18 +409,20 @@
   )
   default-frame-alist))
 
-;; migemo
-;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
+;; ============================================================
+;; migemo - Japanese incremental search with Romanization
+;; ============================================================
 ;; Requires: brew install cmigemo
-(when (executable-find "cmigemo")
-  (require 'migemo)
-  (setq migemo-command "cmigemo")
-  (setq migemo-options '("-q" "--emacs"))
-  ;; Set your installed path (Homebrew on Apple Silicon)
-  (setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
-  (setq migemo-user-dictionary nil)
-  (setq migemo-regex-dictionary nil)
-  (setq migemo-coding-system 'utf-8-unix)
+(use-package migemo
+  :if (executable-find "cmigemo")
+  :custom
+  (migemo-command "cmigemo")
+  (migemo-options '("-q" "--emacs"))
+  (migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
+  (migemo-user-dictionary nil)
+  (migemo-regex-dictionary nil)
+  (migemo-coding-system 'utf-8-unix)
+  :config
   (migemo-init))
 
 ;; auto-complete
@@ -388,17 +442,12 @@
 (ac-set-trigger-key "TAB")
 (ac-set-trigger-key "<tab>")
 
-;; yasnippet
-(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
-
 ;; ============================================================
 ;; exec-path-from-shell - Better PATH handling on macOS
 ;; ============================================================
-;; This ensures Emacs inherits PATH from your shell (pyenv, volta, ~/bin, etc.)
-(when (memq window-system '(mac ns x))
-  (require 'exec-path-from-shell)
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config
   (exec-path-from-shell-initialize)
   ;; Copy additional environment variables for development tools
   (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME")))
@@ -451,25 +500,19 @@
 ;; Add Go module detection to project-find-functions
 (add-hook 'project-find-functions #'project-find-go-module)
 
-(when (require 'go-mode nil t)
-  (add-hook 'go-mode-hook 'eglot-ensure)
-  (add-hook 'go-ts-mode-hook 'eglot-ensure)
-
-  ;; Go uses tabs for indentation
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode t)
-              (setq tab-width 4)))
-
-  ;; Format and organize imports on save
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook
-                        (lambda ()
-                          (when (derived-mode-p 'go-mode 'go-ts-mode)
-                            (eglot-format-buffer)))
-                        nil t)))
-
+(use-package go-mode
+  :hook ((go-mode . eglot-ensure)
+         (go-ts-mode . eglot-ensure)
+         (go-mode . (lambda ()
+                      (setq indent-tabs-mode t)
+                      (setq tab-width 4)))
+         (go-mode . (lambda ()
+                      (add-hook 'before-save-hook
+                                (lambda ()
+                                  (when (derived-mode-p 'go-mode 'go-ts-mode)
+                                    (eglot-format-buffer)))
+                                nil t))))
+  :config
   ;; Gopls configuration
   (setq-default eglot-workspace-configuration
                 '(:gopls (:staticcheck t
@@ -496,41 +539,44 @@
 ;; ============================================================
 ;; Optional LSP: npm install -g yaml-language-server
 
-(when (require 'yaml-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-mode))
-
-  ;; Enable Eglot for YAML if yaml-language-server is installed
-  (add-hook 'yaml-mode-hook
-            (lambda ()
-              (when (executable-find "yaml-language-server")
-                (eglot-ensure))))
-
-  ;; YAML indentation
-  (add-hook 'yaml-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode nil)
-              (setq tab-width 2))))
+(use-package yaml-mode
+  :mode (("\\.ya?ml\\'" . yaml-mode)
+         ("\\.eyaml\\'" . yaml-mode))
+  :hook ((yaml-mode . (lambda ()
+                        (when (executable-find "yaml-language-server")
+                          (eglot-ensure))))
+         (yaml-mode . (lambda ()
+                        (setq indent-tabs-mode nil)
+                        (setq tab-width 2)))))
 
 ;; ============================================================
 ;; Markdown Configuration
 ;; ============================================================
 ;; Optional: brew install pandoc (for preview/export)
 
-(when (require 'markdown-mode nil t)
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-
+(use-package markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :config
   ;; Use pandoc for markdown processing if available
   (when (executable-find "pandoc")
     (setq markdown-command "pandoc"))
+  :custom
+  (markdown-enable-math t)
+  (markdown-fontify-code-blocks-natively t))
 
-  ;; Enable math support (e.g., for LaTeX equations)
-  (setq markdown-enable-math t)
+;; ============================================================
+;; Terminal Emulators
+;; ============================================================
+;; vterm - Full-featured terminal emulator (requires libvterm)
+;; Requires: brew install libvterm
+(use-package vterm
+  :commands vterm)
 
-  ;; Fontify code blocks
-  (setq markdown-fontify-code-blocks-natively t))
+;; eat - Emulate A Terminal (pure elisp, no external dependencies)
+(use-package eat
+  :commands eat)
 
 ;; ============================================================
 ;; Claude Code Integration
