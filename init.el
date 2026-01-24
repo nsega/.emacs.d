@@ -146,12 +146,15 @@
 ;; ============================================================
 (use-package company
   :hook (after-init . global-company-mode)
-  :bind (:map c-mode-map
-              ("<tab>" . company-complete)
-         :map c++-mode-map
-              ("<tab>" . company-complete))
   :config
   (delete 'company-semantic company-backends)
+  ;; Add tab completion for C/C++ modes
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'company-complete)))
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'company-complete)))
   :custom
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
