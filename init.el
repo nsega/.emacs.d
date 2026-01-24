@@ -82,9 +82,8 @@
 
 (install-packages)
 
-(add-to-list 'load-path "~/.emacs.d/custom")
-
-(require 'setup-editing)
+;; All custom configuration has been migrated to use-package
+;; (add-to-list 'load-path "~/.emacs.d/custom")
 
 ;; ============================================================
 ;; Navigation Enhancements
@@ -301,6 +300,161 @@
   :custom
   (iedit-toggle-key-default nil)
   :bind (("C-;" . iedit-mode)))
+
+;; ============================================================
+;; Custom Editing Behaviors (modernized from setup-editing.el)
+;; ============================================================
+
+;; Enhanced kill/copy/yank behaviors using modern advice-add
+
+;; 1. Copy line when no region is active (M-w)
+(defun my/slick-copy-advice (orig-fun &rest args)
+  "Copy line when no region is active."
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position)
+           (line-beginning-position 2))))
+  (apply orig-fun args))
+
+(advice-add 'kill-ring-save :around #'my/slick-copy-advice)
+
+;; 2. Cut line when no region is active (C-w)
+(defun my/slick-cut-advice (orig-fun &rest args)
+  "Cut line when no region is active."
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2))))
+  (apply orig-fun args))
+
+(advice-add 'kill-region :around #'my/slick-cut-advice)
+
+;; 3. Clean whitespace before killing line (C-k)
+(defun my/kill-line-whitespace-advice (&rest _args)
+  "Clean whitespace before killing line in programming modes."
+  (when (member major-mode
+                '(emacs-lisp-mode scheme-mode lisp-mode
+                  c-mode c++-mode objc-mode
+                  latex-mode plain-tex-mode))
+    (when (and (eolp) (not (bolp)))
+      (forward-char 1)
+      (just-one-space 0)
+      (backward-char 1))))
+
+(advice-add 'kill-line :before #'my/kill-line-whitespace-advice)
+
+;; 4. Auto-indent yanked text in programming modes (C-y, M-y)
+(defvar yank-indent-modes
+  '(LaTeX-mode TeX-mode)
+  "Modes in which to indent regions that are yanked (or yank-popped).
+Only modes that don't derive from `prog-mode' should be listed here.")
+
+(defvar yank-indent-blacklisted-modes
+  '(python-mode slim-mode haml-mode)
+  "Modes for which auto-indenting is suppressed.")
+
+(defvar yank-advised-indent-threshold 1000
+  "Threshold (# chars) over which indentation does not automatically occur.")
+
+(defun yank-advised-indent-function (beg end)
+  "Do indentation, as long as the region isn't too large."
+  (if (<= (- end beg) yank-advised-indent-threshold)
+      (indent-region beg end nil)))
+
+(defun my/yank-indent-advice (orig-fun &rest args)
+  "Auto-indent yanked text in programming modes."
+  (let ((result (apply orig-fun args)))
+    (when (and (not (car args))
+               (not (member major-mode yank-indent-blacklisted-modes))
+               (or (derived-mode-p 'prog-mode)
+                   (member major-mode yank-indent-modes)))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end))))
+    result))
+
+(advice-add 'yank :around #'my/yank-indent-advice)
+(advice-add 'yank-pop :around #'my/yank-indent-advice)
+
+;; Other useful editing functions from setup-editing.el
+
+;; Smart move to beginning of line (C-a)
+(defun prelude-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first. If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+(global-set-key (kbd "C-a") 'prelude-move-beginning-of-line)
+
+;; Smart open line (M-o)
+(defun prelude-smart-open-line (arg)
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode.
+With a prefix ARG open line above the current line."
+  (interactive "P")
+  (if arg
+      (prelude-smart-open-line-above)
+    (progn
+      (move-end-of-line nil)
+      (newline-and-indent))))
+
+(defun prelude-smart-open-line-above ()
+  "Insert an empty line above the current line.
+Position the cursor at it's beginning, according to the current mode."
+  (interactive)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(global-set-key (kbd "M-o") 'prelude-smart-open-line)
+
+;; Indent buffer or region (C-c i)
+(defun indent-buffer ()
+  "Indent the currently visited buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defcustom prelude-indent-sensitive-modes
+  '(coffee-mode python-mode slim-mode haml-mode yaml-mode)
+  "Modes for which auto-indenting is suppressed."
+  :type 'list)
+
+(defun indent-region-or-buffer ()
+  "Indent a region if selected, otherwise the whole buffer."
+  (interactive)
+  (unless (member major-mode prelude-indent-sensitive-modes)
+    (save-excursion
+      (if (region-active-p)
+          (progn
+            (indent-region (region-beginning) (region-end))
+            (message "Indented selected region."))
+        (progn
+          (indent-buffer)
+          (message "Indented buffer.")))
+      (whitespace-cleanup))))
+
+(global-set-key (kbd "C-c i") 'indent-region-or-buffer)
 
 ;; ============================================================
 ;; Speedbar
