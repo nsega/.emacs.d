@@ -246,6 +246,11 @@
          ("M-s g" . consult-grep)
          ("M-s r" . consult-ripgrep)
          ("M-y" . consult-yank-pop)
+         ;; Alternative bindings for terminal (M-s often conflicts)
+         ("C-c s l" . consult-line)       ; Alternative to M-s l
+         ("C-c s g" . consult-grep)       ; Alternative to M-s g
+         ("C-c s r" . consult-ripgrep)    ; Alternative to M-s r
+         ("C-c s i" . consult-imenu)      ; Alternative to M-g i
          :map minibuffer-local-map
          ("M-p" . consult-history)))
 
