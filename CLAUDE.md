@@ -110,7 +110,9 @@ This configuration was modernized in January 2024 through 8 phases:
 7. Modernize Claude Code integration
 8. Final cleanup and organization
 
-See MODERNIZATION_PLAN.md for complete details.
+**Implementation plan locations:**
+- `.claude/plans/modernization-for-emacs30.md` - Detailed plan for Claude Code reference
+- `MODERNIZATION_PLAN.md` - Documentation for users (same content)
 
 ## Target Audience
 
