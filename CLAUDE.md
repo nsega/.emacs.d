@@ -42,13 +42,12 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 ~/.emacs.d/
 ├── init.el                      # Main configuration (single file!)
 ├── README.md                    # Main documentation
-├── CHEATSHEET.md               # Quick reference for key bindings
-├── NAVIGATION_GUIDE.md         # Complete navigation guide
-├── HANDS_ON_TUTORIAL.md        # Interactive tutorial
-├── TERMINAL_TIPS.md            # Terminal Emacs compatibility guide
+├── USER_GUIDE.md               # Complete user guide (reference + workflows + terminal tips)
+├── TUTORIAL.md                 # Hands-on exercises and tutorials
 ├── MODERNIZATION_PLAN.md       # Documentation of modernization process
 ├── LICENSE                     # MIT License
 ├── CLAUDE.md                   # This file
+├── .claude/plans/              # Implementation plans
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
 └── custom.backup.*/            # Backups from modernization
@@ -93,10 +92,8 @@ When making changes to init.el:
 
 ### Updating Documentation
 - README.md - Main entry point, keep high-level
-- CHEATSHEET.md - Quick reference, essential commands only
-- NAVIGATION_GUIDE.md - Comprehensive guide with workflows
-- HANDS_ON_TUTORIAL.md - Step-by-step exercises
-- TERMINAL_TIPS.md - Terminal-specific issues and solutions
+- USER_GUIDE.md - Complete reference (key bindings + workflows + terminal tips + troubleshooting)
+- TUTORIAL.md - Hands-on exercises with real code examples
 
 ## Modernization History
 
