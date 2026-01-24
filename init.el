@@ -1,8 +1,65 @@
+;;; init.el --- Modern Emacs Configuration -*- lexical-binding: t; -*-
+
+;; Author: Naoki Sega
+;; Maintainer: Naoki Sega
+;; URL: https://github.com/nsega/.emacs.d
+;; Keywords: convenience
+
+;;; Commentary:
+
+;; Modern Emacs configuration using use-package for declarative package management.
+;; Migrated from traditional setup to use modern best practices for Emacs 30+.
+;;
+;; Key Features:
+;; - Vertico ecosystem for lightweight, fast completion (replaces Helm)
+;; - Eglot LSP for intelligent code navigation (Python, Go, TypeScript)
+;; - Company-mode for auto-completion
+;; - Modern advice-add instead of deprecated defadvice
+;; - Single, well-organized init.el (no separate custom/*.el files)
+;;
+;; Package Management:
+;; - Uses use-package for all package configuration
+;; - Lazy loading where appropriate for fast startup
+;; - Self-documenting package declarations
+;;
+;; Completion Framework:
+;; - vertico: Vertical completion UI
+;; - consult: Enhanced completing-read commands
+;; - marginalia: Rich annotations in minibuffer
+;; - embark: Contextual actions on completion candidates
+;; - orderless: Flexible matching style
+;;
+;; Code Intelligence:
+;; - Eglot: Built-in LSP client (Emacs 29+)
+;; - Company: Auto-completion framework
+;; - dumb-jump: Fallback navigation for non-LSP files
+;;
+;; For more information, see: https://github.com/nsega/.emacs.d
+
+;;; Code:
+
+;; ============================================================
+;; Package Management
+;; ============================================================
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
+;; ============================================================
+;; Bootstrap use-package
+;; ============================================================
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile (require 'use-package))
+(setq use-package-always-ensure t)
+(setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
+
+;; ============================================================
+;; Basic Settings
+;; ============================================================
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
 
@@ -20,14 +77,15 @@
 
 (defconst demo-packages
   '(anzu
-    auto-complete
     company
     ;; duplicate-thing  ; removed - no longer available on MELPA
-    ggtags
-    helm
-    helm-gtags
-    helm-projectile
-    ;; helm-swoop  ; removed - no longer available on MELPA
+    ;; Completion framework - Vertico ecosystem (replaces Helm)
+    vertico
+    orderless
+    marginalia
+    consult
+    embark
+    embark-consult
     migemo
     ;; function-args
     clean-aindent-mode
@@ -66,18 +124,6 @@
 
 (install-packages)
 
-;; this variables must be set before load helm-gtags
-;; you can change to any prefix key of your choice
-(setq helm-gtags-prefix-key "\C-cg")
-
-(add-to-list 'load-path "~/.emacs.d/custom")
-
-(require 'setup-helm)
-(require 'setup-helm-gtags)
-(require 'setup-ggtags)
-(require 'setup-cedet)
-(require 'setup-editing)
-
 ;; ============================================================
 ;; Navigation Enhancements
 ;; ============================================================
@@ -85,33 +131,39 @@
 ;; Global xref keybinding for find-references
 (global-set-key (kbd "M-?") 'xref-find-references)
 
-;; Helm-imenu for quick in-buffer navigation
-(global-set-key (kbd "M-g i") 'helm-imenu)
-
-;; dumb-jump as fallback when no tags/LSP available
-(when (require 'dumb-jump nil t)
+;; ============================================================
+;; dumb-jump - Fallback navigation when no tags/LSP available
+;; ============================================================
+(use-package dumb-jump
+  :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-  ;; Prefer project root detection
-  (setq dumb-jump-prefer-searcher 'rg)  ; Use ripgrep if available
-  (setq dumb-jump-force-searcher nil))
+  :custom
+  (dumb-jump-prefer-searcher 'rg)  ; Use ripgrep if available
+  (dumb-jump-force-searcher nil))
 
-;; function-args
-;; (require 'function-args)
-;; (fa-config-default)
-;; (define-key c-mode-map  [(tab)] 'company-complete)
-;; (define-key c++-mode-map  [(tab)] 'company-complete)
+;; ============================================================
+;; Completion - Company Mode
+;; ============================================================
+(use-package company
+  :hook (after-init . global-company-mode)
+  :config
+  (delete 'company-semantic company-backends)
+  ;; Add tab completion for C/C++ modes
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'company-complete)))
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'company-complete)))
+  :custom
+  (company-idle-delay 0.1)
+  (company-minimum-prefix-length 2)
+  (company-show-numbers t))
 
-;; company
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(delete 'company-semantic company-backends)
-(define-key c-mode-map  [(tab)] 'company-complete)
-(define-key c++-mode-map  [(tab)] 'company-complete)
-;; (define-key c-mode-map  [(control tab)] 'company-complete)
-;; (define-key c++-mode-map  [(control tab)] 'company-complete)
-
-;; company-c-headers
-(add-to-list 'company-backends 'company-c-headers)
+(use-package company-c-headers
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-c-headers))
 
 ;; hs-minor-mode for folding source code
 (add-hook 'c-mode-common-hook 'hs-minor-mode)
@@ -160,84 +212,316 @@
  gdb-show-main t
  )
 
-;; Package: clean-aindent-mode
-(require 'clean-aindent-mode)
-(add-hook 'prog-mode-hook 'clean-aindent-mode)
+;; ============================================================
+;; Completion Framework - Vertico Ecosystem
+;; ============================================================
 
-;; Package: dtrt-indent
-(require 'dtrt-indent)
-(dtrt-indent-mode 1)
+;; vertico - Vertical completion UI
+(use-package vertico
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-cycle t)
+  :bind (:map vertico-map
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous)))
 
-;; Package: ws-butler
-(require 'ws-butler)
-(add-hook 'prog-mode-hook 'ws-butler-mode)
+;; orderless - Flexible completion matching
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
 
-;; Package: yasnippet
-(require 'yasnippet)
-(yas-global-mode 1)
+;; marginalia - Rich annotations in minibuffer
+(use-package marginalia
+  :init
+  (marginalia-mode))
 
-;; Package: smartparens
-(require 'smartparens-config)
-(setq sp-base-key-bindings 'paredit)
-(setq sp-autoskip-closing-pair 'always)
-(setq sp-hybrid-kill-entire-symbol nil)
-(sp-use-paredit-bindings)
+;; consult - Consulting completing-read
+(use-package consult
+  :bind (("C-x b" . consult-buffer)
+         ("M-g i" . consult-imenu)
+         ("M-s l" . consult-line)
+         ("M-s g" . consult-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-y" . consult-yank-pop)
+         ;; Alternative bindings for terminal (M-s often conflicts)
+         ("C-c s l" . consult-line)       ; Alternative to M-s l
+         ("C-c s g" . consult-grep)       ; Alternative to M-s g
+         ("C-c s r" . consult-ripgrep)    ; Alternative to M-s r
+         ("C-c s i" . consult-imenu)      ; Alternative to M-g i
+         :map minibuffer-local-map
+         ("M-p" . consult-history)))
 
-(show-smartparens-global-mode +1)
-(smartparens-global-mode 1)
+;; embark - Contextual actions
+(use-package embark
+  :bind (("C-." . embark-act)
+         ("C-h B" . embark-bindings)))
 
-;; Package: projejctile
-(require 'projectile)
-(projectile-mode +1)
-(setq projectile-enable-caching t)
+;; embark-consult - Integration between embark and consult
+(use-package embark-consult
+  :after (embark consult))
 
-(require 'helm-projectile)
-(helm-projectile-on)
-(setq projectile-completion-system 'helm)
-(setq projectile-indexing-method 'alien)
+;; ============================================================
+;; Editing Enhancements (use-package)
+;; ============================================================
 
-;; Package zygospore
-(global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+;; Package: clean-aindent-mode - Clean auto-indent and backspace behavior
+(use-package clean-aindent-mode
+  :hook (prog-mode . clean-aindent-mode))
 
-;; Package helm-gtags
-(setq
- helm-gtags-ignore-case t
- helm-gtags-auto-update t
- helm-gtags-use-input-at-cursor t
- helm-gtags-pulse-at-cursor t
- helm-gtags-prefix-key "\C-cg"
- helm-gtags-suggested-key-mapping t
- )
+;; Package: dtrt-indent - Detect indent style automatically
+(use-package dtrt-indent
+  :config
+  (dtrt-indent-mode 1)
+  (setq dtrt-indent-verbosity 0))
 
-(require 'helm-gtags)
-;; Enable helm-gtags-mode
-(add-hook 'dired-mode-hook 'helm-gtags-mode)
-(add-hook 'eshell-mode-hook 'helm-gtags-mode)
-(add-hook 'c-mode-hook 'helm-gtags-mode)
-(add-hook 'c++-mode-hook 'helm-gtags-mode)
-(add-hook 'asm-mode-hook 'helm-gtags-mode)
+;; Package: ws-butler - Trim whitespace only on edited lines
+(use-package ws-butler
+  :hook ((prog-mode . ws-butler-mode)
+         (text-mode . ws-butler-mode)
+         (fundamental-mode . ws-butler-mode)))
 
-(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
-(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
-(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
-(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+;; Package: yasnippet - Template system
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+  ;; Don't activate in terminal mode
+  (add-hook 'term-mode-hook (lambda() (setq yas-dont-activate t)))
+  :custom
+  (yas-verbosity 1)
+  (yas-wrap-around-region t)
+  (yas-prompt-functions '(yas/ido-prompt yas/completing-prompt)))
 
+;; Package: smartparens - Parenthesis management
+(use-package smartparens
+  :config
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-hybrid-kill-entire-symbol nil)
+  (sp-use-paredit-bindings)
+  (show-smartparens-global-mode +1)
+  (smartparens-global-mode 1))
 
-;; Package: speedbar
+;; ============================================================
+;; Project Management - Projectile
+;; ============================================================
+(use-package projectile
+  :config
+  (projectile-mode +1)
+  (setq projectile-completion-system 'default)  ; Use vertico/completing-read
+  (setq projectile-enable-caching t)
+  (setq projectile-indexing-method 'alien)
+  :bind-keymap
+  ("C-c p" . projectile-command-map))
+
+;; Package: zygospore - Reversible C-x 1 (delete-other-windows)
+(use-package zygospore
+  :bind (("C-x 1" . zygospore-toggle-delete-other-windows)))
+
+;; Package: anzu - Show match count in mode-line while searching
+(use-package anzu
+  :config
+  (global-anzu-mode)
+  :bind (("M-%" . anzu-query-replace)
+         ("C-M-%" . anzu-query-replace-regexp)))
+
+;; Package: volatile-highlights - Highlight changes from yanking, undo, etc.
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t))
+
+;; Package: undo-tree - Visualize undo history as a tree
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+
+;; Package: comment-dwim-2 - Smarter comment/uncomment
+(use-package comment-dwim-2
+  :bind (("M-;" . comment-dwim-2)))
+
+;; Package: iedit - Edit multiple occurrences simultaneously
+(use-package iedit
+  :custom
+  (iedit-toggle-key-default nil)
+  :bind (("C-;" . iedit-mode)))
+
+;; ============================================================
+;; Custom Editing Behaviors (modernized from setup-editing.el)
+;; ============================================================
+
+;; Enhanced kill/copy/yank behaviors using modern advice-add
+
+;; 1. Copy line when no region is active (M-w)
+(defun my/slick-copy-advice (orig-fun &rest args)
+  "Copy line when no region is active."
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position)
+           (line-beginning-position 2))))
+  (apply orig-fun args))
+
+(advice-add 'kill-ring-save :around #'my/slick-copy-advice)
+
+;; 2. Cut line when no region is active (C-w)
+(defun my/slick-cut-advice (orig-fun &rest args)
+  "Cut line when no region is active."
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2))))
+  (apply orig-fun args))
+
+(advice-add 'kill-region :around #'my/slick-cut-advice)
+
+;; 3. Clean whitespace before killing line (C-k)
+(defun my/kill-line-whitespace-advice (&rest _args)
+  "Clean whitespace before killing line in programming modes."
+  (when (member major-mode
+                '(emacs-lisp-mode scheme-mode lisp-mode
+                  c-mode c++-mode objc-mode
+                  latex-mode plain-tex-mode))
+    (when (and (eolp) (not (bolp)))
+      (forward-char 1)
+      (just-one-space 0)
+      (backward-char 1))))
+
+(advice-add 'kill-line :before #'my/kill-line-whitespace-advice)
+
+;; 4. Auto-indent yanked text in programming modes (C-y, M-y)
+(defvar yank-indent-modes
+  '(LaTeX-mode TeX-mode)
+  "Modes in which to indent regions that are yanked (or yank-popped).
+Only modes that don't derive from `prog-mode' should be listed here.")
+
+(defvar yank-indent-blacklisted-modes
+  '(python-mode slim-mode haml-mode)
+  "Modes for which auto-indenting is suppressed.")
+
+(defvar yank-advised-indent-threshold 1000
+  "Threshold (# chars) over which indentation does not automatically occur.")
+
+(defun yank-advised-indent-function (beg end)
+  "Do indentation, as long as the region isn't too large."
+  (if (<= (- end beg) yank-advised-indent-threshold)
+      (indent-region beg end nil)))
+
+(defun my/yank-indent-advice (orig-fun &rest args)
+  "Auto-indent yanked text in programming modes."
+  (let ((result (apply orig-fun args)))
+    (when (and (not (car args))
+               (not (member major-mode yank-indent-blacklisted-modes))
+               (or (derived-mode-p 'prog-mode)
+                   (member major-mode yank-indent-modes)))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end))))
+    result))
+
+(advice-add 'yank :around #'my/yank-indent-advice)
+(advice-add 'yank-pop :around #'my/yank-indent-advice)
+
+;; Other useful editing functions from setup-editing.el
+
+;; Smart move to beginning of line (C-a)
+(defun prelude-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first. If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+(global-set-key (kbd "C-a") 'prelude-move-beginning-of-line)
+
+;; Smart open line (M-o)
+(defun prelude-smart-open-line (arg)
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode.
+With a prefix ARG open line above the current line."
+  (interactive "P")
+  (if arg
+      (prelude-smart-open-line-above)
+    (progn
+      (move-end-of-line nil)
+      (newline-and-indent))))
+
+(defun prelude-smart-open-line-above ()
+  "Insert an empty line above the current line.
+Position the cursor at it's beginning, according to the current mode."
+  (interactive)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(global-set-key (kbd "M-o") 'prelude-smart-open-line)
+
+;; Indent buffer or region (C-c i)
+(defun indent-buffer ()
+  "Indent the currently visited buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defcustom prelude-indent-sensitive-modes
+  '(coffee-mode python-mode slim-mode haml-mode yaml-mode)
+  "Modes for which auto-indenting is suppressed."
+  :type 'list)
+
+(defun indent-region-or-buffer ()
+  "Indent a region if selected, otherwise the whole buffer."
+  (interactive)
+  (unless (member major-mode prelude-indent-sensitive-modes)
+    (save-excursion
+      (if (region-active-p)
+          (progn
+            (indent-region (region-beginning) (region-end))
+            (message "Indented selected region."))
+        (progn
+          (indent-buffer)
+          (message "Indented buffer.")))
+      (whitespace-cleanup))))
+
+(global-set-key (kbd "C-c i") 'indent-region-or-buffer)
+
+;; ============================================================
+;; Speedbar
 (setq speedbar-show-unknown-files t)
 
-;;　Changing the home directory as the initial dir(for Mervelicks)
-(setq default-directory "~/")
-(setq command-line-default-directory "~/")
-
-;; Changing the default directory as of '〜/' for Mavericks
-(defun cd-to-homedir-all-buffers ()
-  "Change every current directory of all buffers to the home directory."
-  (mapc
-   (lambda (buf) (set-buffer buf) (cd (expand-file-name "~"))) (buffer-list)))
-(add-hook 'after-init-hook 'cd-to-homedir-all-buffers)
+;; NOTE: Removed old macOS Mavericks workaround that forced home directory
+;; This was causing issues with `emacs .` not respecting current directory
+;; If you need to start in home directory, use: emacs ~
+;;
+;; Old code (commented out):
+;; ;;　Changing the home directory as the initial dir(for Mervelicks)
+;; (setq default-directory "~/")
+;; (setq command-line-default-directory "~/")
+;;
+;; ;; Changing the default directory as of '〜/' for Mavericks
+;; (defun cd-to-homedir-all-buffers ()
+;;   "Change every current directory of all buffers to the home directory."
+;;   (mapc
+;;    (lambda (buf) (set-buffer buf) (cd (expand-file-name "~"))) (buffer-list)))
+;; (add-hook 'after-init-hook 'cd-to-homedir-all-buffers)
 
 ;; Japanese Configuration (UTF-8)
 (set-language-environment "Japanese")
@@ -329,9 +613,11 @@
 ;; http://0xcc.net/blog/archives/000041.html
 (set-default-coding-systems 'utf-8)
 
+;; ============================================================
 ;; Theme and Colors
-;; VS Code Dark+ theme - similar to Visual Studio Code's default dark theme
-(when (require 'vscode-dark-plus-theme nil t)
+;; ============================================================
+(use-package vscode-dark-plus-theme
+  :config
   (load-theme 'vscode-dark-plus t))
 
 ;; Font configuration
@@ -346,48 +632,28 @@
   )
   default-frame-alist))
 
-;; migemo
-;; migemo.el provides Japanese increment search with 'Romanization of Japanese'(Roma-character).
+;; ============================================================
+;; migemo - Japanese incremental search with Romanization
+;; ============================================================
 ;; Requires: brew install cmigemo
-(when (executable-find "cmigemo")
-  (require 'migemo)
-  (setq migemo-command "cmigemo")
-  (setq migemo-options '("-q" "--emacs"))
-  ;; Set your installed path (Homebrew on Apple Silicon)
-  (setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
-  (setq migemo-user-dictionary nil)
-  (setq migemo-regex-dictionary nil)
-  (setq migemo-coding-system 'utf-8-unix)
+(use-package migemo
+  :if (executable-find "cmigemo")
+  :custom
+  (migemo-command "cmigemo")
+  (migemo-options '("-q" "--emacs"))
+  (migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
+  (migemo-user-dictionary nil)
+  (migemo-regex-dictionary nil)
+  (migemo-coding-system 'utf-8-unix)
+  :config
   (migemo-init))
-
-;; auto-complete
-(require 'auto-complete)
-(require 'auto-complete-config)
-(global-auto-complete-mode t)
-(setq ac-auto-start t)
-
-;;; auto complete mod
-;;; should be loaded after yasnippet so that they can work together
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
-;;; set the trigger key so that it can work together with yasnippet on tab key,
-;;; if the word exists in yasnippet, pressing tab will cause yasnippet to
-;;; activate, otherwise, auto-complete will
-(ac-set-trigger-key "TAB")
-(ac-set-trigger-key "<tab>")
-
-;; yasnippet
-(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
 
 ;; ============================================================
 ;; exec-path-from-shell - Better PATH handling on macOS
 ;; ============================================================
-;; This ensures Emacs inherits PATH from your shell (pyenv, volta, ~/bin, etc.)
-(when (memq window-system '(mac ns x))
-  (require 'exec-path-from-shell)
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config
   (exec-path-from-shell-initialize)
   ;; Copy additional environment variables for development tools
   (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME")))
@@ -440,25 +706,19 @@
 ;; Add Go module detection to project-find-functions
 (add-hook 'project-find-functions #'project-find-go-module)
 
-(when (require 'go-mode nil t)
-  (add-hook 'go-mode-hook 'eglot-ensure)
-  (add-hook 'go-ts-mode-hook 'eglot-ensure)
-
-  ;; Go uses tabs for indentation
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode t)
-              (setq tab-width 4)))
-
-  ;; Format and organize imports on save
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook
-                        (lambda ()
-                          (when (derived-mode-p 'go-mode 'go-ts-mode)
-                            (eglot-format-buffer)))
-                        nil t)))
-
+(use-package go-mode
+  :hook ((go-mode . eglot-ensure)
+         (go-ts-mode . eglot-ensure)
+         (go-mode . (lambda ()
+                      (setq indent-tabs-mode t)
+                      (setq tab-width 4)))
+         (go-mode . (lambda ()
+                      (add-hook 'before-save-hook
+                                (lambda ()
+                                  (when (derived-mode-p 'go-mode 'go-ts-mode)
+                                    (eglot-format-buffer)))
+                                nil t))))
+  :config
   ;; Gopls configuration
   (setq-default eglot-workspace-configuration
                 '(:gopls (:staticcheck t
@@ -485,41 +745,44 @@
 ;; ============================================================
 ;; Optional LSP: npm install -g yaml-language-server
 
-(when (require 'yaml-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-mode))
-
-  ;; Enable Eglot for YAML if yaml-language-server is installed
-  (add-hook 'yaml-mode-hook
-            (lambda ()
-              (when (executable-find "yaml-language-server")
-                (eglot-ensure))))
-
-  ;; YAML indentation
-  (add-hook 'yaml-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode nil)
-              (setq tab-width 2))))
+(use-package yaml-mode
+  :mode (("\\.ya?ml\\'" . yaml-mode)
+         ("\\.eyaml\\'" . yaml-mode))
+  :hook ((yaml-mode . (lambda ()
+                        (when (executable-find "yaml-language-server")
+                          (eglot-ensure))))
+         (yaml-mode . (lambda ()
+                        (setq indent-tabs-mode nil)
+                        (setq tab-width 2)))))
 
 ;; ============================================================
 ;; Markdown Configuration
 ;; ============================================================
 ;; Optional: brew install pandoc (for preview/export)
 
-(when (require 'markdown-mode nil t)
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-
+(use-package markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :config
   ;; Use pandoc for markdown processing if available
   (when (executable-find "pandoc")
     (setq markdown-command "pandoc"))
+  :custom
+  (markdown-enable-math t)
+  (markdown-fontify-code-blocks-natively t))
 
-  ;; Enable math support (e.g., for LaTeX equations)
-  (setq markdown-enable-math t)
+;; ============================================================
+;; Terminal Emulators
+;; ============================================================
+;; vterm - Full-featured terminal emulator (requires libvterm)
+;; Requires: brew install libvterm
+(use-package vterm
+  :commands vterm)
 
-  ;; Fontify code blocks
-  (setq markdown-fontify-code-blocks-natively t))
+;; eat - Emulate A Terminal (pure elisp, no external dependencies)
+(use-package eat
+  :commands eat)
 
 ;; ============================================================
 ;; Claude Code Integration
@@ -527,26 +790,20 @@
 ;; Requires: brew install --cask claude-code (already installed)
 ;;           brew install libvterm (already installed)
 
-;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
-;; This installs to ~/.emacs.d/elpa/ (should be in .gitignore)
-(unless (package-installed-p 'claude-code)
-  (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
-
-;; Load and configure claude-code
-(with-eval-after-load 'claude-code
-  ;; Use vterm for the best TUI experience
-  (setq claude-code-terminal-type 'vterm)
-
-  ;; Set the correct command name (homebrew installs as 'claude')
-  (setq claude-code-command "claude")
-
-  ;; Auto-save buffers before sending to Claude
-  (setq claude-code-save-before-send t)
-
-  ;; Keybindings
-  (global-set-key (kbd "C-c c c") 'claude-code)        ; Start/switch to Claude
-  (global-set-key (kbd "C-c c s") 'claude-code-send)   ; Send region/buffer
-  (global-set-key (kbd "C-c c v") 'claude-code-vterm)) ; Open raw vterm buffer
+(use-package claude-code
+  :ensure nil  ; Installed via package-vc-install
+  :commands (claude-code claude-code-send claude-code-vterm)
+  :init
+  ;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
+  (unless (package-installed-p 'claude-code)
+    (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
+  :custom
+  (claude-code-terminal-type 'vterm)      ; Use vterm for best TUI experience
+  (claude-code-command "claude")          ; Command name (homebrew installs as 'claude')
+  (claude-code-save-before-send t)        ; Auto-save buffers before sending
+  :bind (("C-c c c" . claude-code)        ; Start/switch to Claude
+         ("C-c c s" . claude-code-send)   ; Send region/buffer
+         ("C-c c v" . claude-code-vterm))); Open raw vterm buffer
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -554,10 +811,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(anzu auto-complete claude-code clean-aindent-mode comment-dwim-2
-          company dtrt-indent dumb-jump eat exec-path-from-shell
-          ggtags go-mode helm-gtags helm-projectile iedit
-          markdown-mode migemo smartparens undo-tree
+   '(anzu claude-code clean-aindent-mode comment-dwim-2 company consult
+          dtrt-indent dumb-jump eat embark embark-consult
+          exec-path-from-shell go-mode iedit marginalia markdown-mode
+          migemo orderless projectile smartparens undo-tree vertico
           volatile-highlights vscode-dark-plus-theme vterm ws-butler
           yaml-mode yasnippet zygospore))
  '(package-vc-selected-packages
@@ -569,3 +826,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;; init.el ends here
