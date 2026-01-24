@@ -21,3 +21,8 @@ projects
 
 # Go-mode generated files
 go.el
+
+# Un-ignore .claude/plans/ to track implementation plans in this repo
+!.claude/
+!.claude/plans/
+!.claude/plans/*.md
