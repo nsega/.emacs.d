@@ -2,7 +2,7 @@
 
 Modern Emacs configuration optimized for Emacs 30+ using best practices and contemporary tools.
 
-## ✨ Overview
+## Overview
 
 This configuration has been fully modernized (January 2024) to use:
 - **use-package** for declarative package management
@@ -11,7 +11,7 @@ This configuration has been fully modernized (January 2024) to use:
 - **Modern advice-add** (no deprecated code)
 - **Single init.el** (consolidated from 6 files)
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Clone the repository
@@ -26,7 +26,7 @@ emacs
 
 For detailed usage, see the **[Navigation Guide](#-learning-resources)** below.
 
-## 📋 Requirements
+## Requirements
 
 - **Emacs 30.x** or later (29.x also works)
 - **macOS** (tested on Apple Silicon)
@@ -38,7 +38,7 @@ brew install ripgrep      # Fast project search
 brew install pandoc       # Markdown preview
 ```
 
-## 🎯 Key Features
+## Key Features
 
 ### Completion Framework (Vertico Ecosystem)
 - **vertico** - Fast vertical completion UI
@@ -82,7 +82,7 @@ brew install pandoc       # Markdown preview
 - **eat** - Pure elisp terminal
 - **Claude Code** - AI pair programming integration
 
-## 📦 Installation
+## Installation
 
 ### 1. Clone Repository
 ```bash
@@ -135,7 +135,7 @@ emacs
 
 On first launch, all packages install automatically from MELPA. This may take 1-2 minutes.
 
-## ⌨️ Essential Key Bindings
+## Essential Key Bindings
 
 ### Most Important (Learn These First!)
 | Key | Command | Description |
@@ -202,7 +202,7 @@ On first launch, all packages install automatically from MELPA. This may take 1-
 
 For complete reference, see **[CHEATSHEET.md](CHEATSHEET.md)**
 
-## 📚 Learning Resources
+## Learning Resources
 
 This repository includes comprehensive guides:
 
@@ -221,7 +221,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 - Progressive challenges
 - Real-world examples
 
-### 4. **[TERMINAL_TIPS.md](TERMINAL_TIPS.md)** - Terminal Emacs Guide ⭐ NEW
+### 4. **[TERMINAL_TIPS.md](TERMINAL_TIPS.md)** - Terminal Emacs Guide (NEW)
 - Terminal-friendly key binding alternatives
 - Meta key configuration for terminal emulators
 - ESC as Meta usage
@@ -239,7 +239,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 3. Reference NAVIGATION_GUIDE.md as needed
 4. **Terminal users:** Read TERMINAL_TIPS.md for key binding alternatives
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 ~/.emacs.d/
@@ -257,7 +257,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 
 **Note:** The old `custom/` directory structure has been consolidated into a single `init.el` using use-package.
 
-## 🎓 Usage Examples
+## Usage Examples
 
 ### Opening a Project
 ```bash
@@ -294,7 +294,7 @@ C-c r          → eglot-rename
 → RET          → Renames everywhere!
 ```
 
-## 🔧 Customization
+## Customization
 
 ### Adding New Packages
 
@@ -325,7 +325,7 @@ Check package load times:
 M-x use-package-report
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### LSP Not Working?
 
@@ -383,7 +383,7 @@ cd ~/.emacs.d
 git pull
 ```
 
-## 🎯 What's Different from Traditional Configs?
+## What's Different from Traditional Configs?
 
 ### Before Modernization
 - 6 separate files (init.el + custom/*.el)
@@ -392,7 +392,7 @@ git pull
 - Deprecated `defadvice` code
 - Manual package management
 
-### After Modernization ✨
+### After Modernization
 - **Single init.el** with use-package
 - **Vertico ecosystem** (20-30% faster)
 - **Single LSP system** (Eglot only)
@@ -401,7 +401,7 @@ git pull
 
 **Result:** Simpler, faster, more maintainable!
 
-## 🚀 Advanced Features
+## Advanced Features
 
 ### Orderless Matching
 
@@ -432,7 +432,7 @@ C-x b          → Buffer list
 C-.            → Show actions (view, save, kill, diff, etc.)
 ```
 
-## 📊 Performance
+## Performance
 
 - **Startup time:** ~2-3 seconds (packages lazy-load)
 - **Search:** < 0.1s for most projects (with ripgrep)
@@ -441,7 +441,7 @@ C-.            → Show actions (view, save, kill, diff, etc.)
 
 Use `M-x use-package-report` to analyze package load times.
 
-## 🤝 Contributing
+## Contributing
 
 This is a personal configuration, but improvements are welcome:
 
@@ -450,11 +450,11 @@ This is a personal configuration, but improvements are welcome:
 3. Make your changes
 4. Submit a pull request
 
-## 📝 License
+## License
 
 MIT License - See LICENSE file for details
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with these amazing packages:
 - [vertico](https://github.com/minad/vertico) - Vertical completion
@@ -465,7 +465,7 @@ Built with these amazing packages:
 - [company](https://github.com/company-mode/company-mode) - Completion
 - [eglot](https://github.com/joaotavora/eglot) - LSP client
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Emacs Wiki](https://www.emacswiki.org/)
 - [Vertico Documentation](https://github.com/minad/vertico)
@@ -476,6 +476,6 @@ Built with these amazing packages:
 
 **Last Updated:** January 2024
 **Emacs Version:** 30.x
-**Status:** Production Ready ✅
+**Status:** Production Ready
 
 For questions or issues, please open an issue on GitHub.
