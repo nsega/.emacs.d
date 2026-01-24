@@ -37,7 +37,6 @@
     auto-complete
     company
     ;; duplicate-thing  ; removed - no longer available on MELPA
-    ggtags
     ;; Completion framework - Vertico ecosystem (replaces Helm)
     vertico
     orderless
@@ -85,8 +84,6 @@
 
 (add-to-list 'load-path "~/.emacs.d/custom")
 
-(require 'setup-ggtags)
-(require 'setup-cedet)
 (require 'setup-editing)
 
 ;; ============================================================
@@ -106,23 +103,26 @@
   (dumb-jump-prefer-searcher 'rg)  ; Use ripgrep if available
   (dumb-jump-force-searcher nil))
 
-;; function-args
-;; (require 'function-args)
-;; (fa-config-default)
-;; (define-key c-mode-map  [(tab)] 'company-complete)
-;; (define-key c++-mode-map  [(tab)] 'company-complete)
+;; ============================================================
+;; Completion - Company Mode
+;; ============================================================
+(use-package company
+  :hook (after-init . global-company-mode)
+  :bind (:map c-mode-map
+              ("<tab>" . company-complete)
+         :map c++-mode-map
+              ("<tab>" . company-complete))
+  :config
+  (delete 'company-semantic company-backends)
+  :custom
+  (company-idle-delay 0.1)
+  (company-minimum-prefix-length 2)
+  (company-show-numbers t))
 
-;; company
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(delete 'company-semantic company-backends)
-(define-key c-mode-map  [(tab)] 'company-complete)
-(define-key c++-mode-map  [(tab)] 'company-complete)
-;; (define-key c-mode-map  [(control tab)] 'company-complete)
-;; (define-key c++-mode-map  [(control tab)] 'company-complete)
-
-;; company-c-headers
-(add-to-list 'company-backends 'company-c-headers)
+(use-package company-c-headers
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-c-headers))
 
 ;; hs-minor-mode for folding source code
 (add-hook 'c-mode-common-hook 'hs-minor-mode)
@@ -630,9 +630,9 @@
  '(package-selected-packages
    '(anzu auto-complete claude-code clean-aindent-mode comment-dwim-2
           company consult dtrt-indent dumb-jump eat embark embark-consult
-          exec-path-from-shell ggtags go-mode iedit marginalia
-          markdown-mode migemo orderless projectile smartparens undo-tree
-          vertico volatile-highlights vscode-dark-plus-theme vterm ws-butler
+          exec-path-from-shell go-mode iedit marginalia markdown-mode
+          migemo orderless projectile smartparens undo-tree vertico
+          volatile-highlights vscode-dark-plus-theme vterm ws-butler
           yaml-mode yasnippet zygospore))
  '(package-vc-selected-packages
    '((claude-code :vc-backend Git :url
