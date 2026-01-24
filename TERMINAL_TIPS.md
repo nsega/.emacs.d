@@ -277,7 +277,7 @@ cat ~/.emacs.d/TERMINAL_TIPS.md
 
 - [EmacsWiki: Terminal Key Bindings](https://www.emacswiki.org/emacs/KeyBindingDiscussion)
 - [Terminal Emulator Comparison](https://www.emacswiki.org/emacs/CategoryTerminalEmulator)
-- Your config cheatsheet: `~/.emacs.d/CHEATSHEET.txt`
+- Your config cheatsheet: `~/.emacs.d/CHEATSHEET.md`
 
 ---
 

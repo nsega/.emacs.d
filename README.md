@@ -200,13 +200,13 @@ On first launch, all packages install automatically from MELPA. This may take 1-
 | `C-.` | embark-act | Show actions for thing at point |
 | `C-h B` | embark-bindings | Show all key bindings |
 
-For complete reference, see **[CHEATSHEET.txt](CHEATSHEET.txt)**
+For complete reference, see **[CHEATSHEET.md](CHEATSHEET.md)**
 
 ## 📚 Learning Resources
 
 This repository includes comprehensive guides:
 
-### 1. **[CHEATSHEET.txt](CHEATSHEET.txt)** - Quick Reference
+### 1. **[CHEATSHEET.md](CHEATSHEET.md)** - Quick Reference
 Printable cheat sheet with essential commands. Keep it on your desk!
 
 ### 2. **[NAVIGATION_GUIDE.md](NAVIGATION_GUIDE.md)** - Complete Guide
@@ -227,7 +227,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 - Before/after comparisons
 
 **Recommended learning path:**
-1. Read CHEATSHEET.txt
+1. Read CHEATSHEET.md
 2. Try exercises 1-3 in HANDS_ON_TUTORIAL.md
 3. Reference NAVIGATION_GUIDE.md as needed
 
@@ -237,7 +237,7 @@ Printable cheat sheet with essential commands. Keep it on your desk!
 ~/.emacs.d/
 ├── init.el                      # Main configuration (single file!)
 ├── README.md                    # This file
-├── CHEATSHEET.txt              # Quick reference
+├── CHEATSHEET.md               # Quick reference
 ├── NAVIGATION_GUIDE.md         # Complete navigation guide
 ├── HANDS_ON_TUTORIAL.md        # Interactive tutorial
 ├── MODERNIZATION_PLAN.md       # Modernization documentation
