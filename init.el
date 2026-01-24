@@ -502,16 +502,21 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Speedbar
 (setq speedbar-show-unknown-files t)
 
-;;　Changing the home directory as the initial dir(for Mervelicks)
-(setq default-directory "~/")
-(setq command-line-default-directory "~/")
-
-;; Changing the default directory as of '〜/' for Mavericks
-(defun cd-to-homedir-all-buffers ()
-  "Change every current directory of all buffers to the home directory."
-  (mapc
-   (lambda (buf) (set-buffer buf) (cd (expand-file-name "~"))) (buffer-list)))
-(add-hook 'after-init-hook 'cd-to-homedir-all-buffers)
+;; NOTE: Removed old macOS Mavericks workaround that forced home directory
+;; This was causing issues with `emacs .` not respecting current directory
+;; If you need to start in home directory, use: emacs ~
+;;
+;; Old code (commented out):
+;; ;;　Changing the home directory as the initial dir(for Mervelicks)
+;; (setq default-directory "~/")
+;; (setq command-line-default-directory "~/")
+;;
+;; ;; Changing the default directory as of '〜/' for Mavericks
+;; (defun cd-to-homedir-all-buffers ()
+;;   "Change every current directory of all buffers to the home directory."
+;;   (mapc
+;;    (lambda (buf) (set-buffer buf) (cd (expand-file-name "~"))) (buffer-list)))
+;; (add-hook 'after-init-hook 'cd-to-homedir-all-buffers)
 
 ;; Japanese Configuration (UTF-8)
 (set-language-environment "Japanese")
