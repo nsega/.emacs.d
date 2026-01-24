@@ -34,7 +34,6 @@
 
 (defconst demo-packages
   '(anzu
-    auto-complete
     company
     ;; duplicate-thing  ; removed - no longer available on MELPA
     ;; Completion framework - Vertico ecosystem (replaces Helm)
@@ -596,23 +595,6 @@ Position the cursor at it's beginning, according to the current mode."
   :config
   (migemo-init))
 
-;; auto-complete
-(require 'auto-complete)
-(require 'auto-complete-config)
-(global-auto-complete-mode t)
-(setq ac-auto-start t)
-
-;;; auto complete mod
-;;; should be loaded after yasnippet so that they can work together
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
-;;; set the trigger key so that it can work together with yasnippet on tab key,
-;;; if the word exists in yasnippet, pressing tab will cause yasnippet to
-;;; activate, otherwise, auto-complete will
-(ac-set-trigger-key "TAB")
-(ac-set-trigger-key "<tab>")
-
 ;; ============================================================
 ;; exec-path-from-shell - Better PATH handling on macOS
 ;; ============================================================
@@ -782,8 +764,8 @@ Position the cursor at it's beginning, according to the current mode."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(anzu auto-complete claude-code clean-aindent-mode comment-dwim-2
-          company consult dtrt-indent dumb-jump eat embark embark-consult
+   '(anzu claude-code clean-aindent-mode comment-dwim-2 company consult
+          dtrt-indent dumb-jump eat embark embark-consult
           exec-path-from-shell go-mode iedit marginalia markdown-mode
           migemo orderless projectile smartparens undo-tree vertico
           volatile-highlights vscode-dark-plus-theme vterm ws-butler
