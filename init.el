@@ -3,6 +3,17 @@
              '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
+;; ============================================================
+;; Bootstrap use-package
+;; ============================================================
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile (require 'use-package))
+(setq use-package-always-ensure t)
+(setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
+
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
 
