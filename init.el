@@ -737,26 +737,20 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Requires: brew install --cask claude-code (already installed)
 ;;           brew install libvterm (already installed)
 
-;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
-;; This installs to ~/.emacs.d/elpa/ (should be in .gitignore)
-(unless (package-installed-p 'claude-code)
-  (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
-
-;; Load and configure claude-code
-(with-eval-after-load 'claude-code
-  ;; Use vterm for the best TUI experience
-  (setq claude-code-terminal-type 'vterm)
-
-  ;; Set the correct command name (homebrew installs as 'claude')
-  (setq claude-code-command "claude")
-
-  ;; Auto-save buffers before sending to Claude
-  (setq claude-code-save-before-send t)
-
-  ;; Keybindings
-  (global-set-key (kbd "C-c c c") 'claude-code)        ; Start/switch to Claude
-  (global-set-key (kbd "C-c c s") 'claude-code-send)   ; Send region/buffer
-  (global-set-key (kbd "C-c c v") 'claude-code-vterm)) ; Open raw vterm buffer
+(use-package claude-code
+  :ensure nil  ; Installed via package-vc-install
+  :commands (claude-code claude-code-send claude-code-vterm)
+  :init
+  ;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
+  (unless (package-installed-p 'claude-code)
+    (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
+  :custom
+  (claude-code-terminal-type 'vterm)      ; Use vterm for best TUI experience
+  (claude-code-command "claude")          ; Command name (homebrew installs as 'claude')
+  (claude-code-save-before-send t)        ; Auto-save buffers before sending
+  :bind (("C-c c c" . claude-code)        ; Start/switch to Claude
+         ("C-c c s" . claude-code-send)   ; Send region/buffer
+         ("C-c c v" . claude-code-vterm))); Open raw vterm buffer
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
