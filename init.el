@@ -1,3 +1,46 @@
+;;; init.el --- Modern Emacs Configuration -*- lexical-binding: t; -*-
+
+;; Author: Naoki Sega
+;; Maintainer: Naoki Sega
+;; URL: https://github.com/nsega/.emacs.d
+;; Keywords: convenience
+
+;;; Commentary:
+
+;; Modern Emacs configuration using use-package for declarative package management.
+;; Migrated from traditional setup to use modern best practices for Emacs 30+.
+;;
+;; Key Features:
+;; - Vertico ecosystem for lightweight, fast completion (replaces Helm)
+;; - Eglot LSP for intelligent code navigation (Python, Go, TypeScript)
+;; - Company-mode for auto-completion
+;; - Modern advice-add instead of deprecated defadvice
+;; - Single, well-organized init.el (no separate custom/*.el files)
+;;
+;; Package Management:
+;; - Uses use-package for all package configuration
+;; - Lazy loading where appropriate for fast startup
+;; - Self-documenting package declarations
+;;
+;; Completion Framework:
+;; - vertico: Vertical completion UI
+;; - consult: Enhanced completing-read commands
+;; - marginalia: Rich annotations in minibuffer
+;; - embark: Contextual actions on completion candidates
+;; - orderless: Flexible matching style
+;;
+;; Code Intelligence:
+;; - Eglot: Built-in LSP client (Emacs 29+)
+;; - Company: Auto-completion framework
+;; - dumb-jump: Fallback navigation for non-LSP files
+;;
+;; For more information, see: https://github.com/nsega/.emacs.d
+
+;;; Code:
+
+;; ============================================================
+;; Package Management
+;; ============================================================
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
@@ -80,9 +123,6 @@
       (package-install package))))
 
 (install-packages)
-
-;; All custom configuration has been migrated to use-package
-;; (add-to-list 'load-path "~/.emacs.d/custom")
 
 ;; ============================================================
 ;; Navigation Enhancements
@@ -773,3 +813,5 @@ Position the cursor at it's beginning, according to the current mode."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;; init.el ends here
