@@ -657,7 +657,10 @@ Position the cursor at it's beginning, according to the current mode."
   :config
   (exec-path-from-shell-initialize)
   ;; Copy additional environment variables for development tools
-  (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME")))
+  (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME"))
+  ;; Add Volta bin directory to exec-path for npm global packages
+  (when-let ((volta-home (getenv "VOLTA_HOME")))
+    (add-to-list 'exec-path (expand-file-name "bin" volta-home))))
 
 ;; ============================================================
 ;; Eglot - Built-in LSP client (Emacs 29+)
@@ -768,10 +771,29 @@ Position the cursor at it's beginning, according to the current mode."
   :config
   ;; Use pandoc for markdown processing if available
   (when (executable-find "pandoc")
-    (setq markdown-command "pandoc"))
+    (setq markdown-command
+          (if (executable-find "mermaid-filter")
+              "pandoc --filter mermaid-filter"
+            "pandoc")))
+  ;; Open live preview window on the right side
+  (defun my/markdown-live-preview-window-right (file)
+    "Open markdown live preview in a window on the right side."
+    (eww-open-file file)
+    (let ((buf (if (bound-and-true-p eww-auto-rename-buffer)
+                   (cl-loop for b in (buffer-list)
+                            when (string-match-p "eww\\*\\'" (buffer-name b))
+                            return b)
+                 (get-buffer "*eww*"))))
+      (pop-to-buffer buf '((display-buffer-in-direction)
+                           (direction . right)
+                           (window-width . 0.5)))
+      buf))
+  (setq markdown-live-preview-window-function #'my/markdown-live-preview-window-right)
   :custom
   (markdown-enable-math t)
-  (markdown-fontify-code-blocks-natively t))
+  (markdown-fontify-code-blocks-natively t)
+  ;; Delete exported HTML files after live preview
+  (markdown-live-preview-delete-export 'delete-on-export))
 
 ;; ============================================================
 ;; Terminal Emulators
