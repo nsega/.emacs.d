@@ -801,11 +801,12 @@ Position the cursor at it's beginning, according to the current mode."
 (use-package claude-code
   :after (transient inheritenv vterm)
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :init
+  ;; Set these BEFORE package loads (defcustom defaults are read at load time)
+  (setq claude-code-terminal-type 'vterm)   ; Use vterm for best TUI experience
+  (setq claude-code-program "claude")       ; CLI program name
   :config
   (claude-code-mode)  ; Enable global minor mode for IDE integration
-  :custom
-  (claude-code-terminal-type 'vterm)      ; Use vterm for best TUI experience
-  (claude-code-program "claude")          ; CLI program name (homebrew installs as 'claude')
   :bind-keymap ("C-c c" . claude-code-command-map))
 
 (custom-set-variables
