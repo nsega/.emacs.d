@@ -778,7 +778,20 @@ Position the cursor at it's beginning, according to the current mode."
 ;; vterm - Full-featured terminal emulator (requires libvterm)
 ;; Requires: brew install libvterm
 (use-package vterm
-  :commands vterm)
+  :commands vterm
+  :config
+  ;; Disable modes that interfere with terminal input
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (setq-local global-hl-line-mode nil)
+              (setq-local line-spacing nil)))
+  :hook
+  ;; Disable smartparens in vterm (interferes with key input)
+  (vterm-mode . (lambda () (smartparens-mode -1)))
+  ;; Disable company in vterm
+  (vterm-mode . (lambda () (company-mode -1)))
+  ;; Disable yasnippet in vterm
+  (vterm-mode . (lambda () (yas-minor-mode -1))))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
