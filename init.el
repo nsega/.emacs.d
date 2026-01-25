@@ -790,20 +790,18 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Requires: brew install --cask claude-code (already installed)
 ;;           brew install libvterm (already installed)
 
+;; inheritenv - Required dependency for claude-code.el
+(use-package inheritenv
+  :vc (:url "https://github.com/purcell/inheritenv" :rev :newest))
+
 (use-package claude-code
-  :ensure nil  ; Installed via package-vc-install
-  :commands (claude-code claude-code-send claude-code-vterm)
-  :init
-  ;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
-  (unless (package-installed-p 'claude-code)
-    (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
+  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :config
+  (claude-code-mode)  ; Enable global minor mode for IDE integration
   :custom
   (claude-code-terminal-type 'vterm)      ; Use vterm for best TUI experience
   (claude-code-command "claude")          ; Command name (homebrew installs as 'claude')
-  (claude-code-save-before-send t)        ; Auto-save buffers before sending
-  :bind (("C-c c c" . claude-code)        ; Start/switch to Claude
-         ("C-c c s" . claude-code-send)   ; Send region/buffer
-         ("C-c c v" . claude-code-vterm))); Open raw vterm buffer
+  :bind-keymap ("C-c c" . claude-code-command-map))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -811,15 +809,12 @@ Position the cursor at it's beginning, according to the current mode."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(anzu claude-code clean-aindent-mode comment-dwim-2 company consult
+   '(anzu clean-aindent-mode comment-dwim-2 company consult
           dtrt-indent dumb-jump eat embark embark-consult
           exec-path-from-shell go-mode iedit marginalia markdown-mode
           migemo orderless projectile smartparens undo-tree vertico
           volatile-highlights vscode-dark-plus-theme vterm ws-butler
-          yaml-mode yasnippet zygospore))
- '(package-vc-selected-packages
-   '((claude-code :vc-backend Git :url
-                  "https://github.com/stevemolitor/claude-code.el"))))
+          yaml-mode yasnippet zygospore)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
