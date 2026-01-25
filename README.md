@@ -100,6 +100,8 @@ Live preview with side-by-side editing using EWW (built-in browser).
 | `C-c C-c p` | Preview | Open preview in external browser |
 | `C-c C-c v` | Export & view | Export HTML and open in browser |
 
+**Mermaid diagram support:** Install `npm install -g @mermaid-js/mermaid-cli mermaid-filter` to render Mermaid diagrams in preview.
+
 ## Installation
 
 ### 1. Clone Repository

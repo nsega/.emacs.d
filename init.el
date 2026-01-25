@@ -768,7 +768,10 @@ Position the cursor at it's beginning, according to the current mode."
   :config
   ;; Use pandoc for markdown processing if available
   (when (executable-find "pandoc")
-    (setq markdown-command "pandoc"))
+    (setq markdown-command
+          (if (executable-find "mermaid-filter")
+              "pandoc --filter mermaid-filter"
+            "pandoc")))
   ;; Open live preview window on the right side
   (defun my/markdown-live-preview-window-right (file)
     "Open markdown live preview in a window on the right side."
