@@ -58,7 +58,7 @@
 (setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
 
 ;; Pre-configure claude-code to use vterm (must be set before package loads)
-(setq claude-code-terminal-type 'vterm)
+(setq claude-code-terminal-backend 'vterm)
 
 ;; ============================================================
 ;; Basic Settings
@@ -821,7 +821,7 @@ Position the cursor at it's beginning, according to the current mode."
   :after vterm  ; Ensure vterm is loaded first
   :init
   ;; Set these BEFORE package loads (defcustom defaults are read at load time)
-  (setq claude-code-terminal-type 'vterm)   ; Use vterm for best TUI experience
+  (setq claude-code-terminal-backend 'vterm)   ; Use vterm for best TUI experience
   (setq claude-code-program "claude")       ; CLI program name
   (require 'vterm)  ; Ensure vterm is available
   :config
