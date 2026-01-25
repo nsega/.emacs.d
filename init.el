@@ -790,17 +790,22 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Requires: brew install --cask claude-code (already installed)
 ;;           brew install libvterm (already installed)
 
-;; inheritenv - Required dependency for claude-code.el
+;; transient - Required dependency for claude-code.el (menu system)
+(use-package transient
+  :ensure t)
+
+;; inheritenv - Required dependency for claude-code.el (environment handling)
 (use-package inheritenv
   :vc (:url "https://github.com/purcell/inheritenv" :rev :newest))
 
 (use-package claude-code
+  :after (transient inheritenv vterm)
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
   :config
   (claude-code-mode)  ; Enable global minor mode for IDE integration
   :custom
   (claude-code-terminal-type 'vterm)      ; Use vterm for best TUI experience
-  (claude-code-command "claude")          ; Command name (homebrew installs as 'claude')
+  (claude-code-program "claude")          ; CLI program name (homebrew installs as 'claude')
   :bind-keymap ("C-c c" . claude-code-command-map))
 
 (custom-set-variables
