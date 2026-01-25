@@ -57,6 +57,9 @@
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
 
+;; Pre-configure claude-code to use vterm (must be set before package loads)
+(setq claude-code-terminal-type 'vterm)
+
 ;; ============================================================
 ;; Basic Settings
 ;; ============================================================
@@ -778,7 +781,8 @@ Position the cursor at it's beginning, according to the current mode."
 ;; vterm - Full-featured terminal emulator (requires libvterm)
 ;; Requires: brew install libvterm
 (use-package vterm
-  :commands vterm
+  :ensure t
+  :demand t  ; Load eagerly so it's available for claude-code
   :config
   ;; Disable modes that interfere with terminal input
   (defun my/vterm-mode-setup ()
@@ -814,10 +818,12 @@ Position the cursor at it's beginning, according to the current mode."
 (use-package claude-code
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
   :demand t  ; Load immediately, don't defer
+  :after vterm  ; Ensure vterm is loaded first
   :init
   ;; Set these BEFORE package loads (defcustom defaults are read at load time)
   (setq claude-code-terminal-type 'vterm)   ; Use vterm for best TUI experience
   (setq claude-code-program "claude")       ; CLI program name
+  (require 'vterm)  ; Ensure vterm is available
   :config
   (claude-code-mode)  ; Enable global minor mode for IDE integration
   ;; Set up keybindings explicitly (more reliable than :bind-keymap with :vc)
