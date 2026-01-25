@@ -112,8 +112,6 @@
     ;; Terminal
     vterm                 ; Terminal emulator for Claude Code
     eat                   ; Emulate A Terminal (another terminal emulator)
-    ;; Theme
-    vscode-dark-plus-theme ; VS Code Dark+ theme
     ))
 
 (defun install-packages ()
@@ -619,9 +617,9 @@ Position the cursor at it's beginning, according to the current mode."
 ;; ============================================================
 ;; Theme and Colors
 ;; ============================================================
-(use-package vscode-dark-plus-theme
-  :config
-  (load-theme 'vscode-dark-plus t))
+;; modus-vivendi - High contrast dark theme (built-in since Emacs 28)
+;; Part of the modus-themes package by Protesilaos Stavrou
+(load-theme 'modus-vivendi t)
 
 ;; Font configuration
 (when window-system
@@ -839,8 +837,8 @@ Position the cursor at it's beginning, according to the current mode."
           dtrt-indent dumb-jump eat embark embark-consult
           exec-path-from-shell go-mode iedit marginalia markdown-mode
           migemo orderless projectile smartparens undo-tree vertico
-          volatile-highlights vscode-dark-plus-theme vterm ws-butler
-          yaml-mode yasnippet zygospore)))
+          volatile-highlights vterm ws-butler yaml-mode yasnippet
+          zygospore)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
