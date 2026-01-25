@@ -769,9 +769,19 @@ Position the cursor at it's beginning, according to the current mode."
   ;; Use pandoc for markdown processing if available
   (when (executable-find "pandoc")
     (setq markdown-command "pandoc"))
+  ;; Open live preview window on the right side
+  (defun my/markdown-live-preview-window-right (file)
+    "Open markdown live preview in a window on the right side."
+    (let ((buf (eww-open-file file)))
+      (pop-to-buffer buf '((display-buffer-in-direction)
+                           (direction . right)
+                           (window-width . 0.5)))))
+  (setq markdown-live-preview-window-function #'my/markdown-live-preview-window-right)
   :custom
   (markdown-enable-math t)
-  (markdown-fontify-code-blocks-natively t))
+  (markdown-fontify-code-blocks-natively t)
+  ;; Delete exported HTML files after live preview
+  (markdown-live-preview-delete-export 'delete-on-export))
 
 ;; ============================================================
 ;; Terminal Emulators
