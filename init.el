@@ -657,7 +657,10 @@ Position the cursor at it's beginning, according to the current mode."
   :config
   (exec-path-from-shell-initialize)
   ;; Copy additional environment variables for development tools
-  (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME")))
+  (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME"))
+  ;; Add Volta bin directory to exec-path for npm global packages
+  (when-let ((volta-home (getenv "VOLTA_HOME")))
+    (add-to-list 'exec-path (expand-file-name "bin" volta-home))))
 
 ;; ============================================================
 ;; Eglot - Built-in LSP client (Emacs 29+)
