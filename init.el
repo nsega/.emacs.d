@@ -772,10 +772,16 @@ Position the cursor at it's beginning, according to the current mode."
   ;; Open live preview window on the right side
   (defun my/markdown-live-preview-window-right (file)
     "Open markdown live preview in a window on the right side."
-    (let ((buf (eww-open-file file)))
+    (eww-open-file file)
+    (let ((buf (if (bound-and-true-p eww-auto-rename-buffer)
+                   (cl-loop for b in (buffer-list)
+                            when (string-match-p "eww\\*\\'" (buffer-name b))
+                            return b)
+                 (get-buffer "*eww*"))))
       (pop-to-buffer buf '((display-buffer-in-direction)
                            (direction . right)
-                           (window-width . 0.5)))))
+                           (window-width . 0.5)))
+      buf))
   (setq markdown-live-preview-window-function #'my/markdown-live-preview-window-right)
   :custom
   (markdown-enable-math t)
