@@ -57,6 +57,9 @@
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
 
+;; Pre-configure claude-code to use vterm (must be set before package loads)
+(setq claude-code-terminal-backend 'vterm)
+
 ;; ============================================================
 ;; Basic Settings
 ;; ============================================================
@@ -778,7 +781,21 @@ Position the cursor at it's beginning, according to the current mode."
 ;; vterm - Full-featured terminal emulator (requires libvterm)
 ;; Requires: brew install libvterm
 (use-package vterm
-  :commands vterm)
+  :ensure t
+  :demand t  ; Load eagerly so it's available for claude-code
+  :config
+  ;; Disable modes that interfere with terminal input
+  (defun my/vterm-mode-setup ()
+    "Setup vterm buffer for proper terminal input."
+    (setq-local global-hl-line-mode nil)
+    (setq-local line-spacing nil)
+    ;; Disable modes that intercept keyboard input
+    (smartparens-mode -1)
+    (company-mode -1)
+    (yas-minor-mode -1)
+    ;; Ensure vterm handles all input
+    (setq-local scroll-margin 0))
+  (add-hook 'vterm-mode-hook #'my/vterm-mode-setup))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
@@ -790,20 +807,27 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Requires: brew install --cask claude-code (already installed)
 ;;           brew install libvterm (already installed)
 
+;; transient - Required dependency for claude-code.el (menu system)
+(use-package transient
+  :ensure t)
+
+;; inheritenv - Required dependency for claude-code.el (environment handling)
+(use-package inheritenv
+  :vc (:url "https://github.com/purcell/inheritenv" :rev :newest))
+
 (use-package claude-code
-  :ensure nil  ; Installed via package-vc-install
-  :commands (claude-code claude-code-send claude-code-vterm)
+  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :demand t  ; Load immediately, don't defer
+  :after vterm  ; Ensure vterm is loaded first
   :init
-  ;; Install claude-code.el from GitHub using package-vc-install (Emacs 29+)
-  (unless (package-installed-p 'claude-code)
-    (package-vc-install "https://github.com/stevemolitor/claude-code.el"))
-  :custom
-  (claude-code-terminal-type 'vterm)      ; Use vterm for best TUI experience
-  (claude-code-command "claude")          ; Command name (homebrew installs as 'claude')
-  (claude-code-save-before-send t)        ; Auto-save buffers before sending
-  :bind (("C-c c c" . claude-code)        ; Start/switch to Claude
-         ("C-c c s" . claude-code-send)   ; Send region/buffer
-         ("C-c c v" . claude-code-vterm))); Open raw vterm buffer
+  ;; Set these BEFORE package loads (defcustom defaults are read at load time)
+  (setq claude-code-terminal-backend 'vterm)   ; Use vterm for best TUI experience
+  (setq claude-code-program "claude")       ; CLI program name
+  (require 'vterm)  ; Ensure vterm is available
+  :config
+  (claude-code-mode)  ; Enable global minor mode for IDE integration
+  ;; Set up keybindings explicitly (more reliable than :bind-keymap with :vc)
+  (global-set-key (kbd "C-c c") claude-code-command-map))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -811,15 +835,12 @@ Position the cursor at it's beginning, according to the current mode."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(anzu claude-code clean-aindent-mode comment-dwim-2 company consult
+   '(anzu clean-aindent-mode comment-dwim-2 company consult
           dtrt-indent dumb-jump eat embark embark-consult
           exec-path-from-shell go-mode iedit marginalia markdown-mode
           migemo orderless projectile smartparens undo-tree vertico
           volatile-highlights vscode-dark-plus-theme vterm ws-butler
-          yaml-mode yasnippet zygospore))
- '(package-vc-selected-packages
-   '((claude-code :vc-backend Git :url
-                  "https://github.com/stevemolitor/claude-code.el"))))
+          yaml-mode yasnippet zygospore)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
