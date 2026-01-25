@@ -75,7 +75,7 @@ brew install pandoc       # Markdown preview
 | TypeScript | typescript-ts-mode | typescript-language-server     | `npm install -g typescript-language-server typescript` |
 | C/C++      | cc-mode            | clangd (built-in)              | Built-in or `brew install llvm` |
 | YAML       | yaml-mode          | yaml-language-server (opt)     | `npm install -g yaml-language-server` |
-| Markdown   | markdown-mode      | -                              | `brew install pandoc` (optional) |
+| Markdown   | markdown-mode      | -                              | `brew install pandoc` (for preview) |
 
 ### Terminal Integration
 - **vterm** - Full-featured terminal emulator
@@ -90,6 +90,15 @@ brew install pandoc       # Markdown preview
 | `C-c c s` | Send command | Send a command to Claude |
 | `C-c c t` | Toggle window | Show/hide Claude window |
 | `C-c c k` | Kill instance | Kill Claude session |
+
+### Markdown Preview
+Live preview with side-by-side editing using EWW (built-in browser).
+
+| Key | Command | Description |
+|-----|---------|-------------|
+| `C-c C-c l` | Live preview | Toggle live preview (updates as you type) |
+| `C-c C-c p` | Preview | Open preview in external browser |
+| `C-c C-c v` | Export & view | Export HTML and open in browser |
 
 ## Installation
 
@@ -424,6 +433,7 @@ Type search terms in any order:
 
 - `C-x b` - Preview buffers before switching
 - `M-s l` - See matches as you type
+- `C-c C-c l` - Markdown live preview (in markdown files)
 - Navigate with `C-n`/`C-p` to peek
 
 ### Multi-Edit (iedit)
