@@ -812,15 +812,16 @@ Position the cursor at it's beginning, according to the current mode."
   :vc (:url "https://github.com/purcell/inheritenv" :rev :newest))
 
 (use-package claude-code
-  :after (transient inheritenv vterm)
   :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :demand t  ; Load immediately, don't defer
   :init
   ;; Set these BEFORE package loads (defcustom defaults are read at load time)
   (setq claude-code-terminal-type 'vterm)   ; Use vterm for best TUI experience
   (setq claude-code-program "claude")       ; CLI program name
   :config
   (claude-code-mode)  ; Enable global minor mode for IDE integration
-  :bind-keymap ("C-c c" . claude-code-command-map))
+  ;; Set up keybindings explicitly (more reliable than :bind-keymap with :vc)
+  (global-set-key (kbd "C-c c") claude-code-command-map))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
