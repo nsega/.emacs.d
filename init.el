@@ -258,7 +258,7 @@
 ;; embark - Contextual actions
 (use-package embark
   :bind (("C-." . embark-act)
-         ("C-h B" . embark-bindings)))
+         ("C-c e b" . embark-bindings)))  ; C-h B conflicts with C-h as backspace
 
 ;; embark-consult - Integration between embark and consult
 (use-package embark-consult
