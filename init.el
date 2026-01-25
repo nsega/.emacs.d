@@ -781,17 +781,17 @@ Position the cursor at it's beginning, according to the current mode."
   :commands vterm
   :config
   ;; Disable modes that interfere with terminal input
-  (add-hook 'vterm-mode-hook
-            (lambda ()
-              (setq-local global-hl-line-mode nil)
-              (setq-local line-spacing nil)))
-  :hook
-  ;; Disable smartparens in vterm (interferes with key input)
-  (vterm-mode . (lambda () (smartparens-mode -1)))
-  ;; Disable company in vterm
-  (vterm-mode . (lambda () (company-mode -1)))
-  ;; Disable yasnippet in vterm
-  (vterm-mode . (lambda () (yas-minor-mode -1))))
+  (defun my/vterm-mode-setup ()
+    "Setup vterm buffer for proper terminal input."
+    (setq-local global-hl-line-mode nil)
+    (setq-local line-spacing nil)
+    ;; Disable modes that intercept keyboard input
+    (smartparens-mode -1)
+    (company-mode -1)
+    (yas-minor-mode -1)
+    ;; Ensure vterm handles all input
+    (setq-local scroll-margin 0))
+  (add-hook 'vterm-mode-hook #'my/vterm-mode-setup))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
