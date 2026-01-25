@@ -99,8 +99,11 @@ Live preview with side-by-side editing using EWW (built-in browser).
 | `C-c C-c l` | Live preview | Toggle live preview (updates as you type) |
 | `C-c C-c p` | Preview | Open preview in external browser |
 | `C-c C-c v` | Export & view | Export HTML and open in browser |
+| `C-c C-c g` | grip-mode | GitHub-flavored preview (exact GitHub rendering) |
 
 **Mermaid diagram support:** Install `npm install -g @mermaid-js/mermaid-cli mermaid-filter` to render Mermaid diagrams. Use `C-c C-c p` (external browser) for Mermaid since EWW has limited image support.
+
+**GitHub preview:** Install `pip install grip` for exact GitHub-flavored rendering with `C-c C-c g`.
 
 ## Installation
 
