@@ -4,7 +4,7 @@ Modern Emacs configuration optimized for Emacs 30+ using best practices and cont
 
 ## Overview
 
-This configuration has been fully modernized (January 2024) to use:
+This configuration has been fully modernized (January 2026) to use:
 - **use-package** for declarative package management
 - **Vertico ecosystem** for lightweight, fast completion
 - **Eglot** for LSP-powered code intelligence
@@ -24,7 +24,7 @@ brew install cmigemo ripgrep
 emacs
 ```
 
-For detailed usage, see the **[Navigation Guide](#-learning-resources)** below.
+For detailed usage, see the **[Learning Resources](#learning-resources)** below.
 
 ## Requirements
 
@@ -79,8 +79,17 @@ brew install pandoc       # Markdown preview
 
 ### Terminal Integration
 - **vterm** - Full-featured terminal emulator
-- **eat** - Pure elisp terminal
-- **Claude Code** - AI pair programming integration
+- **eat** - Pure elisp terminal (fallback)
+- **Claude Code** - AI pair programming with Claude CLI
+
+#### Claude Code Key Bindings
+| Key | Command | Description |
+|-----|---------|-------------|
+| `C-c c c` | claude-code | Start Claude Code session |
+| `C-c c r` | Send region | Send selected code to Claude |
+| `C-c c s` | Send command | Send a command to Claude |
+| `C-c c t` | Toggle window | Show/hide Claude window |
+| `C-c c k` | Kill instance | Kill Claude session |
 
 ## Installation
 
@@ -100,8 +109,11 @@ brew install ripgrep
 # Optional: Markdown support
 brew install pandoc
 
-# Optional: Terminal support
+# Terminal support (required for Claude Code)
 brew install libvterm
+
+# Claude Code CLI (for AI pair programming)
+brew install --cask claude
 ```
 
 ### 3. Install LSP Servers (for code intelligence)
@@ -463,6 +475,8 @@ Built with these amazing packages:
 - [projectile](https://github.com/bbatsov/projectile) - Project interaction
 - [company](https://github.com/company-mode/company-mode) - Completion
 - [eglot](https://github.com/joaotavora/eglot) - LSP client
+- [claude-code.el](https://github.com/stevemolitor/claude-code.el) - Claude Code integration
+- [vterm](https://github.com/akermu/emacs-libvterm) - Terminal emulator
 
 ## Additional Resources
 
@@ -473,7 +487,7 @@ Built with these amazing packages:
 
 ---
 
-**Last Updated:** January 2024
+**Last Updated:** January 2026
 **Emacs Version:** 30.x
 **Status:** Production Ready
 
