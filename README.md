@@ -144,7 +144,7 @@ brew install pandoc
 brew install libvterm
 
 # Claude Code CLI (for AI pair programming)
-brew install --cask claude
+brew install --cask claude-code
 ```
 
 ### 3. Install LSP Servers (for code intelligence)
@@ -291,13 +291,6 @@ Step-by-step interactive tutorial:
 - Practice challenges
 - Real-world tasks
 
-### 3. **[Modernization Plan](.claude/plans/modernization-for-emacs30.md)** - What Changed
-Documentation of the modernization process:
-- All 8 phases with detailed steps
-- Before/after comparisons
-- Performance improvements
-- Rollback instructions
-
 **Recommended learning path:**
 1. Read USER_GUIDE.md Quick Reference section
 2. Try exercises 1-3 in TUTORIAL.md
@@ -309,6 +302,7 @@ Documentation of the modernization process:
 ```
 ~/.emacs.d/
 ├── init.el                      # Main configuration (single file!)
+├── early-init.el                # Early initialization (UI, GC optimization)
 ├── README.md                    # This file
 ├── USER_GUIDE.md               # Complete user guide (reference + workflows + terminal tips)
 ├── TUTORIAL.md                 # Hands-on exercises and tutorials
@@ -320,6 +314,7 @@ Documentation of the modernization process:
 │   └── settings.local.json     # Local Claude settings
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
+├── tree-sitter/                # Tree-sitter grammars (auto-generated)
 └── custom.backup.*/            # Backups from modernization
 ```
 
