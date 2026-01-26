@@ -1,4 +1,21 @@
-#  Hands-On Tutorial: Exploring Your Codebase
+# Hands-On Tutorial: Exploring Your Codebase
+
+This tutorial covers practical exercises for navigating codebases using your modernized Emacs setup. The configuration includes:
+
+- **Vertico ecosystem** for completion (vertico, consult, marginalia, embark, orderless)
+- **Eglot LSP** for intelligent code navigation
+- **Tree-sitter** for accurate syntax highlighting (when grammars are installed)
+- **Projectile** for project management
+
+**Supported languages with full LSP:**
+- Python (python-lsp-server or basedpyright)
+- Go (gopls)
+- TypeScript/JavaScript (typescript-language-server)
+- C/C++ (clangd)
+- Java (jdtls)
+- Kotlin (kotlin-language-server)
+
+---
 
 ## Part 1: Exploring the Go Demo Projects
 
@@ -312,7 +329,92 @@
 
 ---
 
-## Part 3: Power User Workflows
+## Part 3: JVM Development (Java/Kotlin/Gradle)
+
+### Exercise 7: Navigating a Java/Kotlin Project
+
+**Scenario**: Explore a Spring Boot or Android project with mixed Java/Kotlin code.
+
+#### Step-by-step:
+
+1. **Open your JVM project**
+   ```
+   C-c p p  -> Select your project
+   ```
+
+2. **Find a Java class**
+   ```
+   C-c p f  -> "Application.java" or "MainActivity.kt"
+   ```
+
+3. **View class structure**
+   ```
+   M-g i
+   ```
+
+   Shows:
+   - Class declarations
+   - Methods and functions
+   - Inner classes
+
+4. **Jump to a method definition**
+   ```
+   M-.  -> On method name
+   ```
+
+   LSP (JDTLS for Java, kotlin-language-server for Kotlin) finds the definition!
+
+5. **Find all usages**
+   ```
+   M-?  -> On a class or method
+   ```
+
+6. **Navigate Gradle build files**
+   ```
+   C-c p f  -> "build.gradle" or "build.gradle.kts"
+   ```
+
+   - `.gradle` files use Groovy syntax (groovy-mode)
+   - `.gradle.kts` files use Kotlin syntax (kotlin-mode)
+
+7. **Check LSP status**
+   ```
+   Look for "Eglot" in mode line
+   M-x eglot-reconnect  -> If LSP seems stuck
+   ```
+
+---
+
+### Exercise 8: Refactoring in JVM Languages
+
+**Scenario**: Rename a class or method safely across files.
+
+#### Step-by-step:
+
+1. **Navigate to the symbol**
+   ```
+   C-c p f  -> Find the file
+   M-.      -> Jump to definition
+   ```
+
+2. **Rename with LSP**
+   ```
+   C-c r    -> eglot-rename
+   Type new name
+   RET
+   ```
+
+   LSP updates all references across the project!
+
+3. **Verify the rename**
+   ```
+   M-s r  -> Search for old name (should find nothing)
+   M-s r  -> Search for new name (should find all occurrences)
+   ```
+
+---
+
+## Part 4: Power User Workflows
 
 ### Workflow 1: Code Review Pattern
 
@@ -366,7 +468,7 @@
 
 ---
 
-## Part 4: Advanced Techniques
+## Part 5: Advanced Techniques
 
 ### Technique 1: Multi-File Editing
 
@@ -424,7 +526,7 @@ C-x r b  → "main-config"           # Jump back!
 
 ---
 
-## Part 5: Your Most Common Tasks
+## Part 6: Your Most Common Tasks
 
 ### Task: "Find a function I wrote last week"
 
@@ -465,11 +567,11 @@ M-?        → Find all references
 
 ---
 
-##  Practice Challenges
+## Practice Challenges
 
 Try these to master your new tools:
 
-### Challenge 1: The Detective 
+### Challenge 1: The Detective
 **Goal**: Find which test uses the BuggyCounter
 
 1. Open any file in demo/concurrency
@@ -489,7 +591,7 @@ M-s r  → "BuggyCounter"
 ```
 </details>
 
-### Challenge 2: The Architect 
+### Challenge 2: The Architect
 **Goal**: Understand the structure of all counters
 
 1. Open counter.go
@@ -510,7 +612,7 @@ M-s r    → "race" to find race tests
 ```
 </details>
 
-### Challenge 3: The Refactorer 
+### Challenge 3: The Refactorer
 **Goal**: Find all Add methods across counters
 
 1. Search for "Add(" in counter.go
@@ -530,7 +632,7 @@ M-?    → On each "Add" to find callers
 
 ---
 
-##  Cheat Sheet for Your Vault
+## Cheat Sheet for Your Vault
 
 ### Quick Jumps
 ```
@@ -551,16 +653,16 @@ Find by YAML tag:      M-s r  → "tags: learning"
 
 ---
 
-##  Next Steps
+## Next Steps
 
 1. **Today**: Practice Exercises 1-3 (Go demo projects)
-2. **This Week**: Try all workflows in Part 3
-3. **Next Week**: Master advanced techniques in Part 4
+2. **This Week**: Try JVM exercises (Part 3) and workflows (Part 4)
+3. **Next Week**: Master advanced techniques in Part 5
 4. **Month 1**: Complete all practice challenges
 
 ---
 
-##  Pro Tips from Your Setup
+## Pro Tips from Your Setup
 
 1. **Your most powerful combo**: `C-c p f` (find file) + `M-g i` (jump to section)
    - Works in code: jumps to functions
@@ -568,23 +670,33 @@ Find by YAML tag:      M-s r  → "tags: learning"
 
 2. **Best for large files**: `M-s l` (consult-line) has LIVE preview
 
-3. **Your LSP works in**: Python, Go, TypeScript, C/C++
+3. **Your LSP works in**: Python, Go, TypeScript, JavaScript, C/C++, Java, Kotlin
    - In these languages, `M-.` is incredibly smart!
+   - Tree-sitter provides accurate syntax highlighting
 
 4. **Ripgrep respects**: `.gitignore`, so searches are clean
 
 5. **Remember**: `M-,` is your friend - it ALWAYS takes you back
 
+6. **Terminal alternatives**: If Meta key conflicts in terminal, use `C-c s` prefix:
+   - `C-c s l` instead of `M-s l` (consult-line)
+   - `C-c s r` instead of `M-s r` (consult-ripgrep)
+   - `C-c s g` instead of `M-s g` (consult-grep)
+
 ---
 
-##  Common Questions
+## Common Questions
 
 **Q: How do I know if LSP is active?**
 A: Look for "Eglot" in the mode line at the bottom
 
 **Q: Why isn't M-. working?**
-A: Check if you're in a supported language (Python/Go/TypeScript/C/C++)
+A: Check if you're in a supported language:
+   - Python, Go, TypeScript, JavaScript, C/C++, Java, Kotlin
    For other files, it uses dumb-jump (still works, just less smart)
+
+**Q: How do I know if Tree-sitter is active?**
+A: The mode name will have "-ts-" in it (e.g., `go-ts-mode` instead of `go-mode`)
 
 **Q: How to search in specific directory?**
 A: `C-c p f` → Navigate to directory → `M-s g` or `M-s r`
@@ -595,9 +707,15 @@ A: Yes! `M-s r` searches ALL file types
 **Q: How to see just the files I edited recently?**
 A: `C-x b` → Type nothing → See recent buffers at top
 
+**Q: How do I rename a symbol across the project?**
+A: Put cursor on symbol → `C-c r` (eglot-rename) → Type new name → RET
+
+**Q: How to format code on save?**
+A: Go files auto-format on save. For others: `C-c l =` or `M-x eglot-format-buffer`
+
 ---
 
-**Happy exploring! **
+**Happy exploring!**
 
 Start with Exercise 1 and work your way through. Each exercise builds on the previous one.
 
