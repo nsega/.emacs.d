@@ -127,6 +127,8 @@
     exec-path-from-shell  ; Better PATH handling on macOS
     go-mode               ; Go support (fallback if tree-sitter grammar unavailable)
     yaml-mode             ; YAML support (fallback if tree-sitter grammar unavailable)
+    typescript-mode       ; TypeScript support (fallback if tree-sitter grammar unavailable)
+    web-mode              ; TSX/JSX support (fallback if tree-sitter grammar unavailable)
     markdown-mode         ; Markdown support
     ;; Navigation fallback
     dumb-jump             ; Jump to definition without tags/LSP
@@ -793,20 +795,36 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 ;; ============================================================
 ;; TypeScript Configuration
 ;; ============================================================
-;; Uses built-in typescript-ts-mode (Emacs 29+)
+;; Uses typescript-ts-mode if grammar available, otherwise typescript-mode
 ;; Requires: npm install -g typescript-language-server typescript
-
-;; TypeScript tree-sitter modes (grammars usually available)
-(when (my/treesit-available-p 'typescript)
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
-
-(when (my/treesit-available-p 'tsx)
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-  (add-hook 'tsx-ts-mode-hook 'eglot-ensure))
 
 ;; TypeScript indentation
 (setq typescript-ts-mode-indent-offset 2)
+
+;; Use tree-sitter mode if grammar available, otherwise typescript-mode package
+(if (my/treesit-available-p 'typescript)
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+      (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
+  ;; Fallback to typescript-mode package
+  (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . eglot-ensure)
+    :custom
+    (typescript-indent-level 2)))
+
+;; TSX - tree-sitter mode if available, otherwise web-mode as fallback
+(if (my/treesit-available-p 'tsx)
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+      (add-hook 'tsx-ts-mode-hook 'eglot-ensure))
+  ;; Fallback to web-mode for TSX
+  (use-package web-mode
+    :mode "\\.tsx\\'"
+    :hook (web-mode . eglot-ensure)
+    :custom
+    (web-mode-markup-indent-offset 2)
+    (web-mode-code-indent-offset 2)))
 
 ;; ============================================================
 ;; YAML Configuration
