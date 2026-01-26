@@ -151,9 +151,8 @@
 ;; ============================================================
 ;; Navigation Enhancements
 ;; ============================================================
-
-;; Global xref keybinding for find-references
-(global-set-key (kbd "M-?") 'xref-find-references)
+;; M-. (xref-find-definitions) and M-? (xref-find-references) are
+;; built-in bindings. Eglot automatically registers as xref backend.
 
 ;; ============================================================
 ;; dumb-jump - Fallback navigation when no tags/LSP available
@@ -959,6 +958,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-show-quick-access t nil nil "Customized with use-package company")
  '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
