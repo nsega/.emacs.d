@@ -99,6 +99,14 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; ============================================================
+;; macOS Native Scrolling
+;; ============================================================
+;; Enable pixel-precise scrolling for smooth trackpad experience
+;; Makes Emacs feel like a native macOS application (Emacs 29+)
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
 (defconst demo-packages
   '(anzu
     company
