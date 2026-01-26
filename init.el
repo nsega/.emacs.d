@@ -127,7 +127,6 @@
     iedit
     yasnippet
     smartparens
-    projectile
     volatile-highlights
     undo-tree
     zygospore
@@ -340,16 +339,45 @@
   (smartparens-global-mode 1))
 
 ;; ============================================================
-;; Project Management - Projectile
+;; Project Management - Built-in project.el (Emacs 28+)
 ;; ============================================================
-(use-package projectile
-  :config
-  (projectile-mode +1)
-  (setq projectile-completion-system 'default)  ; Use vertico/completing-read
-  (setq projectile-enable-caching t)
-  (setq projectile-indexing-method 'alien)
-  :bind-keymap
-  ("C-c p" . projectile-command-map))
+;; project.el is built-in and integrates natively with Eglot, xref, and Consult.
+;; We provide C-c p bindings for muscle memory compatibility with Projectile.
+
+;; Define a prefix keymap for C-c p (Projectile-style bindings)
+(define-prefix-command 'my/project-prefix-map)
+(global-set-key (kbd "C-c p") 'my/project-prefix-map)
+
+;; Core project commands with C-c p bindings
+(define-key my/project-prefix-map (kbd "p") #'project-switch-project)
+(define-key my/project-prefix-map (kbd "f") #'project-find-file)
+(define-key my/project-prefix-map (kbd "g") #'project-find-regexp)
+(define-key my/project-prefix-map (kbd "r") #'project-find-regexp)
+(define-key my/project-prefix-map (kbd "b") #'project-switch-to-buffer)
+(define-key my/project-prefix-map (kbd "d") #'project-find-dir)
+(define-key my/project-prefix-map (kbd "k") #'project-kill-buffers)
+(define-key my/project-prefix-map (kbd "e") #'project-eshell)
+(define-key my/project-prefix-map (kbd "s") #'project-shell)
+(define-key my/project-prefix-map (kbd "c") #'project-compile)
+(define-key my/project-prefix-map (kbd "!") #'project-shell-command)
+(define-key my/project-prefix-map (kbd "&") #'project-async-shell-command)
+(define-key my/project-prefix-map (kbd "x") #'project-execute-extended-command)
+
+;; Consult integration for enhanced project commands
+(with-eval-after-load 'consult
+  (define-key my/project-prefix-map (kbd "b") #'consult-project-buffer)
+  ;; Use consult-ripgrep for faster grep if available
+  (when (executable-find "rg")
+    (define-key my/project-prefix-map (kbd "s g") #'consult-ripgrep)
+    (define-key my/project-prefix-map (kbd "s r") #'consult-ripgrep)))
+
+;; Remember recent projects
+(setq project-switch-commands
+      '((project-find-file "Find file" ?f)
+        (project-find-regexp "Find regexp" ?g)
+        (project-find-dir "Find directory" ?d)
+        (project-eshell "Eshell" ?e)
+        (magit-project-status "Magit" ?m)))
 
 ;; Package: zygospore - Reversible C-x 1 (delete-other-windows)
 (use-package zygospore

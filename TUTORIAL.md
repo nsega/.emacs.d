@@ -5,7 +5,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 - **Vertico ecosystem** for completion (vertico, consult, marginalia, embark, orderless)
 - **Eglot LSP** for intelligent code navigation
 - **Tree-sitter** for accurate syntax highlighting (when grammars are installed)
-- **Projectile** for project management
+- **project.el** (built-in) for project management
 
 **Supported languages with full LSP:**
 - Python (python-lsp-server or basedpyright)
@@ -74,13 +74,10 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 5. **Jump to the test file**
    ```
-   C-c p a  → Toggle between implementation and test
-   ```
-
-   OR manually:
-   ```
    C-c p f  → "calculator_test.go"
    ```
+
+   **Tip:** Go tests are usually named `<file>_test.go`
 
 6. **View test structure**
    ```
@@ -555,8 +552,10 @@ M-s r  → Search pattern
 ### Task: "Jump between test and code"
 
 ```
-C-c p a    → Toggle implementation/test
+C-c p f    → Type filename with "_test" suffix
 ```
+
+**Tip:** Go: `foo.go` -> `foo_test.go`, Python: `foo.py` -> `test_foo.py`
 
 ### Task: "Find all uses of a type"
 

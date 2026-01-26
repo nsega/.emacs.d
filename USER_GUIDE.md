@@ -1,6 +1,6 @@
 # Modern Emacs User Guide
 
-**For Emacs 30+ with Vertico, Eglot, and Projectile**
+**For Emacs 30+ with Vertico, Eglot, and project.el**
 
 This guide covers all key bindings, workflows, and tips for navigating code effectively in this modernized Emacs configuration.
 
@@ -30,14 +30,16 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 | `C-c p f` | Find file in project |
 | `C-x b` | Switch buffer (shows recent files) |
 
-### Project Navigation (Projectile)
+### Project Navigation (project.el with C-c p bindings)
 
 | Key Binding | Description |
 |-------------|-------------|
 | `C-c p p` | Switch project |
 | `C-c p f` | Find file in project |
-| `C-c p a` | Toggle between code and test |
-| `C-c p s g` | Search (grep) in project |
+| `C-c p g` | Search (find-regexp) in project |
+| `C-c p b` | Switch to project buffer |
+| `C-c p k` | Kill all project buffers |
+| `C-c p e` | Open eshell in project root |
 | `C-c p !` | Run shell command in project root |
 
 ### Search & Find (Consult)
@@ -388,7 +390,7 @@ Then use `M-s r` instead of `M-s g`
 Check available commands:
 ```
 M-x consult-  [TAB]    # See all consult commands
-M-x projectile-  [TAB] # See all projectile commands
+M-x project-  [TAB]    # See all project commands
 C-h B                  # Show all key bindings
 ```
 
@@ -443,7 +445,7 @@ M-x use-package-report
 - **M-, is your friend** - always takes you back
 - **LSP = smart** - look for "Eglot" in mode line
 - **Terminal users:** Memorize `C-c s l`, `C-c s r`, `C-c s i`
-- **Use projectile:** `C-c p` for all project operations
+- **Use project.el:** `C-c p` for all project operations
 - **Embark is powerful:** Try `C-.` on different things (files, buffers, symbols)
 
 ---
@@ -455,4 +457,4 @@ M-x use-package-report
 - **Modernization:** `.claude/plans/modernization-for-emacs30.md` - What changed
 - **Vertico Documentation:** https://github.com/minad/vertico
 - **Eglot Manual:** https://joaotavora.github.io/eglot/
-- **Projectile Docs:** https://docs.projectile.mx/
+- **project.el Manual:** https://www.gnu.org/software/emacs/manual/html_node/emacs/Projects.html

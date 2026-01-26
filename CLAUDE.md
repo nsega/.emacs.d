@@ -8,7 +8,7 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 - **use-package** for declarative package management
 - **Vertico ecosystem** (vertico, consult, marginalia, embark, orderless) for completion
 - **Eglot** for LSP-powered code intelligence
-- **Projectile** for project management
+- **project.el** (built-in) for project management with C-c p compatibility bindings
 - **Single init.el** (consolidated from 6 files)
 
 ## Important Rules
@@ -149,4 +149,4 @@ This configuration was modernized in January 2024 through 8 phases:
 - [Vertico GitHub](https://github.com/minad/vertico)
 - [Eglot Manual](https://joaotavora.github.io/eglot/)
 - [use-package Documentation](https://github.com/jwiegley/use-package)
-- [Projectile Docs](https://docs.projectile.mx/)
+- [project.el Manual](https://www.gnu.org/software/emacs/manual/html_node/emacs/Projects.html)

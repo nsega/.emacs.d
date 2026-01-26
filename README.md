@@ -59,9 +59,10 @@ brew install pandoc       # Markdown preview
 - Documentation on hover
 
 ### Project Management
-- **Projectile** - Project-aware navigation
+- **project.el** (built-in) - Native project-aware navigation
 - Auto-detects project roots (git, go.mod, etc.)
 - Fast file finding and project-wide search
+- `C-c p` keybindings for muscle memory compatibility
 
 ### Editing Enhancements
 - **yasnippet** - Template system
@@ -231,13 +232,15 @@ On first launch, all packages install automatically from MELPA. This may take 1-
 | `M-s g` | consult-grep | Grep search in directory |
 | `M-g i` | consult-imenu | Jump to function/section |
 
-### Project Management (Projectile)
+### Project Management (project.el with C-c p bindings)
 | Key | Command | Description |
 |-----|---------|-------------|
-| `C-c p p` | Switch project | List recent projects |
+| `C-c p p` | Switch project | List known projects |
 | `C-c p f` | Find file | Find file in project |
-| `C-c p a` | Toggle test/code | Switch between code and test |
-| `C-c p s g` | Grep project | Search across project |
+| `C-c p g` | Find regexp | Search across project |
+| `C-c p b` | Switch buffer | Project buffers only |
+| `C-c p k` | Kill buffers | Kill all project buffers |
+| `C-c p e` | Eshell | Open eshell in project root |
 
 ### Code Intelligence (LSP via Eglot)
 | Key | Command | Description |
@@ -425,7 +428,7 @@ emacs  # Packages reinstall automatically
 Check available commands:
 ```
 M-x consult-  [TAB]    # See all consult commands
-M-x projectile-  [TAB] # See all projectile commands
+M-x project-  [TAB]    # See all project commands
 C-h B                  # Show all key bindings
 ```
 
@@ -531,7 +534,6 @@ Built with these amazing packages:
 - [consult](https://github.com/minad/consult) - Consulting completing-read
 - [marginalia](https://github.com/minad/marginalia) - Rich annotations
 - [embark](https://github.com/oantolin/embark) - Contextual actions
-- [projectile](https://github.com/bbatsov/projectile) - Project interaction
 - [company](https://github.com/company-mode/company-mode) - Completion
 - [eglot](https://github.com/joaotavora/eglot) - LSP client
 - [claude-code.el](https://github.com/stevemolitor/claude-code.el) - Claude Code integration
@@ -542,7 +544,7 @@ Built with these amazing packages:
 - [Emacs Wiki](https://www.emacswiki.org/)
 - [Vertico Documentation](https://github.com/minad/vertico)
 - [Eglot Manual](https://joaotavora.github.io/eglot/)
-- [Projectile Docs](https://docs.projectile.mx/)
+- [project.el Manual](https://www.gnu.org/software/emacs/manual/html_node/emacs/Projects.html)
 
 ---
 
