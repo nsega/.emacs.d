@@ -31,10 +31,18 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 - Keep init.el organized by sections (Package Management, Completion, LSP, etc.)
 
 ### Git Workflow
+- **Always use feature branches** - never commit directly to main
+- Create a PR for review before merging
 - Commit changes frequently with descriptive messages
 - Always include "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>" in commits
-- Work on feature branches, not main
 - Push changes after each logical unit of work
+
+**PR Workflow:**
+1. Create feature branch: `git checkout -b feature/description`
+2. Make changes and commit
+3. Push branch: `git push -u origin feature/description`
+4. Create PR using `gh pr create`
+5. Merge after review/approval
 
 ## File Structure
 
