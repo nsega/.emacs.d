@@ -8,6 +8,10 @@ This configuration has been fully modernized (January 2026) to use:
 - **use-package** for declarative package management
 - **Vertico ecosystem** for lightweight, fast completion
 - **Eglot** for LSP-powered code intelligence
+- **Tree-sitter** for accurate syntax highlighting (with fallbacks)
+- **early-init.el** for zero-flash startup
+- **Pixel-precise scrolling** for native macOS trackpad feel
+- **no-littering** for clean repository structure
 - **Modern advice-add** (no deprecated code)
 - **Single init.el** (consolidated from 6 files)
 
@@ -66,6 +70,12 @@ brew install pandoc       # Markdown preview
 - **undo-tree** - Visual undo history
 - Smart line copy/cut (no selection needed)
 - Auto-indent on yank
+
+### macOS Optimizations
+- **Pixel-scroll-precision-mode** - Smooth trackpad scrolling (feels native)
+- **early-init.el** - Zero-flash startup (UI disabled before frame init)
+- **exec-path-from-shell** - Proper PATH inheritance from shell
+- **no-littering** - Clean .emacs.d (files organized in var/ and etc/)
 
 ### Language Support
 | Language   | Mode               | LSP Server                     | Install Command |
@@ -421,10 +431,14 @@ git pull
 - **Single init.el** with use-package
 - **Vertico ecosystem** (20-30% faster)
 - **Single LSP system** (Eglot only)
+- **Tree-sitter parsing** (accurate syntax highlighting)
+- **early-init.el** (zero-flash startup)
+- **Pixel-precise scrolling** (native macOS feel)
+- **no-littering** (clean directory structure)
 - **Modern advice-add** (no deprecated code)
 - **Declarative package management**
 
-**Result:** Simpler, faster, more maintainable!
+**Result:** Simpler, faster, more maintainable, and feels like a native macOS app!
 
 ## Advanced Features
 
