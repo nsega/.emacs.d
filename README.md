@@ -291,13 +291,6 @@ Step-by-step interactive tutorial:
 - Practice challenges
 - Real-world tasks
 
-### 3. **[Modernization Plan](.claude/plans/modernization-for-emacs30.md)** - What Changed
-Documentation of the modernization process:
-- All 8 phases with detailed steps
-- Before/after comparisons
-- Performance improvements
-- Rollback instructions
-
 **Recommended learning path:**
 1. Read USER_GUIDE.md Quick Reference section
 2. Try exercises 1-3 in TUTORIAL.md
