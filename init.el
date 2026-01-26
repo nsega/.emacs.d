@@ -70,8 +70,9 @@
   ;; Put auto-save files in var directory
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  ;; Put native-comp cache in var directory
-  (when (fboundp 'startup-redirect-eln-cache)
+  ;; Put native-comp cache in var directory (only if native-comp is available)
+  (when (and (fboundp 'startup-redirect-eln-cache)
+             (boundp 'native-comp-eln-load-path))
     (startup-redirect-eln-cache
      (convert-standard-filename
       (expand-file-name "var/eln-cache/" user-emacs-directory)))))
