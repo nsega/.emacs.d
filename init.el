@@ -63,7 +63,8 @@
 ;; ============================================================
 ;; Basic Settings
 ;; ============================================================
-(setq gc-cons-threshold 100000000)
+;; NOTE: gc-cons-threshold is set in early-init.el for faster startup
+;; and automatically reset after Emacs finishes loading
 (setq inhibit-startup-message t)
 
 ;; Suppress byte-compile warnings from packages
@@ -562,8 +563,8 @@ Position the cursor at it's beginning, according to the current mode."
 ;; display the column number
 (column-number-mode 1)
 
-;; disable menu bar
-(menu-bar-mode -1)
+;; NOTE: menu-bar, tool-bar, and scroll-bars are disabled in early-init.el
+;; to prevent UI flickering during startup
 
 ;; Make C-h act as backspace
 (define-key global-map "\C-h" 'delete-backward-char)
