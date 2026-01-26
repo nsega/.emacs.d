@@ -714,12 +714,12 @@ Position the cursor at it's beginning, according to the current mode."
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
         (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")))
 
-;; Helper function to check if tree-sitter grammar is available
+;; Helper function to check if tree-sitter grammar is actually usable
 (defun my/treesit-available-p (lang)
-  "Check if tree-sitter grammar for LANG is available."
-  (and (fboundp 'treesit-available-p)
-       (treesit-available-p)
-       (treesit-language-available-p lang)))
+  "Check if tree-sitter grammar for LANG is actually usable.
+Uses treesit-ready-p which verifies the grammar can be loaded."
+  (and (fboundp 'treesit-ready-p)
+       (treesit-ready-p lang t)))  ; t = quiet, don't signal error
 
 ;; ============================================================
 ;; Python Configuration
