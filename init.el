@@ -907,9 +907,6 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (use-package vterm
   :ensure t
   :demand t  ; Load eagerly so it's available for claude-code
-  :bind (:map vterm-mode-map
-         ("C-c ESC" . vterm-send-escape)    ; Send Escape to terminal
-         ("C-c C-e" . vterm-send-escape))   ; Alternative binding
   :config
   ;; Disable modes that interfere with terminal input
   (defun my/vterm-mode-setup ()
@@ -922,7 +919,12 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     (yas-minor-mode -1)
     ;; Ensure vterm handles all input
     (setq-local scroll-margin 0))
-  (add-hook 'vterm-mode-hook #'my/vterm-mode-setup))
+  (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
+  ;; Keybindings to send special keys to terminal
+  ;; C-\ sends Escape (useful for Claude Code cancel)
+  (define-key vterm-mode-map (kbd "C-\\") #'vterm-send-escape)
+  ;; s-ESC (Cmd+Escape on Mac) sends Escape
+  (define-key vterm-mode-map (kbd "s-<escape>") #'vterm-send-escape))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
