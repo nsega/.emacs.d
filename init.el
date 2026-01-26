@@ -13,9 +13,12 @@
 ;; Key Features:
 ;; - Vertico ecosystem for lightweight, fast completion (replaces Helm)
 ;; - Eglot LSP for intelligent code navigation (Python, Go, TypeScript)
+;; - Tree-sitter modes for Python, Go, YAML (accurate syntax highlighting)
 ;; - Company-mode for auto-completion
 ;; - Modern advice-add instead of deprecated defadvice
 ;; - Single, well-organized init.el (no separate custom/*.el files)
+;; - early-init.el for faster startup and no UI flickering
+;; - no-littering for clean .emacs.d directory
 ;;
 ;; Package Management:
 ;; - Uses use-package for all package configuration
