@@ -1,6 +1,6 @@
 # Modern Emacs User Guide
 
-**For Emacs 30+ with Vertico, Eglot, and Projectile**
+**For Emacs 30+ with Vertico, Eglot, and project.el**
 
 This guide covers all key bindings, workflows, and tips for navigating code effectively in this modernized Emacs configuration.
 
@@ -27,18 +27,20 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 | `M-?` | Find all references |
 | `M-g i` | Jump to function/class in file (imenu) |
 | `M-s l` | Search lines in buffer (live preview) |
-| `C-c p f` | Find file in project |
+| `C-x p f` | Find file in project |
 | `C-x b` | Switch buffer (shows recent files) |
 
-### Project Navigation (Projectile)
+### Project Navigation (project.el)
 
 | Key Binding | Description |
 |-------------|-------------|
-| `C-c p p` | Switch project |
-| `C-c p f` | Find file in project |
-| `C-c p a` | Toggle between code and test |
-| `C-c p s g` | Search (grep) in project |
-| `C-c p !` | Run shell command in project root |
+| `C-x p p` | Switch project |
+| `C-x p f` | Find file in project |
+| `C-x p g` | Search (find-regexp) in project |
+| `C-x p b` | Switch to project buffer |
+| `C-x p k` | Kill all project buffers |
+| `C-x p e` | Open eshell in project root |
+| `C-x p !` | Run shell command in project root |
 
 ### Search & Find (Consult)
 
@@ -101,9 +103,9 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 **Goal**: Understand the structure and find entry points
 
 ```
-1. C-c p p          → Select project
-2. C-c p D          → Open project root in Dired
-3. C-c p f          → Type "main" or "index" to find entry point
+1. C-x p p          → Select project
+2. C-x p D          → Open project root in Dired
+3. C-x p f          → Type "main" or "index" to find entry point
 4. M-g i            → See all functions in file
 5. M-.              → Jump to interesting function
 6. M-?              → See who calls it
@@ -115,7 +117,7 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 **Goal**: Trace execution flow and understand dependencies
 
 ```
-1. C-c p f          → Find file containing function
+1. C-x p f          → Find file containing function
 2. M-s l            → Search for function name
 3. M-.              → Jump to definition
 4. M-?              → Find all references (who calls it?)
@@ -165,11 +167,11 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 **Goal**: Compare similar functions or files
 
 ```
-1. C-c p f          → Find first file
+1. C-x p f          → Find first file
 2. M-g i            → Jump to first function
 3. C-x 3            → Split window vertically
 4. C-x o            → Switch to other window
-5. C-c p f          → Find second file
+5. C-x p f          → Find second file
 6. M-g i            → Jump to second function
 7. Compare side-by-side
 ```
@@ -250,7 +252,7 @@ key_bindings:
 Opening & Navigation:
   C-x C-f       Find file
   C-x b         Switch buffer
-  C-c p f       Find file in project
+  C-x p f       Find file in project
 
 Search (Terminal-friendly!):
   C-c s l       Search buffer (was M-s l)
@@ -388,7 +390,7 @@ Then use `M-s r` instead of `M-s g`
 Check available commands:
 ```
 M-x consult-  [TAB]    # See all consult commands
-M-x projectile-  [TAB] # See all projectile commands
+M-x project-  [TAB]    # See all project commands
 C-h B                  # Show all key bindings
 ```
 
@@ -443,7 +445,7 @@ M-x use-package-report
 - **M-, is your friend** - always takes you back
 - **LSP = smart** - look for "Eglot" in mode line
 - **Terminal users:** Memorize `C-c s l`, `C-c s r`, `C-c s i`
-- **Use projectile:** `C-c p` for all project operations
+- **Use project.el:** `C-x p` for all project operations
 - **Embark is powerful:** Try `C-.` on different things (files, buffers, symbols)
 
 ---
@@ -455,4 +457,4 @@ M-x use-package-report
 - **Modernization:** `.claude/plans/modernization-for-emacs30.md` - What changed
 - **Vertico Documentation:** https://github.com/minad/vertico
 - **Eglot Manual:** https://joaotavora.github.io/eglot/
-- **Projectile Docs:** https://docs.projectile.mx/
+- **project.el Manual:** https://www.gnu.org/software/emacs/manual/html_node/emacs/Projects.html

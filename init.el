@@ -127,7 +127,6 @@
     iedit
     yasnippet
     smartparens
-    projectile
     volatile-highlights
     undo-tree
     zygospore
@@ -340,16 +339,16 @@
   (smartparens-global-mode 1))
 
 ;; ============================================================
-;; Project Management - Projectile
+;; Project Management - Built-in project.el (Emacs 28+)
 ;; ============================================================
-(use-package projectile
-  :config
-  (projectile-mode +1)
-  (setq projectile-completion-system 'default)  ; Use vertico/completing-read
-  (setq projectile-enable-caching t)
-  (setq projectile-indexing-method 'alien)
-  :bind-keymap
-  ("C-c p" . projectile-command-map))
+;; project.el is built-in and integrates natively with Eglot, xref, and Consult.
+;; Default prefix: C-x p
+
+(setq project-switch-commands
+      '((project-find-file "Find file" ?f)
+        (project-find-regexp "Find regexp" ?g)
+        (project-find-dir "Find directory" ?d)
+        (project-eshell "Eshell" ?e)))
 
 ;; Package: zygospore - Reversible C-x 1 (delete-other-windows)
 (use-package zygospore
