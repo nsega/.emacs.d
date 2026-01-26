@@ -74,7 +74,7 @@ Advanced optimizations for an already modern Emacs 30+ configuration. These refi
 
 ---
 
-### Phase 2: Add `no-littering`
+### Phase 2: Add `no-littering` - COMPLETED (2026-01-25)
 **Goal**: Keep `.emacs.d` root clean
 
 **Why**: Packages create various files (bookmarks, recentf, projectile cache, undo-tree history) that clutter the repository. `no-littering` redirects them to `var/` and `etc/` subdirectories.

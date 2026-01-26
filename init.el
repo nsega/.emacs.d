@@ -57,6 +57,22 @@
 (setq use-package-always-ensure t)
 (setq use-package-compute-statistics t)  ; For performance monitoring via M-x use-package-report
 
+;; ============================================================
+;; Directory Organization - no-littering
+;; ============================================================
+;; Keep .emacs.d clean by redirecting package files to var/ and etc/
+(use-package no-littering
+  :demand t  ; Load early to affect all subsequent packages
+  :config
+  ;; Put auto-save files in var directory
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  ;; Put native-comp cache in var directory
+  (when (fboundp 'startup-redirect-eln-cache)
+    (startup-redirect-eln-cache
+     (convert-standard-filename
+      (expand-file-name "var/eln-cache/" user-emacs-directory)))))
+
 ;; Pre-configure claude-code to use vterm (must be set before package loads)
 (setq claude-code-terminal-backend 'vterm)
 
