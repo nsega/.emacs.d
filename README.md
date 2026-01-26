@@ -80,12 +80,18 @@ brew install pandoc       # Markdown preview
 ### Language Support
 | Language   | Mode               | LSP Server                     | Install Command |
 |------------|--------------------|--------------------------------|-----------------|
-| Python     | python-mode        | pylsp / basedpyright           | `pip install python-lsp-server` |
-| Go         | go-mode            | gopls                          | `go install golang.org/x/tools/gopls@latest` |
+| Python     | python-ts-mode     | pylsp / basedpyright           | `pip install python-lsp-server` |
+| Go         | go-ts-mode         | gopls                          | `go install golang.org/x/tools/gopls@latest` |
+| JavaScript | js-ts-mode         | typescript-language-server     | `npm install -g typescript-language-server typescript` |
 | TypeScript | typescript-ts-mode | typescript-language-server     | `npm install -g typescript-language-server typescript` |
-| C/C++      | cc-mode            | clangd (built-in)              | Built-in or `brew install llvm` |
-| YAML       | yaml-mode          | yaml-language-server (opt)     | `npm install -g yaml-language-server` |
+| Java       | java-ts-mode       | jdtls                          | `brew install jdtls` |
+| Kotlin     | kotlin-mode        | kotlin-language-server         | `brew install kotlin-language-server` |
+| Groovy     | groovy-mode        | -                              | (syntax highlighting only) |
+| C/C++      | c-ts-mode / c++-ts-mode | clangd                    | `xcode-select --install` or `brew install llvm` |
+| YAML       | yaml-ts-mode       | yaml-language-server (opt)     | `npm install -g yaml-language-server` |
 | Markdown   | markdown-mode      | -                              | `brew install pandoc` (for preview) |
+
+**Tree-sitter modes** (`*-ts-mode`) provide accurate syntax highlighting. Grammars install via `M-x treesit-install-language-grammar`.
 
 ### Terminal Integration
 - **vterm** - Full-featured terminal emulator
@@ -159,12 +165,36 @@ go install golang.org/x/tools/gopls@latest
 npm install -g typescript-language-server typescript
 ```
 
+#### Java
+```bash
+brew install jdtls
+```
+
+#### Kotlin
+```bash
+brew install kotlin-language-server
+```
+
 #### YAML (optional)
 ```bash
 npm install -g yaml-language-server
 ```
 
-### 4. Launch Emacs
+### 4. Install Tree-sitter Grammars (optional but recommended)
+
+Tree-sitter provides accurate syntax highlighting. Install grammars in Emacs:
+```
+M-x treesit-install-language-grammar RET c
+M-x treesit-install-language-grammar RET cpp
+M-x treesit-install-language-grammar RET python
+M-x treesit-install-language-grammar RET go
+M-x treesit-install-language-grammar RET javascript
+M-x treesit-install-language-grammar RET typescript
+M-x treesit-install-language-grammar RET java
+M-x treesit-install-language-grammar RET kotlin
+```
+
+### 5. Launch Emacs
 ```bash
 emacs
 ```

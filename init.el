@@ -138,6 +138,9 @@
     typescript-mode       ; TypeScript support (fallback if tree-sitter grammar unavailable)
     web-mode              ; TSX/JSX support (fallback if tree-sitter grammar unavailable)
     markdown-mode         ; Markdown support
+    ;; JVM languages
+    kotlin-mode           ; Kotlin support (fallback if tree-sitter grammar unavailable)
+    groovy-mode           ; Groovy/Gradle support
     ;; Navigation fallback
     dumb-jump             ; Jump to definition without tags/LSP
     ;; Terminal
@@ -720,8 +723,17 @@ Position the cursor at it's beginning, according to the current mode."
         (go "https://github.com/tree-sitter/tree-sitter-go")
         (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
         (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+        ;; C/C++
+        (c "https://github.com/tree-sitter/tree-sitter-c")
+        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+        ;; JavaScript/TypeScript
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")))
+        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        ;; JVM languages
+        (java "https://github.com/tree-sitter/tree-sitter-java")
+        (kotlin "https://github.com/fwcd/tree-sitter-kotlin")
+        (groovy "https://github.com/murtaza64/tree-sitter-groovy")))
 
 ;; Helper function to check if tree-sitter grammar is actually usable
 (defun my/treesit-available-p (lang)
@@ -800,6 +812,51 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
               '(:gopls (:staticcheck t :usePlaceholders t)))
 
 ;; ============================================================
+;; C/C++ Configuration
+;; ============================================================
+;; Uses c-ts-mode and c++-ts-mode if grammars available (built-in Emacs 29+)
+;; LSP: clangd (usually comes with Xcode or LLVM)
+;;   Install: xcode-select --install (macOS)
+;;        or: brew install llvm
+
+;; Use tree-sitter modes if grammars are available
+(when (my/treesit-available-p 'c)
+  (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode)))
+
+(when (my/treesit-available-p 'cpp)
+  (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.cpp\\'" . c++-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.cc\\'" . c++-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-ts-mode)))
+
+;; Enable Eglot for C/C++ (clangd)
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c-ts-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'c++-ts-mode-hook 'eglot-ensure)
+
+;; ============================================================
+;; JavaScript / Node.js Configuration
+;; ============================================================
+;; Uses js-ts-mode if grammar available (built-in Emacs 29+)
+;; Requires: npm install -g typescript-language-server typescript
+;; (typescript-language-server also handles JavaScript)
+
+;; Use tree-sitter mode if grammar is available
+(when (my/treesit-available-p 'javascript)
+  (add-to-list 'major-mode-remap-alist '(javascript-mode . js-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.mjs\\'" . js-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.cjs\\'" . js-ts-mode)))
+
+(add-hook 'js-mode-hook 'eglot-ensure)
+(add-hook 'js-ts-mode-hook 'eglot-ensure)
+
+;; JavaScript indentation
+(setq js-indent-level 2)
+
+;; ============================================================
 ;; TypeScript Configuration
 ;; ============================================================
 ;; Uses typescript-ts-mode if grammar available, otherwise typescript-mode
@@ -858,6 +915,88 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
                           (setq-local tab-width 2)
                           (when (executable-find "yaml-language-server")
                             (eglot-ensure)))))))
+
+;; ============================================================
+;; Java Configuration
+;; ============================================================
+;; Uses java-ts-mode if grammar available (built-in Emacs 29+)
+;; Requires: Eclipse JDTLS for LSP
+;;   macOS: brew install jdtls
+;;   or download from: https://download.eclipse.org/jdtls/
+;;
+;; Note: JDTLS needs a workspace directory for each project
+
+;; Use tree-sitter mode if grammar is available
+(when (my/treesit-available-p 'java)
+  (add-to-list 'major-mode-remap-alist '(java-mode . java-ts-mode)))
+
+;; Configure Eglot for Java (JDTLS)
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '((java-mode java-ts-mode) . ("jdtls"))))
+
+(add-hook 'java-mode-hook 'eglot-ensure)
+(add-hook 'java-ts-mode-hook 'eglot-ensure)
+
+;; Java indentation
+(add-hook 'java-mode-hook
+          (lambda ()
+            (setq-local c-basic-offset 4)
+            (setq-local tab-width 4)
+            (setq-local indent-tabs-mode nil)))
+(add-hook 'java-ts-mode-hook
+          (lambda ()
+            (setq-local c-basic-offset 4)
+            (setq-local tab-width 4)
+            (setq-local indent-tabs-mode nil)))
+
+;; ============================================================
+;; Kotlin Configuration
+;; ============================================================
+;; Uses kotlin-mode package (no built-in kotlin-ts-mode in Emacs yet)
+;; Tree-sitter grammar available at: https://github.com/fwcd/tree-sitter-kotlin
+;; Requires: kotlin-language-server for LSP
+;;   Install: brew install kotlin-language-server
+;;        or: https://github.com/fwcd/kotlin-language-server
+
+;; Configure Eglot for Kotlin
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(kotlin-mode . ("kotlin-language-server"))))
+
+;; Use kotlin-mode package
+(use-package kotlin-mode
+  :ensure t
+  :mode (("\\.kt\\'" . kotlin-mode)
+         ("\\.kts\\'" . kotlin-mode))
+  :hook ((kotlin-mode . eglot-ensure)
+         (kotlin-mode . (lambda ()
+                          (setq-local tab-width 4)
+                          (setq-local indent-tabs-mode nil)))))
+
+;; ============================================================
+;; Gradle / Groovy Configuration
+;; ============================================================
+;; Uses groovy-mode package (no built-in groovy-ts-mode in Emacs yet)
+;; Tree-sitter grammar available at: https://github.com/murtaza64/tree-sitter-groovy
+;;
+;; Gradle build files come in two flavors:
+;; - .gradle files: Groovy DSL (use groovy-mode)
+;; - .gradle.kts files: Kotlin DSL (use kotlin-mode)
+;;
+;; Optional LSP: gradle-language-server (experimental)
+;;   Install: npm install -g gradle-language-server
+
+;; Groovy mode for .gradle and .groovy files
+(use-package groovy-mode
+  :ensure t
+  :mode (("\\.gradle\\'" . groovy-mode)
+         ("\\.groovy\\'" . groovy-mode))
+  :config
+  (setq groovy-indent-offset 4))
+
+;; For .gradle.kts files, use Kotlin mode (already configured above)
+;; The "\\.kts\\'" pattern in kotlin configuration handles build.gradle.kts
 
 ;; ============================================================
 ;; Markdown Configuration
