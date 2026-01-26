@@ -661,9 +661,11 @@ Position the cursor at it's beginning, according to the current mode."
   ;; Add Volta bin directory to exec-path for npm global packages
   (when-let ((volta-home (getenv "VOLTA_HOME")))
     (add-to-list 'exec-path (expand-file-name "bin" volta-home)))
-  ;; Add pyenv shims to exec-path for pip global packages (e.g., grip)
-  (when-let ((pyenv-root (getenv "PYENV_ROOT")))
-    (add-to-list 'exec-path (expand-file-name "shims" pyenv-root))))
+  ;; Add pyenv shims to exec-path for pip global packages
+  (let ((pyenv-root (or (getenv "PYENV_ROOT")
+                        (expand-file-name "~/.pyenv"))))
+    (when (file-directory-p pyenv-root)
+      (add-to-list 'exec-path (expand-file-name "shims" pyenv-root)))))
 
 ;; ============================================================
 ;; Eglot - Built-in LSP client (Emacs 29+)
