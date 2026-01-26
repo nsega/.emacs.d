@@ -660,7 +660,10 @@ Position the cursor at it's beginning, according to the current mode."
   (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME"))
   ;; Add Volta bin directory to exec-path for npm global packages
   (when-let ((volta-home (getenv "VOLTA_HOME")))
-    (add-to-list 'exec-path (expand-file-name "bin" volta-home))))
+    (add-to-list 'exec-path (expand-file-name "bin" volta-home)))
+  ;; Add pyenv shims to exec-path for pip global packages (e.g., grip)
+  (when-let ((pyenv-root (getenv "PYENV_ROOT")))
+    (add-to-list 'exec-path (expand-file-name "shims" pyenv-root))))
 
 ;; ============================================================
 ;; Eglot - Built-in LSP client (Emacs 29+)
@@ -864,13 +867,7 @@ Position the cursor at it's beginning, according to the current mode."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(anzu clean-aindent-mode comment-dwim-2 company consult
-          dtrt-indent dumb-jump eat embark embark-consult
-          exec-path-from-shell go-mode iedit marginalia markdown-mode
-          migemo orderless projectile smartparens undo-tree vertico
-          volatile-highlights vterm ws-butler yaml-mode yasnippet
-          zygospore)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
