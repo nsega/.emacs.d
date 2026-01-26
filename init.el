@@ -660,7 +660,12 @@ Position the cursor at it's beginning, according to the current mode."
   (exec-path-from-shell-copy-envs '("GOPATH" "GOROOT" "PYENV_ROOT" "VOLTA_HOME"))
   ;; Add Volta bin directory to exec-path for npm global packages
   (when-let ((volta-home (getenv "VOLTA_HOME")))
-    (add-to-list 'exec-path (expand-file-name "bin" volta-home))))
+    (add-to-list 'exec-path (expand-file-name "bin" volta-home)))
+  ;; Add pyenv shims to exec-path for pip global packages
+  (let ((pyenv-root (or (getenv "PYENV_ROOT")
+                        (expand-file-name "~/.pyenv"))))
+    (when (file-directory-p pyenv-root)
+      (add-to-list 'exec-path (expand-file-name "shims" pyenv-root)))))
 
 ;; ============================================================
 ;; Eglot - Built-in LSP client (Emacs 29+)
@@ -795,6 +800,18 @@ Position the cursor at it's beginning, according to the current mode."
   ;; Delete exported HTML files after live preview
   (markdown-live-preview-delete-export 'delete-on-export))
 
+;; grip-mode - GitHub-flavored Markdown preview
+;; Uses go-grip for local rendering (no GitHub API needed)
+;; Requires: go install github.com/chrishrb/go-grip@latest
+(use-package grip-mode
+  :ensure t
+  :after markdown-mode
+  :bind (:map markdown-mode-command-map
+         ("g" . grip-mode))
+  :custom
+  (grip-command 'go-grip)           ; Use go-grip (no GitHub API)
+  (grip-preview-use-webkit nil))    ; Use external browser
+
 ;; ============================================================
 ;; Terminal Emulators
 ;; ============================================================
@@ -854,13 +871,7 @@ Position the cursor at it's beginning, according to the current mode."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(anzu clean-aindent-mode comment-dwim-2 company consult
-          dtrt-indent dumb-jump eat embark embark-consult
-          exec-path-from-shell go-mode iedit marginalia markdown-mode
-          migemo orderless projectile smartparens undo-tree vertico
-          volatile-highlights vterm ws-butler yaml-mode yasnippet
-          zygospore)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
