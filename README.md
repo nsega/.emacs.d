@@ -103,7 +103,7 @@ Live preview with side-by-side editing using EWW (built-in browser).
 
 **Mermaid diagram support:** Install `npm install -g @mermaid-js/mermaid-cli mermaid-filter` to render Mermaid diagrams. Use `C-c C-c p` (external browser) for Mermaid since EWW has limited image support.
 
-**GitHub preview:** Install `go install github.com/chrishrb/go-grip@latest` for GitHub-flavored rendering with `C-c C-c g` (works offline, no API limits).
+**GitHub preview:** Run `go install github.com/chrishrb/go-grip@latest` for GitHub-flavored rendering with `C-c C-c g` (works offline, no API limits).
 
 ## Installation
 
