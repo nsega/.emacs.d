@@ -121,8 +121,8 @@
     zygospore
     ;; Modern language modes
     exec-path-from-shell  ; Better PATH handling on macOS
-    go-mode               ; Go language support
-    yaml-mode             ; YAML support
+    ;; go-mode            ; Replaced by built-in go-ts-mode (Tree-sitter)
+    ;; yaml-mode          ; Replaced by built-in yaml-ts-mode (Tree-sitter)
     markdown-mode         ; Markdown support
     ;; Navigation fallback
     dumb-jump             ; Jump to definition without tags/LSP
@@ -696,26 +696,23 @@ Position the cursor at it's beginning, according to the current mode."
 (setq eglot-autoshutdown t)
 
 ;; ============================================================
-;; Python Configuration
+;; Python Configuration (Tree-sitter)
 ;; ============================================================
-;; Uses built-in python-mode with Eglot
+;; Uses python-ts-mode (Emacs 29+) with Eglot
 ;; LSP servers (install one): pip install python-lsp-server
 ;;                        or: pip install basedpyright
 ;;                        or: pip install ruff
 
-(add-hook 'python-mode-hook 'eglot-ensure)
+;; Prefer tree-sitter mode for Python files
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
 (add-hook 'python-ts-mode-hook 'eglot-ensure)
 
 ;; Python indentation
 (setq python-indent-offset 4)
 
-;; Format on save for Python (optional - uncomment if desired)
-;; (add-hook 'python-mode-hook
-;;           (lambda ()
-;;             (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
-
 ;; ============================================================
-;; Go Configuration
+;; Go Configuration (Tree-sitter)
 ;; ============================================================
 ;; Requires: go install golang.org/x/tools/gopls@latest
 
@@ -732,23 +729,27 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Add Go module detection to project-find-functions
 (add-hook 'project-find-functions #'project-find-go-module)
 
-(use-package go-mode
-  :hook ((go-mode . eglot-ensure)
-         (go-ts-mode . eglot-ensure)
-         (go-mode . (lambda ()
-                      (setq indent-tabs-mode t)
-                      (setq tab-width 4)))
-         (go-mode . (lambda ()
-                      (add-hook 'before-save-hook
-                                (lambda ()
-                                  (when (derived-mode-p 'go-mode 'go-ts-mode)
-                                    (eglot-format-buffer)))
-                                nil t))))
-  :config
-  ;; Gopls configuration
-  (setq-default eglot-workspace-configuration
-                '(:gopls (:staticcheck t
-                          :usePlaceholders t))))
+;; Prefer tree-sitter mode (built-in, no go-mode package needed)
+(add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode))
+
+;; File associations for Go
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+(add-to-list 'auto-mode-alist '("go\\.mod\\'" . go-mod-ts-mode))
+
+(add-hook 'go-ts-mode-hook
+          (lambda ()
+            (eglot-ensure)
+            (setq-local indent-tabs-mode t)
+            (setq-local tab-width 4)
+            (add-hook 'before-save-hook
+                      (lambda ()
+                        (when (derived-mode-p 'go-ts-mode)
+                          (eglot-format-buffer)))
+                      nil t)))
+
+;; Gopls configuration
+(setq-default eglot-workspace-configuration
+              '(:gopls (:staticcheck t :usePlaceholders t)))
 
 ;; ============================================================
 ;; TypeScript Configuration
@@ -767,19 +768,23 @@ Position the cursor at it's beginning, according to the current mode."
 (setq typescript-ts-mode-indent-offset 2)
 
 ;; ============================================================
-;; YAML Configuration
+;; YAML Configuration (Tree-sitter)
 ;; ============================================================
 ;; Optional LSP: npm install -g yaml-language-server
 
-(use-package yaml-mode
-  :mode (("\\.ya?ml\\'" . yaml-mode)
-         ("\\.eyaml\\'" . yaml-mode))
-  :hook ((yaml-mode . (lambda ()
-                        (when (executable-find "yaml-language-server")
-                          (eglot-ensure))))
-         (yaml-mode . (lambda ()
-                        (setq indent-tabs-mode nil)
-                        (setq tab-width 2)))))
+;; Prefer tree-sitter mode (built-in)
+(add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode))
+
+;; File associations for YAML
+(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-ts-mode))
+
+(add-hook 'yaml-ts-mode-hook
+          (lambda ()
+            (setq-local indent-tabs-mode nil)
+            (setq-local tab-width 2)
+            (when (executable-find "yaml-language-server")
+              (eglot-ensure))))
 
 ;; ============================================================
 ;; Markdown Configuration
