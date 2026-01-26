@@ -799,14 +799,16 @@ Position the cursor at it's beginning, according to the current mode."
   (markdown-live-preview-delete-export 'delete-on-export))
 
 ;; grip-mode - GitHub-flavored Markdown preview
-;; Requires: pip install grip
+;; Uses go-grip for local rendering (no GitHub API needed)
+;; Requires: go install github.com/chrishrb/go-grip@latest
 (use-package grip-mode
   :ensure t
   :after markdown-mode
   :bind (:map markdown-mode-command-map
          ("g" . grip-mode))
   :custom
-  (grip-preview-use-webkit nil))  ; Use external browser
+  (grip-command 'go-grip)           ; Use go-grip (no GitHub API)
+  (grip-preview-use-webkit nil))    ; Use external browser
 
 ;; ============================================================
 ;; Terminal Emulators
