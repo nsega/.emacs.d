@@ -907,6 +907,9 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (use-package vterm
   :ensure t
   :demand t  ; Load eagerly so it's available for claude-code
+  :bind (:map vterm-mode-map
+         ("C-c ESC" . vterm-send-escape)    ; Send Escape to terminal
+         ("C-c C-e" . vterm-send-escape))   ; Alternative binding
   :config
   ;; Disable modes that interfere with terminal input
   (defun my/vterm-mode-setup ()
