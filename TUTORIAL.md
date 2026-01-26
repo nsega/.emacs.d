@@ -32,7 +32,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 2. **Find the calculator implementation**
    ```
-   C-c p f  → Type: "calculator.go"
+   C-x p f  → Type: "calculator.go"
    → RET
    ```
 
@@ -74,7 +74,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 5. **Jump to the test file**
    ```
-   C-c p f  → "calculator_test.go"
+   C-x p f  → "calculator_test.go"
    ```
 
    **Tip:** Go tests are usually named `<file>_test.go`
@@ -113,7 +113,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Open the counter file**
    ```
-   C-c p f  → "counter.go"
+   C-x p f  → "counter.go"
    ```
 
 2. **See the three implementations**
@@ -184,7 +184,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Find table-driven test example**
    ```
-   C-c p f  → "calculator_table"
+   C-x p f  → "calculator_table"
    ```
 
 2. **Jump to the test table**
@@ -231,7 +231,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Search for LeetCode in your vault**
    ```
-   C-c p p  → Select "nsega-notebook"
+   C-x p p  → Select "nsega-notebook"
    M-s r    → "LeetCode"
    ```
 
@@ -244,7 +244,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 3. **Jump to specific LeetCode problem**
    ```
-   C-c p f  → Type problem number like "0001" or "two-sum"
+   C-x p f  → Type problem number like "0001" or "two-sum"
    ```
 
 4. **View note structure**
@@ -268,7 +268,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Find all weekly review files**
    ```
-   C-c p f  → "WeeklyReview"
+   C-x p f  → "WeeklyReview"
    ```
 
    Or search:
@@ -278,7 +278,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 2. **Open recent weekly review**
    ```
-   C-c p f  → "2026"  → Select most recent
+   C-x p f  → "2026"  → Select most recent
    ```
 
 3. **See review structure**
@@ -305,7 +305,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Open an MOC**
    ```
-   C-c p f  → "MOC"
+   C-x p f  → "MOC"
    ```
 
 2. **Follow a link to another note**
@@ -336,12 +336,12 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Open your JVM project**
    ```
-   C-c p p  -> Select your project
+   C-x p p  -> Select your project
    ```
 
 2. **Find a Java class**
    ```
-   C-c p f  -> "Application.java" or "MainActivity.kt"
+   C-x p f  -> "Application.java" or "MainActivity.kt"
    ```
 
 3. **View class structure**
@@ -368,7 +368,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 6. **Navigate Gradle build files**
    ```
-   C-c p f  -> "build.gradle" or "build.gradle.kts"
+   C-x p f  -> "build.gradle" or "build.gradle.kts"
    ```
 
    - `.gradle` files use Groovy syntax (groovy-mode)
@@ -390,7 +390,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 
 1. **Navigate to the symbol**
    ```
-   C-c p f  -> Find the file
+   C-x p f  -> Find the file
    M-.      -> Jump to definition
    ```
 
@@ -418,7 +418,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 **Use case**: Reviewing changes in a Go file
 
 ```
-1. C-c p f     → Open file
+1. C-x p f     → Open file
 2. M-g i       → See structure
 3. M-.         → Jump to modified function
 4. M-?         → See who calls it
@@ -460,7 +460,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 2. C-c r       → eglot-rename
 3. Type new name
 4. RET         → Renames in ALL files!
-5. C-c p s g   → Verify: search old name (should find nothing)
+5. C-x p g   → Verify: search old name (should find nothing)
 ```
 
 ---
@@ -487,7 +487,7 @@ This tutorial covers practical exercises for navigating codebases using your mod
 C-x 3                              # Split vertically
 
 # Left window: AtomicCounter
-C-c p f  → "counter.go"
+C-x p f  → "counter.go"
 M-g i    → "AtomicCounter"
 
 # Right window: MutexCounter
@@ -552,7 +552,7 @@ M-s r  → Search pattern
 ### Task: "Jump between test and code"
 
 ```
-C-c p f    → Type filename with "_test" suffix
+C-x p f    → Type filename with "_test" suffix
 ```
 
 **Tip:** Go: `foo.go` -> `foo_test.go`, Python: `foo.py` -> `test_foo.py`
@@ -603,7 +603,7 @@ M-s r  → "BuggyCounter"
 <summary>Solution</summary>
 
 ```
-C-c p f  → "counter.go"
+C-x p f  → "counter.go"
 M-g i    → View all types
 → Jump to each type's methods
 M-?      → Find tests
@@ -635,11 +635,11 @@ M-?    → On each "Add" to find callers
 
 ### Quick Jumps
 ```
-LeetCode problems:     C-c p f  → "30_Permanent/LeetCode"
-Weekly reviews:        C-c p f  → "61_WeeklyReview"
-Inbox:                 C-c p f  → "00_Inbox"
-Fleeting notes:        C-c p f  → "10_FleetingNote"
-MOCs:                  C-c p f  → "40_MOC"
+LeetCode problems:     C-x p f  → "30_Permanent/LeetCode"
+Weekly reviews:        C-x p f  → "61_WeeklyReview"
+Inbox:                 C-x p f  → "00_Inbox"
+Fleeting notes:        C-x p f  → "10_FleetingNote"
+MOCs:                  C-x p f  → "40_MOC"
 ```
 
 ### Quick Searches
@@ -663,7 +663,7 @@ Find by YAML tag:      M-s r  → "tags: learning"
 
 ## Pro Tips from Your Setup
 
-1. **Your most powerful combo**: `C-c p f` (find file) + `M-g i` (jump to section)
+1. **Your most powerful combo**: `C-x p f` (find file) + `M-g i` (jump to section)
    - Works in code: jumps to functions
    - Works in markdown: jumps to headers
 
@@ -698,7 +698,7 @@ A: Check if you're in a supported language:
 A: The mode name will have "-ts-" in it (e.g., `go-ts-mode` instead of `go-mode`)
 
 **Q: How to search in specific directory?**
-A: `C-c p f` → Navigate to directory → `M-s g` or `M-s r`
+A: `C-x p f` → Navigate to directory → `M-s g` or `M-s r`
 
 **Q: Can I search markdown files?**
 A: Yes! `M-s r` searches ALL file types

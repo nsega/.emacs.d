@@ -62,7 +62,7 @@ brew install pandoc       # Markdown preview
 - **project.el** (built-in) - Native project-aware navigation
 - Auto-detects project roots (git, go.mod, etc.)
 - Fast file finding and project-wide search
-- `C-c p` keybindings for muscle memory compatibility
+- Standard `C-x p` prefix (Emacs default)
 
 ### Editing Enhancements
 - **yasnippet** - Template system
@@ -212,7 +212,7 @@ On first launch, all packages install automatically from MELPA. This may take 1-
 | `M-?` | Find references | Show all uses of symbol |
 | `M-g i` | Jump in file | Jump to function/section (imenu) |
 | `M-s l` | Search buffer | Search with live preview |
-| `C-c p f` | Find file | Find file in project |
+| `C-x p f` | Find file | Find file in project |
 | `C-x b` | Switch buffer | Buffer list with preview |
 
 ### Completion (Vertico)
@@ -232,15 +232,15 @@ On first launch, all packages install automatically from MELPA. This may take 1-
 | `M-s g` | consult-grep | Grep search in directory |
 | `M-g i` | consult-imenu | Jump to function/section |
 
-### Project Management (project.el with C-c p bindings)
+### Project Management (project.el)
 | Key | Command | Description |
 |-----|---------|-------------|
-| `C-c p p` | Switch project | List known projects |
-| `C-c p f` | Find file | Find file in project |
-| `C-c p g` | Find regexp | Search across project |
-| `C-c p b` | Switch buffer | Project buffers only |
-| `C-c p k` | Kill buffers | Kill all project buffers |
-| `C-c p e` | Eshell | Open eshell in project root |
+| `C-x p p` | Switch project | List known projects |
+| `C-x p f` | Find file | Find file in project |
+| `C-x p g` | Find regexp | Search across project |
+| `C-x p b` | Switch buffer | Project buffers only |
+| `C-x p k` | Kill buffers | Kill all project buffers |
+| `C-x p e` | Eshell | Open eshell in project root |
 
 ### Code Intelligence (LSP via Eglot)
 | Key | Command | Description |
@@ -336,11 +336,11 @@ emacs .
 Emacs opens in Dired (directory editor):
 - Press `RET` on files to open them
 - Press `^` to go up to parent directory
-- Or use `C-c p f` to find files quickly
+- Or use `C-x p f` to find files quickly
 
 ### Exploring Code
 ```
-1. C-c p f     → Find file in project
+1. C-x p f     → Find file in project
 2. M-g i       → See all functions
 3. M-.         → Jump to definition
 4. M-?         → Find references

@@ -8,7 +8,7 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 - **use-package** for declarative package management
 - **Vertico ecosystem** (vertico, consult, marginalia, embark, orderless) for completion
 - **Eglot** for LSP-powered code intelligence
-- **project.el** (built-in) for project management with C-c p compatibility bindings
+- **project.el** (built-in) for project management (C-x p prefix)
 - **Single init.el** (consolidated from 6 files)
 
 ## Important Rules
