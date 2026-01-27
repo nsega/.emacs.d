@@ -100,6 +100,23 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; ============================================================
+;; macOS Clipboard Integration
+;; ============================================================
+;; Sync kill ring with macOS system clipboard via pbcopy/pbpaste
+(when (eq system-type 'darwin)
+  (setq interprogram-cut-function
+        (lambda (text &optional _)
+          (let ((process-connection-type nil))
+            (let ((proc (start-process "pbcopy" nil "pbcopy")))
+              (process-send-string proc text)
+              (process-send-eof proc)))))
+  (setq interprogram-paste-function
+        (lambda ()
+          (let ((clipboard (shell-command-to-string "pbpaste")))
+            (unless (string= clipboard (car kill-ring))
+              clipboard)))))
+
+;; ============================================================
 ;; macOS Native Scrolling
 ;; ============================================================
 ;; Enable pixel-precise scrolling for smooth trackpad experience
@@ -1068,7 +1085,11 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
   ;; Keybindings to send Escape to terminal (for Claude Code cancel)
   (define-key vterm-mode-map (kbd "C-c C-e") #'vterm-send-escape)
-  (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape))
+  (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape)
+  ;; Copy mode keybindings (C-c C-t to enter copy mode, then select and copy)
+  ;; Global interprogram-cut-function handles clipboard sync automatically
+  (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)
+  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
