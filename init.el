@@ -1068,7 +1068,10 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
   ;; Keybindings to send Escape to terminal (for Claude Code cancel)
   (define-key vterm-mode-map (kbd "C-c C-e") #'vterm-send-escape)
-  (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape))
+  (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape)
+  ;; Copy mode keybindings (C-c C-t to enter copy mode, then select and copy)
+  (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)
+  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
