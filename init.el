@@ -1086,18 +1086,10 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   ;; Keybindings to send Escape to terminal (for Claude Code cancel)
   (define-key vterm-mode-map (kbd "C-c C-e") #'vterm-send-escape)
   (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape)
-  ;; Copy to both kill ring and macOS clipboard
-  (defun my/vterm-copy-to-clipboard ()
-    "Copy region to kill ring and macOS clipboard, then exit copy mode."
-    (interactive)
-    (when (region-active-p)
-      (let ((text (buffer-substring-no-properties (region-beginning) (region-end))))
-        (kill-new text)
-        (call-process-region (region-beginning) (region-end) "pbcopy")))
-    (vterm-copy-mode -1))
   ;; Copy mode keybindings (C-c C-t to enter copy mode, then select and copy)
-  (define-key vterm-copy-mode-map (kbd "M-w") #'my/vterm-copy-to-clipboard)
-  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'my/vterm-copy-to-clipboard))
+  ;; Global interprogram-cut-function handles clipboard sync automatically
+  (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)
+  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
