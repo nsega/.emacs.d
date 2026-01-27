@@ -100,6 +100,23 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; ============================================================
+;; macOS Clipboard Integration
+;; ============================================================
+;; Sync kill ring with macOS system clipboard via pbcopy/pbpaste
+(when (eq system-type 'darwin)
+  (setq interprogram-cut-function
+        (lambda (text &optional _)
+          (let ((process-connection-type nil))
+            (let ((proc (start-process "pbcopy" nil "pbcopy")))
+              (process-send-string proc text)
+              (process-send-eof proc)))))
+  (setq interprogram-paste-function
+        (lambda ()
+          (let ((clipboard (shell-command-to-string "pbpaste")))
+            (unless (string= clipboard (car kill-ring))
+              clipboard)))))
+
+;; ============================================================
 ;; macOS Native Scrolling
 ;; ============================================================
 ;; Enable pixel-precise scrolling for smooth trackpad experience
