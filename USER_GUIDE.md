@@ -20,15 +20,17 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 
 ### Most Important (Learn These First!)
 
-| Key Binding | Description |
-|-------------|-------------|
-| `M-.` | Jump to definition (LSP-powered) |
-| `M-,` | Go back (like browser back button) |
-| `M-?` | Find all references |
-| `M-g i` | Jump to function/class in file (imenu) |
-| `M-s l` | Search lines in buffer (live preview) |
-| `C-x p f` | Find file in project |
-| `C-x b` | Switch buffer (shows recent files) |
+| Key Binding | Terminal Alt | Description |
+|-------------|--------------|-------------|
+| `M-.` | `ESC .` | Jump to definition (LSP-powered) |
+| `M-,` | `ESC ,` | Go back (like browser back button) |
+| `M-?` | `ESC ?` | Find all references |
+| `M-g i` | `C-c s i` | Jump to function/class in file (imenu) |
+| `M-s l` | `C-c s l` | Search lines in buffer (live preview) |
+| `C-x p f` | - | Find file in project |
+| `C-x b` | - | Switch buffer (shows recent files) |
+
+**Terminal users:** The `M-s` prefix often conflicts with terminal emulators. Use `C-c s` prefix instead.
 
 ### Project Navigation (project.el)
 
@@ -44,13 +46,15 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 
 ### Search & Find (Consult)
 
-| Key Binding | Description |
-|-------------|-------------|
-| `M-s l` | Search lines (consult-line) - LIVE PREVIEW |
-| `M-s r` | Ripgrep search (fast, respects .gitignore) |
-| `M-s g` | Grep search (slower but universal) |
-| `C-x b` | Buffer list with preview |
-| `M-g i` | Jump to function/section (consult-imenu) |
+| Key Binding | Terminal Alt | Description |
+|-------------|--------------|-------------|
+| `M-s l` | `C-c s l` | Search lines (consult-line) - LIVE PREVIEW |
+| `M-s r` | `C-c s r` | Ripgrep search (fast, respects .gitignore) |
+| `M-s g` | `C-c s g` | Grep search (slower but universal) |
+| `C-x b` | - | Buffer list with preview |
+| `M-g i` | `C-c s i` | Jump to function/section (consult-imenu) |
+
+**Note:** `M-s` prefix often doesn't work in terminal. Always use `C-c s` alternatives.
 
 ### Code Intelligence (Eglot LSP)
 
@@ -106,7 +110,7 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 1. C-x p p          → Select project
 2. C-x p D          → Open project root in Dired
 3. C-x p f          → Type "main" or "index" to find entry point
-4. M-g i            → See all functions in file
+4. C-c s i (M-g i)  → See all functions in file
 5. M-.              → Jump to interesting function
 6. M-?              → See who calls it
 7. M-,              → Go back
@@ -118,7 +122,7 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 
 ```
 1. C-x p f          → Find file containing function
-2. M-s l            → Search for function name
+2. C-c s l (M-s l)  → Search for function name
 3. M-.              → Jump to definition
 4. M-?              → Find all references (who calls it?)
 5. Navigate results → C-n/C-p through xref buffer
@@ -144,7 +148,7 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 **Goal**: Find all occurrences of a pattern
 
 ```
-1. M-s r            → consult-ripgrep
+1. C-c s r (M-s r)  → consult-ripgrep
 2. Type pattern     → See live preview of matches
 3. C-n/C-p          → Navigate results
 4. RET              → Jump to match
@@ -168,11 +172,11 @@ This guide covers all key bindings, workflows, and tips for navigating code effe
 
 ```
 1. C-x p f          → Find first file
-2. M-g i            → Jump to first function
+2. C-c s i (M-g i)  → Jump to first function
 3. C-x 3            → Split window vertically
 4. C-x o            → Switch to other window
 5. C-x p f          → Find second file
-6. M-g i            → Jump to second function
+6. C-c s i (M-g i)  → Jump to second function
 7. Compare side-by-side
 ```
 
@@ -330,13 +334,13 @@ Type search terms in any order:
 ### Live Previews
 
 - `C-x b` - Preview buffers before switching
-- `M-s l` - See matches as you type
+- `C-c s l` (`M-s l`) - See matches as you type
 - Navigate with `C-n`/`C-p` to peek
 
 ### Multi-Edit (iedit)
 
 ```
-M-s l          → Find pattern
+C-c s l        → Find pattern (M-s l in GUI)
 C-;            → Edit all occurrences at once
 → Type changes
 C-;            → Exit iedit
@@ -383,7 +387,7 @@ Install ripgrep for blazing fast search:
 ```bash
 brew install ripgrep
 ```
-Then use `M-s r` instead of `M-s g`
+Then use `C-c s r` (or `M-s r` in GUI) instead of grep
 
 ### Can't Find Commands?
 
@@ -441,10 +445,10 @@ M-x use-package-report
 
 - **Orderless matching:** `"user test"` matches `test_user` or `user_test`
 - **C-x b shows PREVIEW** - use `C-n`/`C-p` to peek before opening
-- **M-s l has LIVE PREVIEW** - see matches as you type!
+- **C-c s l has LIVE PREVIEW** - see matches as you type!
 - **M-, is your friend** - always takes you back
 - **LSP = smart** - look for "Eglot" in mode line
-- **Terminal users:** Memorize `C-c s l`, `C-c s r`, `C-c s i`
+- **Always use C-c s prefix** for search commands (`C-c s l`, `C-c s r`, `C-c s i`)
 - **Use project.el:** `C-x p` for all project operations
 - **Embark is powerful:** Try `C-.` on different things (files, buffers, symbols)
 
