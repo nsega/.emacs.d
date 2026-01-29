@@ -1145,7 +1145,12 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     (company-mode -1)
     (yas-minor-mode -1)
     ;; Ensure vterm handles all input
-    (setq-local scroll-margin 0))
+    (setq-local scroll-margin 0)
+    ;; Fix border overflow and alignment (UI rendering issues)
+    (set-window-fringes (selected-window) 0 0)  ; Remove fringes
+    (setq-local truncate-lines t)  ; Let vterm/Claude Code handle wrapping
+    (when (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)))  ; Disable line numbers
   (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
   ;; Mouse wheel scrolling - enters copy mode to scroll through full history
   (defun my/vterm-scroll-up ()
