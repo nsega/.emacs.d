@@ -143,6 +143,18 @@
 (global-set-key [mode-line mouse-1] 'mouse-drag-mode-line)
 (global-set-key [vertical-line mouse-1] 'mouse-drag-vertical-line)
 
+;; Scroll through buffer history with mouse wheel on mode-line
+(global-set-key [mode-line mouse-4] 'previous-buffer)
+(global-set-key [mode-line mouse-5] 'next-buffer)
+(global-set-key [mode-line wheel-up] 'previous-buffer)
+(global-set-key [mode-line wheel-down] 'next-buffer)
+
+;; Or use Ctrl+wheel anywhere to switch buffers
+(global-set-key [C-mouse-4] 'previous-buffer)
+(global-set-key [C-mouse-5] 'next-buffer)
+(global-set-key [C-wheel-up] 'previous-buffer)
+(global-set-key [C-wheel-down] 'next-buffer)
+
 ;; GUI-only: window dividers for easier grabbing
 (when (display-graphic-p)
   (setq window-divider-default-places t)
