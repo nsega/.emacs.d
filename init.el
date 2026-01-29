@@ -124,6 +124,48 @@
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode 1))
 
+;; ============================================================
+;; Mouse Support (Terminal and GUI)
+;; ============================================================
+;; Enable mouse in terminal emulators (Ghostty, iTerm2, etc.)
+;; Safe to enable always - only activates in terminal frames
+(xterm-mouse-mode 1)
+
+;; Auto-copy mouse selection to clipboard (like typical terminal behavior)
+(setq mouse-drag-copy-region t)
+
+;; Mouse wheel scrolling (works in both terminal and GUI)
+(global-set-key [mouse-4] 'scroll-down-command)
+(global-set-key [mouse-5] 'scroll-up-command)
+
+;; Drag mode-line to resize windows vertically (click and drag the status bar)
+;; Drag vertical border to resize windows horizontally
+(global-set-key [mode-line mouse-1] 'mouse-drag-mode-line)
+(global-set-key [vertical-line mouse-1] 'mouse-drag-vertical-line)
+
+;; GUI-only: window dividers for easier grabbing
+(when (display-graphic-p)
+  (setq window-divider-default-places t)
+  (setq window-divider-default-right-width 4)
+  (setq window-divider-default-bottom-width 4)
+  (window-divider-mode 1)
+  (global-set-key [right-divider mouse-1] 'mouse-drag-vertical-line)
+  (global-set-key [bottom-divider mouse-1] 'mouse-drag-mode-line))
+
+;; ============================================================
+;; Terminal Vertical Split Display Fix
+;; ============================================================
+;; Prevent text overflow between vertically split windows in terminal
+(unless (display-graphic-p)
+  ;; Truncate lines in narrow (split) windows to prevent overflow
+  (setq truncate-partial-width-windows t)
+  ;; Use a solid vertical bar character for window border
+  (set-display-table-slot standard-display-table 'vertical-border ?│))
+
+;; Always truncate lines in vertically split windows (both GUI and terminal)
+(setq-default truncate-lines nil)  ; Don't truncate in full-width windows
+(setq truncate-partial-width-windows 40)  ; Truncate if window narrower than 40 chars
+
 (defconst demo-packages
   '(anzu
     company
@@ -1070,6 +1112,9 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (use-package vterm
   :ensure t
   :demand t  ; Load eagerly so it's available for claude-code
+  :custom
+  ;; Large scrollback buffer for Claude Code history (default is 1000)
+  (vterm-max-scrollback 100000)
   :config
   ;; Disable modes that interfere with terminal input
   (defun my/vterm-mode-setup ()
@@ -1083,13 +1128,62 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     ;; Ensure vterm handles all input
     (setq-local scroll-margin 0))
   (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
+  ;; Mouse wheel scrolling - enters copy mode to scroll through full history
+  (defun my/vterm-scroll-up ()
+    "Scroll up in vterm, entering copy mode to access full scrollback."
+    (interactive)
+    (unless vterm-copy-mode
+      (vterm-copy-mode 1))
+    (scroll-down-command 3))
+  (defun my/vterm-scroll-down ()
+    "Scroll down in vterm. Exit copy mode when reaching the bottom."
+    (interactive)
+    (if vterm-copy-mode
+        (progn
+          (scroll-up-command 3)
+          ;; Exit copy mode if we're at the bottom (end of buffer visible)
+          (when (pos-visible-in-window-p (point-max))
+            (vterm-copy-mode -1)))
+      (scroll-up-command 3)))
+  (define-key vterm-mode-map (kbd "<mouse-4>") #'my/vterm-scroll-up)
+  (define-key vterm-mode-map (kbd "<mouse-5>") #'my/vterm-scroll-down)
+  (define-key vterm-mode-map (kbd "<wheel-up>") #'my/vterm-scroll-up)
+  (define-key vterm-mode-map (kbd "<wheel-down>") #'my/vterm-scroll-down)
   ;; Keybindings to send Escape to terminal (for Claude Code cancel)
   (define-key vterm-mode-map (kbd "C-c C-e") #'vterm-send-escape)
   (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape)
-  ;; Copy mode keybindings (C-c C-t to enter copy mode, then select and copy)
-  ;; Global interprogram-cut-function handles clipboard sync automatically
-  (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)
-  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done))
+
+  ;; Copy mode with mouse support
+  ;; Click to enter copy mode and set mark, drag to select, release to copy
+  (defun my/vterm-mouse-select-start (event)
+    "Start mouse selection in vterm - enters copy mode and sets mark."
+    (interactive "e")
+    (unless vterm-copy-mode
+      (vterm-copy-mode 1))
+    (mouse-set-point event)
+    (push-mark (point) t t))
+
+  (defun my/vterm-mouse-select-end (event)
+    "End mouse selection in vterm - copies region to clipboard."
+    (interactive "e")
+    (when vterm-copy-mode
+      (mouse-set-point event)
+      (when (use-region-p)
+        (kill-ring-save (region-beginning) (region-end))
+        (message "Copied to clipboard"))))
+
+  ;; Mouse bindings for copy mode
+  (define-key vterm-mode-map (kbd "<down-mouse-1>") #'my/vterm-mouse-select-start)
+  (define-key vterm-mode-map (kbd "<mouse-1>") #'my/vterm-mouse-select-end)
+  (define-key vterm-mode-map (kbd "<drag-mouse-1>") #'mouse-set-region)
+
+  ;; Copy mode keybindings
+  ;; C-c C-t: enter copy mode (default vterm binding)
+  ;; Select with mouse or keyboard, then:
+  (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)  ; Copy and exit
+  (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done)
+  (define-key vterm-copy-mode-map (kbd "q") #'vterm-copy-mode)  ; Exit without copying
+  (define-key vterm-copy-mode-map (kbd "<return>") #'vterm-copy-mode-done))
 
 ;; eat - Emulate A Terminal (pure elisp, no external dependencies)
 (use-package eat
