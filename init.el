@@ -155,11 +155,18 @@
 (global-set-key [C-wheel-up] 'previous-buffer)
 (global-set-key [C-wheel-down] 'next-buffer)
 
+;; Allow resizing side windows (help, compilation, etc.) via mouse drag
+(setq window-resize-pixelwise t)  ; Precise pixel resizing for smoother drag
+(setq window-sides-slots '(1 1 1 1))  ; Allow side windows on all sides
+;; Don't preserve side window sizes - allow free resizing
+(setq window-sides-vertical nil)  ; Side windows on left/right don't span full height
+(add-to-list 'window-persistent-parameters '(window-side . writable))
+
 ;; GUI-only: window dividers for easier grabbing
 (when (display-graphic-p)
   (setq window-divider-default-places t)
-  (setq window-divider-default-right-width 4)
-  (setq window-divider-default-bottom-width 4)
+  (setq window-divider-default-right-width 6)  ; Wider for easier grabbing
+  (setq window-divider-default-bottom-width 6)
   (window-divider-mode 1)
   (global-set-key [right-divider mouse-1] 'mouse-drag-vertical-line)
   (global-set-key [bottom-divider mouse-1] 'mouse-drag-mode-line))
