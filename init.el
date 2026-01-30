@@ -1211,8 +1211,8 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
       (kill-ring-save (region-beginning) (region-end))
       (message "Copied to clipboard")))
 
-  ;; Mouse bindings for copy mode
-  (define-key vterm-mode-map (kbd "<down-mouse-1>") #'my/vterm-mouse-drag-copy)
+  ;; Mouse bindings for copy mode - DISABLED for testing
+  ;; (define-key vterm-mode-map (kbd "<down-mouse-1>") #'my/vterm-mouse-drag-copy)
 
   ;; Paste from kill-ring into vterm
   (define-key vterm-mode-map (kbd "C-y") #'vterm-yank)
@@ -1222,6 +1222,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   ;; C-c C-t: enter copy mode (default vterm binding)
   ;; Select with mouse or keyboard, then:
   (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)  ; Copy and exit
+  (define-key vterm-copy-mode-map (kbd "M-c") #'vterm-copy-mode-done)  ; Cmd+c (mac-command = meta)
   (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done)
   (define-key vterm-copy-mode-map (kbd "q") #'vterm-copy-mode)  ; Exit without copying
   (define-key vterm-copy-mode-map (kbd "<return>") #'vterm-copy-mode-done))
