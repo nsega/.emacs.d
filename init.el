@@ -157,6 +157,10 @@
 
 ;; Allow resizing side windows (help, compilation, etc.) via mouse drag
 (setq window-resize-pixelwise t)  ; Precise pixel resizing for smoother drag
+
+;; Window layout management
+(winner-mode 1)  ; C-c <left> to undo, C-c <right> to redo window layout
+(global-set-key (kbd "C-x +") #'balance-windows)  ; Equalize window sizes (tmux-style)
 (setq window-sides-slots '(1 1 1 1))  ; Allow side windows on all sides
 ;; Don't preserve side window sizes - allow free resizing
 (setq window-sides-vertical nil)  ; Side windows on left/right don't span full height
@@ -424,6 +428,12 @@
 ;; ============================================================
 ;; project.el is built-in and integrates natively with Eglot, xref, and Consult.
 ;; Default prefix: C-x p
+
+;; Add support for common project root markers
+(setq project-vc-extra-root-markers '(".project" "go.mod" "package.json" "Cargo.toml" "pyproject.toml"))
+
+;; Store known projects list in emacs directory
+(setq project-list-file (expand-file-name "projects" user-emacs-directory))
 
 (setq project-switch-commands
       '((project-find-file "Find file" ?f)
@@ -1137,6 +1147,8 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   :custom
   ;; Large scrollback buffer for Claude Code history (default is 1000)
   (vterm-max-scrollback 100000)
+  ;; Snappier redraw for Ghostty (default is 0.1)
+  (vterm-timer-delay 0.01)
   :config
   ;; Disable modes that interfere with terminal input
   (defun my/vterm-mode-setup ()
