@@ -155,6 +155,11 @@
 (global-set-key [C-wheel-up] 'previous-buffer)
 (global-set-key [C-wheel-down] 'next-buffer)
 
+;; Window layout undo/redo
+;; C-c <left> to undo, C-c <right> to redo window configuration
+;; Note: May conflict with org-mode/markdown-mode C-c bindings in those buffers
+(winner-mode 1)
+
 ;; Allow resizing side windows (help, compilation, etc.) via mouse drag
 (setq window-resize-pixelwise t)  ; Precise pixel resizing for smoother drag
 (setq window-sides-slots '(1 1 1 1))  ; Allow side windows on all sides
