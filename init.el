@@ -430,13 +430,6 @@
 ;; project.el is built-in and integrates natively with Eglot, xref, and Consult.
 ;; Default prefix: C-x p
 
-;; Additional project root markers for non-VC projects
-;; Note: go.mod is handled specially by project-find-go-module (see Go Configuration)
-(setq project-vc-extra-root-markers '(".project" "package.json" "Cargo.toml" "pyproject.toml"))
-
-;; Persist known projects list (consistent with no-littering var/ convention)
-(setq project-list-file (no-littering-expand-var-file-name "projects"))
-
 (setq project-switch-commands
       '((project-find-file "Find file" ?f)
         (project-find-regexp "Find regexp" ?g)
