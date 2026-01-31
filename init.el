@@ -155,6 +155,11 @@
 (global-set-key [C-wheel-up] 'previous-buffer)
 (global-set-key [C-wheel-down] 'next-buffer)
 
+;; Window layout undo/redo
+;; C-c <left> to undo, C-c <right> to redo window configuration
+;; Note: May conflict with org-mode/markdown-mode C-c bindings in those buffers
+(winner-mode 1)
+
 ;; Allow resizing side windows (help, compilation, etc.) via mouse drag
 (setq window-resize-pixelwise t)  ; Precise pixel resizing for smoother drag
 (setq window-sides-slots '(1 1 1 1))  ; Allow side windows on all sides
@@ -176,14 +181,17 @@
 ;; ============================================================
 ;; Prevent text overflow between vertically split windows in terminal
 (unless (display-graphic-p)
-  ;; Truncate lines in narrow (split) windows to prevent overflow
+  ;; Force line truncation in split windows to prevent overflow
   (setq truncate-partial-width-windows t)
-  ;; Use a solid vertical bar character for window border
-  (set-display-table-slot standard-display-table 'vertical-border ?│))
-
-;; Always truncate lines in vertically split windows (both GUI and terminal)
-(setq-default truncate-lines nil)  ; Don't truncate in full-width windows
-(setq truncate-partial-width-windows 40)  ; Truncate if window narrower than 40 chars
+  (setq-default truncate-lines t)  ; Truncate all lines in terminal
+  ;; Use ASCII vertical bar for window border (Unicode can cause width issues)
+  (set-display-table-slot standard-display-table 'vertical-border ?|)
+  ;; Ensure no margins
+  (setq-default left-margin-width 0)
+  (setq-default right-margin-width 0)
+  ;; Disable word wrap that can cause overflow
+  (setq-default word-wrap nil)
+  (global-visual-line-mode -1))
 
 (defconst demo-packages
   '(anzu
@@ -1147,7 +1155,8 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     ;; Ensure vterm handles all input
     (setq-local scroll-margin 0)
     ;; Fix border overflow and alignment (UI rendering issues)
-    (set-window-fringes (selected-window) 0 0)  ; Remove fringes
+    (when (fboundp 'set-window-fringes)
+      (set-window-fringes (selected-window) 0 0))  ; Remove fringes (GUI only)
     (setq-local truncate-lines t)  ; Let vterm/Claude Code handle wrapping
     (when (bound-and-true-p display-line-numbers-mode)
       (display-line-numbers-mode -1)))  ; Disable line numbers
@@ -1196,15 +1205,29 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
         (kill-ring-save (region-beginning) (region-end))
         (message "Copied to clipboard"))))
 
-  ;; Mouse bindings for copy mode
-  (define-key vterm-mode-map (kbd "<down-mouse-1>") #'my/vterm-mouse-select-start)
-  (define-key vterm-mode-map (kbd "<mouse-1>") #'my/vterm-mouse-select-end)
-  (define-key vterm-mode-map (kbd "<drag-mouse-1>") #'mouse-set-region)
+  ;; Mouse drag selection that copies to kill-ring
+  (defun my/vterm-mouse-drag-copy (start-event)
+    "Select region with mouse drag and copy to kill-ring."
+    (interactive "e")
+    (unless vterm-copy-mode
+      (vterm-copy-mode 1))
+    (mouse-drag-region start-event)
+    (when (use-region-p)
+      (kill-ring-save (region-beginning) (region-end))
+      (message "Copied to clipboard")))
+
+  ;; Mouse bindings for copy mode - DISABLED for testing
+  ;; (define-key vterm-mode-map (kbd "<down-mouse-1>") #'my/vterm-mouse-drag-copy)
+
+  ;; Paste from kill-ring into vterm
+  (define-key vterm-mode-map (kbd "C-y") #'vterm-yank)
+  (define-key vterm-mode-map (kbd "M-y") #'vterm-yank-pop)
 
   ;; Copy mode keybindings
   ;; C-c C-t: enter copy mode (default vterm binding)
   ;; Select with mouse or keyboard, then:
   (define-key vterm-copy-mode-map (kbd "M-w") #'vterm-copy-mode-done)  ; Copy and exit
+  (define-key vterm-copy-mode-map (kbd "M-c") #'vterm-copy-mode-done)  ; Cmd+c (mac-command = meta)
   (define-key vterm-copy-mode-map (kbd "C-c C-c") #'vterm-copy-mode-done)
   (define-key vterm-copy-mode-map (kbd "q") #'vterm-copy-mode)  ; Exit without copying
   (define-key vterm-copy-mode-map (kbd "<return>") #'vterm-copy-mode-done))
