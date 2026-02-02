@@ -1161,6 +1161,20 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     (when (bound-and-true-p display-line-numbers-mode)
       (display-line-numbers-mode -1)))  ; Disable line numbers
   (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
+
+  ;; Prevent vterm windows from getting too narrow (for Claude Code display)
+  (defvar my/vterm-min-width 80
+    "Minimum width for vterm windows.")
+
+  (defun my/vterm-enforce-min-width ()
+    "Enlarge vterm window if it's too narrow."
+    (when (and (eq major-mode 'vterm-mode)
+               (< (window-width) my/vterm-min-width)
+               (window-resizable nil (- my/vterm-min-width (window-width)) t))
+      (enlarge-window-horizontally (- my/vterm-min-width (window-width)))))
+
+  (add-hook 'window-configuration-change-hook #'my/vterm-enforce-min-width)
+
   ;; Mouse wheel scrolling - enters copy mode to scroll through full history
   (defun my/vterm-scroll-up ()
     "Scroll up in vterm, entering copy mode to access full scrollback."
