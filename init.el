@@ -193,6 +193,38 @@
   (setq-default word-wrap nil)
   (global-visual-line-mode -1))
 
+;; ============================================================
+;; Frame/Terminal Title - Show project name in window list
+;; ============================================================
+;; This makes it easy to identify Emacs instances in Ghostty/terminal window lists
+
+(defun my/get-frame-title ()
+  "Return a title string showing project and current buffer."
+  (let ((project (project-current)))
+    (format "emacs [%s] - %s"
+            (if project
+                (project-name project)
+              (abbreviate-file-name default-directory))
+            (buffer-name))))
+
+;; GUI Emacs: Set frame title
+(setq frame-title-format '(:eval (my/get-frame-title)))
+
+;; Terminal Emacs: Send escape sequence to set terminal window title
+(defun my/set-terminal-title ()
+  "Set terminal window title to project name or directory."
+  (when (and (not (display-graphic-p))
+             (getenv "TERM"))
+    (send-string-to-terminal
+     (format "\033]0;%s\007" (my/get-frame-title)))))
+
+;; Update terminal title on relevant events
+(unless (display-graphic-p)
+  (add-hook 'buffer-list-update-hook #'my/set-terminal-title)
+  (add-hook 'window-configuration-change-hook #'my/set-terminal-title)
+  ;; Set initial title
+  (add-hook 'emacs-startup-hook #'my/set-terminal-title))
+
 (defconst demo-packages
   '(anzu
     company
