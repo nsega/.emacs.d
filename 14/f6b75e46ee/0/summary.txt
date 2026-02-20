@@ -1,0 +1,7 @@
+Clean. Summary of what's now tracked vs ignored under `.claude/`:
+
+| Path | Treatment |
+|------|-----------|
+| `.claude/settings.json` | Tracked (project hooks + permissions) |
+| `.claude/settings.local.json` | Ignored (machine-local) |
+| `.claude/plans/*.md` | Tracked (implementation plans) |

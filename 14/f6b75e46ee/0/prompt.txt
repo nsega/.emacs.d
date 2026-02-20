@@ -1,0 +1,2 @@
+it makes sennse to me. add settings.local.json to .gitignore, and decide on
+  settings.json.
