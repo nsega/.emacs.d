@@ -23,10 +23,11 @@ semanticdb/
 # Projects cache
 projects
 
+# Tree-sitter grammars (platform-specific compiled binaries)
+tree-sitter/
+
 # Go-mode generated files
 go.el
 
-# Un-ignore .claude/plans/ to track implementation plans in this repo
-!.claude/
-!.claude/plans/
-!.claude/plans/*.md
+# Claude Code: machine-local settings (hardcoded paths, auto-accumulated permissions)
+.claude/settings.local.json
