@@ -23,6 +23,9 @@ semanticdb/
 # Projects cache
 projects
 
+# Tree-sitter grammars (platform-specific compiled binaries)
+tree-sitter/
+
 # Go-mode generated files
 go.el
 
