@@ -34,7 +34,7 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 - **Always use feature branches** - never commit directly to main
 - Create a PR for review before merging
 - Commit changes frequently with descriptive messages
-- Always include "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>" in commits
+- Always include "Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>" in commits
 - Push changes after each logical unit of work
 
 **PR Workflow:**
@@ -49,17 +49,21 @@ This is a modernized Emacs configuration optimized for Emacs 30+ using contempor
 ```
 ~/.emacs.d/
 ├── init.el                      # Main configuration (single file!)
+├── early-init.el                # Early init (pre-GUI settings)
+├── go.el                        # Go-specific configuration
 ├── README.md                    # Main documentation
 ├── USER_GUIDE.md               # Complete user guide (reference + workflows + terminal tips)
 ├── TUTORIAL.md                 # Hands-on exercises and tutorials
 ├── LICENSE                     # MIT License
 ├── CLAUDE.md                   # This file
 ├── .claude/
-│   ├── plans/
-│   │   └── modernization-for-emacs30.md  # Modernization plan
+│   ├── plans/                  # Implementation plans
 │   └── settings.local.json     # Local Claude settings
 ├── elpa/                       # Installed packages (auto-generated)
 ├── snippets/                   # Yasnippet templates
+├── tree-sitter/                # Tree-sitter grammars
+├── etc/                        # Package data files
+├── var/                        # Package state/cache files
 └── custom.backup.*/            # Backups from modernization
 ```
 
@@ -107,7 +111,7 @@ When making changes to init.el:
 
 ## Modernization History
 
-This configuration was modernized in January 2024 through 8 phases:
+This configuration was modernized in January 2026 through 8 phases:
 1. Bootstrap use-package
 2. Convert simple packages
 3. Replace Helm → Vertico ecosystem
@@ -137,7 +141,7 @@ This configuration was modernized in January 2024 through 8 phases:
 ### Terminal key bindings
 - Meta key conflicts: Use ESC as alternative
 - M-s prefix issues: Use C-c s alternatives
-- See TERMINAL_TIPS.md for full guide
+- See USER_GUIDE.md for terminal tips and workarounds
 
 ### Performance issues
 - Check package load times: `M-x use-package-report`
