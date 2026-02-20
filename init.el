@@ -468,6 +468,12 @@
         (project-find-dir "Find directory" ?d)
         (project-eshell "Eshell" ?e)))
 
+;; ============================================================
+;; Dired Configuration
+;; ============================================================
+;; Auto-revert Dired buffer when switching to it (picks up filesystem changes)
+(setq dired-auto-revert-buffer t)
+
 ;; Package: zygospore - Reversible C-x 1 (delete-other-windows)
 (use-package zygospore
   :bind (("C-x 1" . zygospore-toggle-delete-other-windows)))
