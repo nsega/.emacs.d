@@ -207,8 +207,17 @@
               (abbreviate-file-name default-directory))
             (buffer-name))))
 
-;; GUI Emacs: Set frame title
-(setq frame-title-format '(:eval (my/get-frame-title)))
+;; GUI Emacs: Set frame title via idle timer to avoid calling project-current on every redraw
+(defvar my/frame-title-cached ""
+  "Cached frame title string, updated by idle timer.")
+
+(defun my/update-frame-title-cache ()
+  "Update cached frame title and apply it."
+  (setq my/frame-title-cached (my/get-frame-title))
+  (modify-frame-parameters nil `((title . ,my/frame-title-cached))))
+
+(setq frame-title-format '(:eval my/frame-title-cached))
+(run-with-idle-timer 1 t #'my/update-frame-title-cache)
 
 ;; Terminal Emacs: Send escape sequence to set terminal window title
 (defun my/set-terminal-title ()
@@ -219,10 +228,9 @@
      (format "\033]0;%s\007" (my/get-frame-title)))))
 
 ;; Update terminal title on relevant events
+;; Use idle timer instead of buffer-list-update-hook (which fires on every buffer access)
 (unless (display-graphic-p)
-  (add-hook 'buffer-list-update-hook #'my/set-terminal-title)
-  (add-hook 'window-configuration-change-hook #'my/set-terminal-title)
-  ;; Set initial title
+  (run-with-idle-timer 1 t #'my/set-terminal-title)
   (add-hook 'emacs-startup-hook #'my/set-terminal-title))
 
 (defconst demo-packages
@@ -1211,7 +1219,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
                (window-resizable nil (- my/vterm-min-width (window-width)) t))
       (enlarge-window-horizontally (- my/vterm-min-width (window-width)))))
 
-  (add-hook 'window-configuration-change-hook #'my/vterm-enforce-min-width)
+  (add-hook 'window-size-change-functions (lambda (_frame) (my/vterm-enforce-min-width)))
 
   ;; Mouse wheel scrolling - enters copy mode to scroll through full history
   (defun my/vterm-scroll-up ()
