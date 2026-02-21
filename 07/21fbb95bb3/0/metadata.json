@@ -1,0 +1,24 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "0721fbb95bb3",
+  "session_id": "3662272f-90eb-4f6d-acc3-1b561237eac1",
+  "strategy": "auto-commit",
+  "created_at": "2026-02-21T20:14:42.665812Z",
+  "branch": "feature/update-gitignore",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "init.el"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "e2b64809f150",
+  "transcript_identifier_at_start": "4a3c2496-122e-4fcd-9fa9-b1d0f105d035",
+  "checkpoint_transcript_start": 51,
+  "transcript_lines_at_start": 51,
+  "token_usage": {
+    "input_tokens": 5,
+    "cache_creation_tokens": 1587,
+    "cache_read_tokens": 165747,
+    "output_tokens": 27,
+    "api_call_count": 3
+  }
+}

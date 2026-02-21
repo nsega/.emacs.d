@@ -1,0 +1,11 @@
+Done. The only change kept is replacing `buffer-list-update-hook` with `run-with-idle-timer 1`:
+
+```elisp
+;; Before (fires on every buffer access):
+(add-hook 'buffer-list-update-hook #'my/set-terminal-title)
+
+;; After (fires at most once per second when idle):
+(run-with-idle-timer 1 t #'my/set-terminal-title)
+```
+
+Restart Emacs to pick up the change and check if CPU improves.

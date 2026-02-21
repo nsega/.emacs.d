@@ -1,0 +1,1 @@
+I would like to choose  2. buffer-list-update-hook fires extremely often
