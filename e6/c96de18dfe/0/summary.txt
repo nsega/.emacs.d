@@ -1,0 +1,16 @@
+`window-size-change-functions` only fires when a window is actually resized, unlike `window-configuration-change-hook` which fires on nearly any layout change.
+
+**Summary of changes made:**
+
+| Issue | Before | After |
+|---|---|---|
+| Terminal title | `buffer-list-update-hook` (fires constantly) | `run-with-idle-timer 1` (at most once/sec when idle) |
+| Frame title (GUI) | `(:eval ...)` on every redraw | Cached, updated by idle timer |
+| vterm width | `window-configuration-change-hook` | `window-size-change-functions` |
+
+To diagnose what's still consuming CPU after restarting Emacs, you can use:
+```
+M-x profiler-start RET cpu RET
+;; reproduce the high-CPU situation for a few seconds
+M-x profiler-report
+```

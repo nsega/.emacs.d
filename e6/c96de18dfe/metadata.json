@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "e6c96de18dfe",
+  "strategy": "auto-commit",
+  "branch": "feature/update-gitignore",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "init.el"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e6/c96de18dfe/0/metadata.json",
+      "transcript": "/e6/c96de18dfe/0/full.jsonl",
+      "context": "",
+      "content_hash": "/e6/c96de18dfe/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 43971,
+    "cache_read_tokens": 170704,
+    "output_tokens": 11,
+    "api_call_count": 4
+  }
+}
