@@ -219,10 +219,9 @@
      (format "\033]0;%s\007" (my/get-frame-title)))))
 
 ;; Update terminal title on relevant events
+;; Use idle timer instead of buffer-list-update-hook (which fires on every buffer access)
 (unless (display-graphic-p)
-  (add-hook 'buffer-list-update-hook #'my/set-terminal-title)
-  (add-hook 'window-configuration-change-hook #'my/set-terminal-title)
-  ;; Set initial title
+  (run-with-idle-timer 1 t #'my/set-terminal-title)
   (add-hook 'emacs-startup-hook #'my/set-terminal-title))
 
 (defconst demo-packages
