@@ -77,8 +77,6 @@
      (convert-standard-filename
       (expand-file-name "var/eln-cache/" user-emacs-directory)))))
 
-;; Pre-configure claude-code to use vterm (must be set before package loads)
-(setq claude-code-terminal-backend 'vterm)
 
 ;; ============================================================
 ;; Basic Settings
@@ -260,7 +258,7 @@
     ;; Navigation fallback
     dumb-jump             ; Jump to definition without tags/LSP
     ;; Terminal
-    vterm                 ; Terminal emulator for Claude Code
+    vterm                 ; Terminal emulator
     eat                   ; Emulate A Terminal (another terminal emulator)
     ))
 
@@ -1175,9 +1173,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 ;; Requires: brew install libvterm
 (use-package vterm
   :ensure t
-  :demand t  ; Load eagerly so it's available for claude-code
   :custom
-  ;; Large scrollback buffer for Claude Code history (default is 1000)
   (vterm-max-scrollback 100000)
   :config
   ;; Disable modes that interfere with terminal input
@@ -1194,12 +1190,12 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     ;; Fix border overflow and alignment (UI rendering issues)
     (when (fboundp 'set-window-fringes)
       (set-window-fringes (selected-window) 0 0))  ; Remove fringes (GUI only)
-    (setq-local truncate-lines t)  ; Let vterm/Claude Code handle wrapping
+    (setq-local truncate-lines t)
     (when (bound-and-true-p display-line-numbers-mode)
       (display-line-numbers-mode -1)))  ; Disable line numbers
   (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
 
-  ;; Prevent vterm windows from getting too narrow (for Claude Code display)
+  ;; Prevent vterm windows from getting too narrow
   (defvar my/vterm-min-width 80
     "Minimum width for vterm windows.")
 
@@ -1233,7 +1229,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   (define-key vterm-mode-map (kbd "<mouse-5>") #'my/vterm-scroll-down)
   (define-key vterm-mode-map (kbd "<wheel-up>") #'my/vterm-scroll-up)
   (define-key vterm-mode-map (kbd "<wheel-down>") #'my/vterm-scroll-down)
-  ;; Keybindings to send Escape to terminal (for Claude Code cancel)
+  ;; Keybindings to send Escape to terminal
   (define-key vterm-mode-map (kbd "C-c C-e") #'vterm-send-escape)
   (define-key vterm-mode-map (kbd "C-c <escape>") #'vterm-send-escape)
 
@@ -1287,33 +1283,6 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (use-package eat
   :commands eat)
 
-;; ============================================================
-;; Claude Code Integration
-;; ============================================================
-;; Requires: brew install --cask claude-code (already installed)
-;;           brew install libvterm (already installed)
-
-;; transient - Required dependency for claude-code.el (menu system)
-(use-package transient
-  :ensure t)
-
-;; inheritenv - Required dependency for claude-code.el (environment handling)
-(use-package inheritenv
-  :vc (:url "https://github.com/purcell/inheritenv" :rev :newest))
-
-(use-package claude-code
-  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
-  :demand t  ; Load immediately, don't defer
-  :after vterm  ; Ensure vterm is loaded first
-  :init
-  ;; Set these BEFORE package loads (defcustom defaults are read at load time)
-  (setq claude-code-terminal-backend 'vterm)   ; Use vterm for best TUI experience
-  (setq claude-code-program "claude")       ; CLI program name
-  (require 'vterm)  ; Ensure vterm is available
-  :config
-  (claude-code-mode)  ; Enable global minor mode for IDE integration
-  ;; Set up keybindings explicitly (more reliable than :bind-keymap with :vc)
-  (global-set-key (kbd "C-c c") claude-code-command-map))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
