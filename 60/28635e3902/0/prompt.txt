@@ -1,0 +1,13 @@
+is grip-mode I'm now using the latest version?
+
+---
+
+I did M-x package-upgrade-all. Make sure grip-mode is the latest version.
+
+---
+
+git commit and push this change
+
+---
+
+i want to disable claude-mode from my emacs setting because I use claude code in Ghostty directly.
