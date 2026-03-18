@@ -1,0 +1,39 @@
+Is there any way of auto formatting yaml file in emacs when saving this file? Cursor and VS Code have already had the auto-formatting function?
+
+---
+
+Is there the latest way?
+
+---
+
+yes
+
+---
+
+yes
+
+---
+
+update README to the latest.
+
+---
+
+■  Warning (initialization): An error occurred while loading ‘/Users/naokisega/.emacs.d/init.elc’:
+
+Wrong type argument: char-table-p, nil
+
+To ensure normal operation, you should investigate and remove the
+cause of the error in your initialization file.  Start Emacs with
+the ‘--debug-init’ option to view a complete error backtrace.
+
+---
+
+how it works?
+
+---
+
+I want to use prettier package
+
+---
+
+I want to use prettier package for typescript, tsx, yaml, and json.
