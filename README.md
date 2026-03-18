@@ -91,8 +91,10 @@ brew install pandoc       # Markdown preview
 | C/C++      | c-ts-mode / c++-ts-mode | clangd                    | `xcode-select --install` or `brew install llvm` |
 | YAML       | yaml-ts-mode       | yaml-language-server (opt)     | `npm install -g yaml-language-server` |
 
-**Auto-formatting:** YAML files are automatically formatted on save using [apheleia](https://github.com/radian-software/apheleia) + [yamlfmt](https://github.com/google/yamlfmt). Install: `go install github.com/google/yamlfmt/cmd/yamlfmt@latest`
+| JSON       | json-ts-mode       | -                              | (built-in) |
 | Markdown   | markdown-mode      | -                              | `brew install pandoc` (for preview) |
+
+**Auto-formatting on save:** TypeScript, TSX, YAML, and JSON files are automatically formatted on save using [apheleia](https://github.com/radian-software/apheleia) + [prettier](https://prettier.io/). Install: `npm install -g prettier`
 
 **Tree-sitter modes** (`*-ts-mode`) provide accurate syntax highlighting. Grammars install via `M-x treesit-install-language-grammar`.
 
@@ -142,8 +144,8 @@ brew install ripgrep
 # Optional: Markdown support
 brew install pandoc
 
-# YAML auto-formatting
-go install github.com/google/yamlfmt/cmd/yamlfmt@latest
+# Auto-formatting (TypeScript, TSX, YAML, JSON)
+npm install -g prettier
 
 # Terminal support (required for Claude Code)
 brew install libvterm
