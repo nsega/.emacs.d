@@ -977,6 +977,24 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (setq js-indent-level 2)
 
 ;; ============================================================
+;; Auto-formatting on Save
+;; ============================================================
+;; Apheleia: async, diff-based formatter (cursor position preserved)
+;; Requires: npm install -g prettier
+
+(use-package apheleia
+  :ensure t
+  :config
+  ;; Use prettier for TypeScript, TSX, YAML, and JSON
+  (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'tsx-ts-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'yaml-ts-mode apheleia-mode-alist) 'prettier-yaml)
+  (setf (alist-get 'yaml-mode apheleia-mode-alist) 'prettier-yaml)
+  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'prettier-json)
+  (setf (alist-get 'json-mode apheleia-mode-alist) 'prettier-json)
+  (setf (alist-get 'js-json-mode apheleia-mode-alist) 'prettier-json))
+
+;; ============================================================
 ;; TypeScript Configuration
 ;; ============================================================
 ;; Uses typescript-ts-mode if grammar available, otherwise typescript-mode
@@ -989,11 +1007,13 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (if (my/treesit-available-p 'typescript)
     (progn
       (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-      (add-hook 'typescript-ts-mode-hook 'eglot-ensure))
+      (add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+      (add-hook 'typescript-ts-mode-hook 'apheleia-mode))
   ;; Fallback to typescript-mode package
   (use-package typescript-mode
     :mode "\\.ts\\'"
-    :hook (typescript-mode . eglot-ensure)
+    :hook ((typescript-mode . eglot-ensure)
+           (typescript-mode . apheleia-mode))
     :custom
     (typescript-indent-level 2)))
 
@@ -1001,11 +1021,13 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (if (my/treesit-available-p 'tsx)
     (progn
       (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-      (add-hook 'tsx-ts-mode-hook 'eglot-ensure))
+      (add-hook 'tsx-ts-mode-hook 'eglot-ensure)
+      (add-hook 'tsx-ts-mode-hook 'apheleia-mode))
   ;; Fallback to web-mode for TSX
   (use-package web-mode
     :mode "\\.tsx\\'"
-    :hook (web-mode . eglot-ensure)
+    :hook ((web-mode . eglot-ensure)
+           (web-mode . apheleia-mode))
     :custom
     (web-mode-markup-indent-offset 2)
     (web-mode-code-indent-offset 2)))
@@ -1014,12 +1036,14 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 ;; YAML Configuration
 ;; ============================================================
 ;; Optional LSP: npm install -g yaml-language-server
+;; Auto-formats on save using prettier via apheleia
 
 ;; Use tree-sitter mode if grammar available, otherwise yaml-mode
 (if (my/treesit-available-p 'yaml)
     (progn
       (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
       (add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-ts-mode))
+      (add-hook 'yaml-ts-mode-hook 'apheleia-mode)
       (add-hook 'yaml-ts-mode-hook
                 (lambda ()
                   (setq-local indent-tabs-mode nil)
@@ -1030,11 +1054,22 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   (use-package yaml-mode
     :mode (("\\.ya?ml\\'" . yaml-mode)
            ("\\.eyaml\\'" . yaml-mode))
-    :hook ((yaml-mode . (lambda ()
+    :hook ((yaml-mode . apheleia-mode)
+           (yaml-mode . (lambda ()
                           (setq-local indent-tabs-mode nil)
                           (setq-local tab-width 2)
                           (when (executable-find "yaml-language-server")
                             (eglot-ensure)))))))
+
+;; ============================================================
+;; JSON Configuration
+;; ============================================================
+;; Uses built-in json-ts-mode (tree-sitter, Emacs 30+)
+;; Auto-formats on save using prettier via apheleia
+
+(when (my/treesit-available-p 'json)
+  (add-to-list 'auto-mode-alist '("\\.json\\'" . json-ts-mode))
+  (add-hook 'json-ts-mode-hook 'apheleia-mode))
 
 ;; ============================================================
 ;; Java Configuration

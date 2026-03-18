@@ -90,7 +90,10 @@ brew install pandoc       # Markdown preview
 | Groovy     | groovy-mode        | -                              | (syntax highlighting only) |
 | C/C++      | c-ts-mode / c++-ts-mode | clangd                    | `xcode-select --install` or `brew install llvm` |
 | YAML       | yaml-ts-mode       | yaml-language-server (opt)     | `npm install -g yaml-language-server` |
+| JSON       | json-ts-mode       | -                              | (built-in) |
 | Markdown   | markdown-mode      | -                              | `brew install pandoc` (for preview) |
+
+**Auto-formatting on save:** TypeScript, TSX, YAML, and JSON files are automatically formatted on save using [apheleia](https://github.com/radian-software/apheleia) + [prettier](https://prettier.io/). Install: `npm install -g prettier`
 
 **Tree-sitter modes** (`*-ts-mode`) provide accurate syntax highlighting. Grammars install via `M-x treesit-install-language-grammar`.
 
@@ -139,6 +142,9 @@ brew install ripgrep
 
 # Optional: Markdown support
 brew install pandoc
+
+# Auto-formatting (TypeScript, TSX, YAML, JSON)
+npm install -g prettier
 
 # Terminal support (required for Claude Code)
 brew install libvterm
@@ -531,6 +537,7 @@ Built with these amazing packages:
 - [embark](https://github.com/oantolin/embark) - Contextual actions
 - [company](https://github.com/company-mode/company-mode) - Completion
 - [eglot](https://github.com/joaotavora/eglot) - LSP client
+- [apheleia](https://github.com/radian-software/apheleia) - Async code formatting on save
 - [claude-code.el](https://github.com/stevemolitor/claude-code.el) - Claude Code integration
 - [vterm](https://github.com/akermu/emacs-libvterm) - Terminal emulator
 
@@ -543,7 +550,7 @@ Built with these amazing packages:
 
 ---
 
-**Last Updated:** January 2026
+**Last Updated:** March 2026
 **Emacs Version:** 30.x
 **Status:** Production Ready
 
