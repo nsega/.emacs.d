@@ -977,6 +977,24 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 (setq js-indent-level 2)
 
 ;; ============================================================
+;; Auto-formatting on Save
+;; ============================================================
+;; Apheleia: async, diff-based formatter (cursor position preserved)
+;; Requires: npm install -g prettier
+
+(use-package apheleia
+  :ensure t
+  :config
+  ;; Use prettier for TypeScript, TSX, YAML, and JSON
+  (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'tsx-ts-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'yaml-ts-mode apheleia-mode-alist) 'prettier-yaml)
+  (setf (alist-get 'yaml-mode apheleia-mode-alist) 'prettier-yaml)
+  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'prettier-json)
+  (setf (alist-get 'json-mode apheleia-mode-alist) 'prettier-json)
+  (setf (alist-get 'js-json-mode apheleia-mode-alist) 'prettier-json))
+
+;; ============================================================
 ;; TypeScript Configuration
 ;; ============================================================
 ;; Uses typescript-ts-mode if grammar available, otherwise typescript-mode
@@ -1025,21 +1043,21 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     (progn
       (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
       (add-to-list 'auto-mode-alist '("\\.eyaml\\'" . yaml-ts-mode))
+      (add-hook 'yaml-ts-mode-hook 'apheleia-mode)
       (add-hook 'yaml-ts-mode-hook
                 (lambda ()
                   (setq-local indent-tabs-mode nil)
                   (setq-local tab-width 2)
-                  (apheleia-mode 1)
                   (when (executable-find "yaml-language-server")
                     (eglot-ensure)))))
   ;; Fallback to yaml-mode package
   (use-package yaml-mode
     :mode (("\\.ya?ml\\'" . yaml-mode)
            ("\\.eyaml\\'" . yaml-mode))
-    :hook ((yaml-mode . (lambda ()
+    :hook ((yaml-mode . apheleia-mode)
+           (yaml-mode . (lambda ()
                           (setq-local indent-tabs-mode nil)
                           (setq-local tab-width 2)
-                          (apheleia-mode 1)
                           (when (executable-find "yaml-language-server")
                             (eglot-ensure)))))))
 
@@ -1134,23 +1152,6 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 
 ;; For .gradle.kts files, use Kotlin mode (already configured above)
 ;; The "\\.kts\\'" pattern in kotlin configuration handles build.gradle.kts
-
-;; ============================================================
-;; Auto-formatting on Save
-;; ============================================================
-;; Apheleia: async, diff-based formatter (cursor position preserved)
-;; Requires: npm install -g prettier
-
-(use-package apheleia
-  :ensure t
-  :config
-  ;; Use prettier for TypeScript, TSX, YAML, and JSON
-  (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier-typescript)
-  (setf (alist-get 'tsx-ts-mode apheleia-mode-alist) 'prettier-typescript)
-  (setf (alist-get 'yaml-ts-mode apheleia-mode-alist) 'prettier-yaml)
-  (setf (alist-get 'yaml-mode apheleia-mode-alist) 'prettier-yaml)
-  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'prettier-json)
-  (setf (alist-get 'json-mode apheleia-mode-alist) 'prettier-json))
 
 ;; ============================================================
 ;; Markdown Configuration

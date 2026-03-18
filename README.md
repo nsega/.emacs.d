@@ -90,7 +90,6 @@ brew install pandoc       # Markdown preview
 | Groovy     | groovy-mode        | -                              | (syntax highlighting only) |
 | C/C++      | c-ts-mode / c++-ts-mode | clangd                    | `xcode-select --install` or `brew install llvm` |
 | YAML       | yaml-ts-mode       | yaml-language-server (opt)     | `npm install -g yaml-language-server` |
-
 | JSON       | json-ts-mode       | -                              | (built-in) |
 | Markdown   | markdown-mode      | -                              | `brew install pandoc` (for preview) |
 
