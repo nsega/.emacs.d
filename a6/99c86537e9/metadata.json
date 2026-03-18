@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "a699c86537e9",
+  "strategy": "manual-commit",
+  "branch": "feature/yaml-auto-format",
+  "checkpoints_count": 1,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/a6/99c86537e9/0/metadata.json",
+      "transcript": "/a6/99c86537e9/0/full.jsonl",
+      "content_hash": "/a6/99c86537e9/0/content_hash.txt",
+      "prompt": "/a6/99c86537e9/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 36,
+    "cache_creation_tokens": 32448,
+    "cache_read_tokens": 716855,
+    "output_tokens": 4942,
+    "api_call_count": 26
+  }
+}

@@ -1,0 +1,17 @@
+Is there any way of auto formatting yaml file in emacs when saving this file? Cursor and VS Code have already had the auto-formatting function?
+
+---
+
+Is there the latest way?
+
+---
+
+yes
+
+---
+
+yes
+
+---
+
+update README to the latest.
