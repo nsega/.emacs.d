@@ -1119,6 +1119,30 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 ;; The "\\.kts\\'" pattern in kotlin configuration handles build.gradle.kts
 
 ;; ============================================================
+;; YAML Configuration
+;; ============================================================
+;; Uses built-in yaml-ts-mode (tree-sitter, Emacs 30+)
+;; Auto-formats on save using yamlfmt
+;; Install: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
+
+(use-package yaml-ts-mode
+  :mode "\\.ya?ml\\'"
+  :hook (yaml-ts-mode . apheleia-mode))
+
+;; ============================================================
+;; Auto-formatting on Save
+;; ============================================================
+;; Apheleia: async, diff-based formatter (cursor position preserved)
+
+(use-package apheleia
+  :ensure t
+  :config
+  (setf (alist-get 'yamlfmt apheleia-formatters)
+        '("yamlfmt" "-"))
+  (setf (alist-get 'yaml-ts-mode apheleia-mode-alist)
+        'yamlfmt))
+
+;; ============================================================
 ;; Markdown Configuration
 ;; ============================================================
 ;; Optional: brew install pandoc (for preview/export)
