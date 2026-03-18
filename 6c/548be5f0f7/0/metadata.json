@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "6c548be5f0f7",
+  "session_id": "dbbfaf4b-8936-48c1-907d-669574333aa5",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-18T02:19:47.75795Z",
+  "branch": "feature/yaml-auto-format",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-6[1m]",
+  "turn_id": "26e0e02dd7af",
+  "token_usage": {
+    "input_tokens": 57,
+    "cache_creation_tokens": 41943,
+    "cache_read_tokens": 1534373,
+    "output_tokens": 8874,
+    "api_call_count": 45
+  },
+  "session_metrics": {
+    "turn_count": 4
+  }
+}
