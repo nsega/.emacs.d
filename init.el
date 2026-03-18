@@ -1014,6 +1014,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 ;; YAML Configuration
 ;; ============================================================
 ;; Optional LSP: npm install -g yaml-language-server
+;; Auto-formats on save using yamlfmt via apheleia
 
 ;; Use tree-sitter mode if grammar available, otherwise yaml-mode
 (if (my/treesit-available-p 'yaml)
@@ -1024,6 +1025,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
                 (lambda ()
                   (setq-local indent-tabs-mode nil)
                   (setq-local tab-width 2)
+                  (apheleia-mode 1)
                   (when (executable-find "yaml-language-server")
                     (eglot-ensure)))))
   ;; Fallback to yaml-mode package
@@ -1033,6 +1035,7 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
     :hook ((yaml-mode . (lambda ()
                           (setq-local indent-tabs-mode nil)
                           (setq-local tab-width 2)
+                          (apheleia-mode 1)
                           (when (executable-find "yaml-language-server")
                             (eglot-ensure)))))))
 
@@ -1119,20 +1122,10 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
 ;; The "\\.kts\\'" pattern in kotlin configuration handles build.gradle.kts
 
 ;; ============================================================
-;; YAML Configuration
-;; ============================================================
-;; Uses built-in yaml-ts-mode (tree-sitter, Emacs 30+)
-;; Auto-formats on save using yamlfmt
-;; Install: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
-
-(use-package yaml-ts-mode
-  :mode "\\.ya?ml\\'"
-  :hook (yaml-ts-mode . apheleia-mode))
-
-;; ============================================================
 ;; Auto-formatting on Save
 ;; ============================================================
 ;; Apheleia: async, diff-based formatter (cursor position preserved)
+;; Install: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
 
 (use-package apheleia
   :ensure t
@@ -1140,6 +1133,8 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   (setf (alist-get 'yamlfmt apheleia-formatters)
         '("yamlfmt" "-"))
   (setf (alist-get 'yaml-ts-mode apheleia-mode-alist)
+        'yamlfmt)
+  (setf (alist-get 'yaml-mode apheleia-mode-alist)
         'yamlfmt))
 
 ;; ============================================================
