@@ -1,0 +1,13 @@
+how to test yaml file formatting work in emacs?
+
+---
+
+it works.
+
+---
+
+/review PR #82
+
+---
+
+yes

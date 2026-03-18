@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "068706d6f0a3",
+  "strategy": "manual-commit",
+  "branch": "feature/yaml-auto-format",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "README.md",
+    "init.el"
+  ],
+  "sessions": [
+    {
+      "metadata": "/06/8706d6f0a3/0/metadata.json",
+      "transcript": "/06/8706d6f0a3/0/full.jsonl",
+      "content_hash": "/06/8706d6f0a3/0/content_hash.txt",
+      "prompt": "/06/8706d6f0a3/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 23,
+    "cache_creation_tokens": 11922,
+    "cache_read_tokens": 924269,
+    "output_tokens": 4684,
+    "api_call_count": 15
+  }
+}
