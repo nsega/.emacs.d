@@ -777,12 +777,14 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Font configuration
 (when window-system
   (set-frame-font "Monaco-12" nil t)
-  (set-frame-parameter nil 'alpha 100))
+  ;; Frame transparency: (active . inactive) opacity percentage
+  (set-frame-parameter nil 'alpha '(92 . 88)))
 
 (setq default-frame-alist
   (append
    '((font . "Monaco-12") ;; Default Fontset
   (width . 140) (height . 50) ;; Window Size
+  (alpha . (92 . 88)) ;; Frame transparency (active . inactive)
   )
   default-frame-alist))
 
