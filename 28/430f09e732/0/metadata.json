@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.7.3",
+  "checkpoint_id": "28430f09e732",
+  "session_id": "5b880ea4-b742-4779-9950-830d95eff1e3",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-12T19:14:21.447598Z",
+  "branch": "feature/frame-transparency",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "init.el"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-fable-5",
+  "turn_id": "286a2127da1b",
+  "token_usage": {
+    "input_tokens": 13752,
+    "cache_creation_tokens": 24794,
+    "cache_read_tokens": 163758,
+    "output_tokens": 2471,
+    "api_call_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-12T19:14:21.444218Z",
+    "agent_lines": 3,
+    "agent_removed": 1,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 3,
+    "total_lines_changed": 4,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 536,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.json": 84,
+        "custom.backup.20260123_234829/setup-cedet.el": 22,
+        "custom.backup.20260123_234829/setup-editing.el": 298,
+        "custom.backup.20260123_234829/setup-ggtags.el": 16,
+        "custom.backup.20260123_234829/setup-helm-gtags.el": 33,
+        "custom.backup.20260123_234829/setup-helm.el": 83
+      }
+    }
+  ]
+}
