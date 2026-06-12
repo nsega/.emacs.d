@@ -777,12 +777,23 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Font configuration
 (when window-system
   (set-frame-font "Monaco-12" nil t)
-  (set-frame-parameter nil 'alpha 100))
+  ;; Frame transparency: (active . inactive) opacity percentage
+  (set-frame-parameter nil 'alpha '(92 . 88)))
+
+;; Terminal transparency: don't paint a background in TTY frames so the
+;; terminal emulator's own (transparent) background shows through.
+;; The actual opacity level is configured in the terminal app settings.
+(defun my/tty-transparent-background (&optional frame)
+  (unless (display-graphic-p frame)
+    (set-face-background 'default "unspecified-bg" frame)))
+(add-hook 'window-setup-hook #'my/tty-transparent-background)
+(add-hook 'after-make-frame-functions #'my/tty-transparent-background)
 
 (setq default-frame-alist
   (append
    '((font . "Monaco-12") ;; Default Fontset
   (width . 140) (height . 50) ;; Window Size
+  (alpha . (92 . 88)) ;; Frame transparency (active . inactive)
   )
   default-frame-alist))
 
