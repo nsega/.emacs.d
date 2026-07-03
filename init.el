@@ -175,6 +175,24 @@
   (global-set-key [bottom-divider mouse-1] 'mouse-drag-mode-line))
 
 ;; ============================================================
+;; Terminal Keyboard: Kitty Keyboard Protocol (KKP)
+;; ============================================================
+;; Terminals and multiplexers that speak the Kitty keyboard protocol
+;; (Ghostty, Kitty, herdr panes) can deliver Ctrl/Alt-modified keys as
+;; CSI u escape sequences that stock terminal Emacs cannot decode,
+;; leaving those keys dead. kkp negotiates and decodes the protocol.
+;; It probes the terminal first, so it stays inactive in terminals
+;; without KKP support (iTerm2, Apple Terminal, plain SSH, etc.).
+(use-package kkp
+  :ensure t
+  :hook (tty-setup . global-kkp-mode)
+  :config
+  ;; While KKP is active, C-g arrives as an escape sequence instead of
+  ;; the raw quit byte, so it cannot abort blocking synchronous
+  ;; subprocess calls; restore legacy keys around those calls.
+  (setq kkp-restore-legacy-keys-around-subprocesses t))
+
+;; ============================================================
 ;; Terminal Vertical Split Display Fix
 ;; ============================================================
 ;; Prevent text overflow between vertically split windows in terminal
