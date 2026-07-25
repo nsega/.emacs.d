@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.7.3",
+  "checkpoint_id": "e3691d6fb66b",
+  "session_id": "3f035c9e-30de-455e-b880-4aa1fb4ccdf2",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-25T17:44:54.203725Z",
+  "branch": "chore/warning-suppression-and-ignores",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-fable-5",
+  "turn_id": "4bbac6c3a692",
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 49735,
+    "cache_read_tokens": 136537,
+    "output_tokens": 4308,
+    "api_call_count": 4
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}
