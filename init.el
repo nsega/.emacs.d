@@ -193,21 +193,22 @@
   (setq kkp-restore-legacy-keys-around-subprocesses t))
 
 ;; ============================================================
-;; Terminal Vertical Split Display Fix
+;; Terminal Line Truncation
 ;; ============================================================
-;; Prevent text overflow between vertically split windows in terminal
+;; Truncate rather than wrap long lines in terminal frames, including in
+;; side-by-side splits wider than the 50-column default of
+;; `truncate-partial-width-windows'.  This is a display preference.
+;;
+;; This block previously also set the window border glyph, zeroed the margins
+;; and disabled word wrap, to stop text appearing to overflow between
+;; vertically split windows.  Every one of those settings was a no-op: each
+;; already matched the Emacs default, including the border, which Emacs draws
+;; as ASCII "|" on a tty whether or not the display table says so.  The
+;; overflow had an unrelated cause, a character-width disagreement between
+;; Emacs and the terminal, addressed separately.
 (unless (display-graphic-p)
-  ;; Force line truncation in split windows to prevent overflow
   (setq truncate-partial-width-windows t)
-  (setq-default truncate-lines t)  ; Truncate all lines in terminal
-  ;; Use ASCII vertical bar for window border (Unicode can cause width issues)
-  (set-display-table-slot standard-display-table 'vertical-border ?|)
-  ;; Ensure no margins
-  (setq-default left-margin-width 0)
-  (setq-default right-margin-width 0)
-  ;; Disable word wrap that can cause overflow
-  (setq-default word-wrap nil)
-  (global-visual-line-mode -1))
+  (setq-default truncate-lines t))
 
 ;; ============================================================
 ;; Frame/Terminal Title - Show project name in window list
