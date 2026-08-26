@@ -1,0 +1,74 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "5dbf3b469e0d",
+  "session_id": "8963d82e-5d3e-4b84-a656-c5b9daf4f273",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-26T17:04:06.195753Z",
+  "branch": "fix/ambiguous-char-width",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "init.el"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5[1m]",
+  "turn_id": "31792e908f0e",
+  "checkpoint_transcript_start": 260,
+  "transcript_lines_at_start": 260,
+  "compact_transcript_start": 46,
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 1633,
+    "cache_read_tokens": 357533,
+    "output_tokens": 1975,
+    "api_call_count": 3
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_0177b1tUKWhXPdyHtPq5PtA6",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "superpowers:systematic-debugging"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "31792e908f0e",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 105,
+        "end": 106,
+        "entry_ids": [
+          "e2dea5a5-dbdd-4c9a-b946-a10105506bd9"
+        ],
+        "tool_use_id": "toolu_0177b1tUKWhXPdyHtPq5PtA6"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_0177b1tUKWhXPdyHtPq5PtA6"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: superpowers:systematic-debugging",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-26T17:04:06.175545Z",
+    "agent_lines": 23,
+    "agent_removed": 48,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 23,
+    "total_lines_changed": 71,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
