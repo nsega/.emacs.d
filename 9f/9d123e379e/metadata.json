@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "9f9d123e379e",
+  "strategy": "manual-commit",
+  "branch": "refactor/terminal-display-noops",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "init.el"
+  ],
+  "sessions": [
+    {
+      "metadata": "/9f/9d123e379e/0/metadata.json",
+      "transcript": "/9f/9d123e379e/0/full.jsonl",
+      "compact_transcript": "/9f/9d123e379e/0/transcript.jsonl",
+      "content_hash": "/9f/9d123e379e/0/content_hash.txt",
+      "prompt": "/9f/9d123e379e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 18,
+    "cache_creation_tokens": 16439,
+    "cache_read_tokens": 1251342,
+    "output_tokens": 15377,
+    "api_call_count": 9
+  }
+}
