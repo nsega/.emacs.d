@@ -697,10 +697,9 @@ Position the cursor at it's beginning, according to the current mode."
 
 ;; Japanese Configuration (UTF-8)
 (set-language-environment "Japanese")
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-buffer-file-coding-system 'utf-8)
-(setq buffer-file-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8-unix)
+(set-keyboard-coding-system 'utf-8-unix)
+(setq-default buffer-file-coding-system 'utf-8-unix)
 (setq slime-net-coding-system 'utf-8-unix)
 
 ;; key bindings
@@ -783,7 +782,51 @@ Position the cursor at it's beginning, according to the current mode."
 (add-to-list 'ignored-local-variables 'syntax)
 
 ;; http://0xcc.net/blog/archives/000041.html
-(set-default-coding-systems 'utf-8)
+;; Note the -unix suffix: bare `utf-8' leaves the EOL type undecided, so Emacs
+;; auto-detects it per file and preserves whatever it found on save.
+(prefer-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+
+;; ------------------------------------------------------------
+;; Line endings: always write LF
+;; ------------------------------------------------------------
+;; The settings above only govern NEW files. For an existing file Emacs still
+;; sniffs the EOL type on read, so a file that arrives with CR-only endings is
+;; decoded as `undecided-mac' and faithfully written back out with CR forever.
+;; Git cannot rescue this: `text=auto eol=lf' normalizes CRLF only, and a bare
+;; CR is not a line ending git recognizes, so the file lands in the repo as a
+;; single line and renders as one unbroken paragraph on GitHub.
+;;
+;; Make the EOL type visible in the mode line instead of the near-invisible
+;; default mnemonics (":" unix, "\\" dos, "/" mac).
+(setq eol-mnemonic-unix "(LF)"
+      eol-mnemonic-dos "(CRLF)"
+      eol-mnemonic-mac "(CR)"
+      eol-mnemonic-undecided "(?)")
+
+(defun nsega/normalize-eol-to-lf ()
+  "Convert the current buffer to LF-only line endings before saving.
+
+Handles both failure modes: literal CR characters sitting in the buffer,
+and a `buffer-file-coding-system' whose EOL type is dos or mac.  Binary
+buffers are skipped so that intentional CR bytes are left alone."
+  (when (and buffer-file-name
+             (not (memq (coding-system-base buffer-file-coding-system)
+                        '(no-conversion binary)))
+             (not (derived-mode-p 'hexl-mode 'image-mode 'special-mode)))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (while (search-forward "\r\n" nil t) (replace-match "\n" nil t))
+        (goto-char (point-min))
+        (while (search-forward "\r" nil t) (replace-match "\n" nil t))))
+    (let ((unix-cs (coding-system-change-eol-conversion
+                    buffer-file-coding-system 'unix)))
+      (unless (eq unix-cs buffer-file-coding-system)
+        (set-buffer-file-coding-system unix-cs nil t)))))
+
+(add-hook 'before-save-hook #'nsega/normalize-eol-to-lf)
 
 ;; ============================================================
 ;; Theme and Colors
