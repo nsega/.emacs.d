@@ -1,0 +1,25 @@
+Save some text files and markdown in emacs.
+The following status always occurrs. 
+
+Every line break is a bare \r (classic pre-OSX Mac), not \n. Consequences:
+
+Git sees one line. That is why the commit reads 1 insertion(+), 172 deletions(-) for what should be a small edit.
+GitHub will render the whole document as one unbroken paragraph — every heading, the audit table, every **Decision.** label collapses. Worse than the earlier CRLF problem, which at least rendered.
+.gitattributes does not catch this. text=auto eol=lf normalizes CRLF→LF only; a bare CR is not a line ending git recognizes, so the rule passed it straight through. The attribute is correctly set (eol: lf) and still did nothing.
+
+To address this, I did this stuff. but, it is kind of workaround.
+python3 -c "
+p='docs/design-notes.md'
+d=open(p,'rb').read()
+open(p,'wb').write(d.replace(b'\r\n',b'\n').replace(b'\r',b'\n'))
+"
+git add docs/design-notes.md && git commit -m "chore: repair CR-only line endings in design-notes"
+
+
+Given that, how can I address that with emacs settings?
+
+---
+
+once running incremental search via migemo, text display was something wrong in emacs.
+
+type "that", do the incremental search, the target words shows like "tthat"

@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "2a41d6250110",
+  "strategy": "manual-commit",
+  "branch": "fix/force-lf-line-endings",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "init.el"
+  ],
+  "sessions": [
+    {
+      "metadata": "/2a/41d6250110/0/metadata.json",
+      "transcript": "/2a/41d6250110/0/full.jsonl",
+      "compact_transcript": "/2a/41d6250110/0/transcript.jsonl",
+      "content_hash": "/2a/41d6250110/0/content_hash.txt",
+      "prompt": "/2a/41d6250110/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 68,
+    "cache_creation_tokens": 190858,
+    "cache_read_tokens": 2801576,
+    "output_tokens": 47410,
+    "api_call_count": 34
+  }
+}
