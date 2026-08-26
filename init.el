@@ -697,6 +697,25 @@ Position the cursor at it's beginning, according to the current mode."
 
 ;; Japanese Configuration (UTF-8)
 (set-language-environment "Japanese")
+
+;; Restore East Asian Ambiguous characters to width 1.
+;;
+;; `set-language-environment' with a CJK language installs the CJK char-width
+;; table, which renders every East Asian Ambiguous character (U+2192 arrows,
+;; U+25CF bullets, U+2502 box-drawing, Greek, accented Latin, ...) as TWO
+;; columns.  Ghostty, kitty and alacritty all draw them in ONE column, so
+;; Emacs' idea of the cursor column drifts from the terminal's on any line
+;; containing such a character.
+;;
+;; Full-line redraws mostly hide the drift, but partial redraws land in the
+;; wrong column and smear glyphs across the line.  Incremental search is the
+;; usual trigger, because repainting the match and unpainting the previous one
+;; are exactly such partial updates; migemo makes it far more visible since its
+;; generated regexps are large (over 4 KB for a one-character query), so a
+;; single search repaints many times.  The corruption is on screen only and
+;; never reaches the buffer or the file.
+(use-default-char-width-table)
+
 (set-terminal-coding-system 'utf-8-unix)
 (set-keyboard-coding-system 'utf-8-unix)
 (setq-default buffer-file-coding-system 'utf-8-unix)
