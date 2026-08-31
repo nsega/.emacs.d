@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.10.3",
+  "checkpoint_id": "1d28672885f9",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "custom.backup.20260123_234829/setup-cedet.el",
+    "custom.backup.20260123_234829/setup-editing.el",
+    "custom.backup.20260123_234829/setup-ggtags.el",
+    "custom.backup.20260123_234829/setup-helm-gtags.el",
+    "custom.backup.20260123_234829/setup-helm.el"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1d/28672885f9/0/metadata.json",
+      "transcript": "/1d/28672885f9/0/full.jsonl",
+      "compact_transcript": "/1d/28672885f9/0/transcript.jsonl",
+      "content_hash": "/1d/28672885f9/0/content_hash.txt",
+      "prompt": "/1d/28672885f9/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 17558,
+    "cache_read_tokens": 2708965,
+    "output_tokens": 14009,
+    "api_call_count": 17
+  }
+}
