@@ -16,7 +16,7 @@
 ;; - Tree-sitter modes for Python, Go, YAML (accurate syntax highlighting)
 ;; - Company-mode for auto-completion
 ;; - Modern advice-add instead of deprecated defadvice
-;; - Single, well-organized init.el (no separate custom/*.el files)
+;; - Single, well-organized init.el (Customize output lives in etc/custom.el)
 ;; - early-init.el for faster startup and no UI flickering
 ;; - no-littering for clean .emacs.d directory
 ;;
@@ -70,6 +70,8 @@
   ;; Put auto-save files in var directory
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  ;; Send Customize's output to etc/custom.el so it never appends to init.el
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
   ;; Put native-comp cache in var directory (only if native-comp is available)
   (when (and (fboundp 'startup-redirect-eln-cache)
              (boundp 'native-comp-eln-load-path))
@@ -85,9 +87,10 @@
 ;; and automatically reset after Emacs finishes loading
 (setq inhibit-startup-message t)
 
-;; Suppress byte-compile warnings from packages
+;; Suppress routine byte-compile, native-compile, and use-package warnings
+;; from accumulating in *Warnings* at startup
 (setq byte-compile-warnings '(not obsolete))
-(setq warning-suppress-log-types '((comp) (bytecomp)))
+(setq warning-suppress-log-types '((use-package) (comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)
 
 ;; PATH setup is handled by exec-path-from-shell (see below)
@@ -325,7 +328,7 @@
   :custom
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
-  (company-show-numbers t))
+  (company-show-quick-access t))
 
 (use-package company-c-headers
   :after company
@@ -1411,19 +1414,12 @@ Uses treesit-ready-p which verifies the grammar can be loaded."
   :commands eat)
 
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-show-quick-access t nil nil "Customized with use-package company")
- '(package-selected-packages nil)
- '(warning-suppress-log-types '((use-package) (comp) (bytecomp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Enable commands that Emacs disables by default
+(put 'set-goal-column 'disabled nil)
+
+;; Load Customize's saved settings last, so anything saved through the
+;; Customize UI wins over the `:custom' blocks above.  `custom-file' is set in
+;; the no-littering block; the file is optional and lives in gitignored etc/.
+(load custom-file t)
 
 ;;; init.el ends here
